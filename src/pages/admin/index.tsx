@@ -5,8 +5,8 @@ export default function AdminPage() {
   <div>
     
     
-    <p>THIS IS Admin</p>
-    <Link href="/admin/deploy-pellet">Deploy Pellets </Link>
+    <h1 className="mb-2">THIS IS Admin</h1>
+    <Link className="font-bold " href="/admin/deploy-pellet">Deploy Pellets - click me </Link>
     
     
     
