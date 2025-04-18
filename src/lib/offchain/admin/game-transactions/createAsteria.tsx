@@ -1,8 +1,8 @@
 
 
-import { Asset, PlutusScript ,MaestroProvider, MeshTxBuilder, serializePlutusScript, serializeRewardAddress, integer, policyId, UTxO, Data} from "@meshsdk/core";
-import { useState } from "react";
-import { useWallet } from "@meshsdk/react";
+import { Asset, PlutusScript ,MaestroProvider, MeshTxBuilder, serializePlutusScript, serializeRewardAddress, integer, policyId, UTxO, Data, AssetExtended} from "@meshsdk/core";
+import { useState, useEffect } from "react";
+import { useAssets, useWallet } from "@meshsdk/react";
 import { refHash } from "config";
 import { fromScriptRef,resolvePlutusScriptAddress} from "@meshsdk/core-cst";
 import { CardanoWallet } from "@meshsdk/react";
@@ -17,17 +17,30 @@ export default function CreateAsteria(){
     
   const [success, setSuccess] = useState<string>()
   const [adminToken, setAdminToken] = useState<Asset| null | undefined>()
+  const [assets, setAssets] = useState<Asset[]>()
+  const walletAssets: Asset[] = useAssets()
 
- const blockchainProvider = new MaestroProvider({
+    const blockchainProvider = new MaestroProvider({
           network: "Preprod",
           apiKey: maestroApiKey, // Get yours by visiting https://docs.gomaestro.org/docs/Getting-started/Sign-up-login.
           turboSubmit: false, // 
         });
-    
-    
 
 
 
+        useEffect( () => {
+            const result = connected ? walletAssets.find((a) => a.unit.startsWith( 'dd3314723ac41eb2d91e4b695869ff5597f0f0acea9f063d4adb60d5')) : null
+
+            if(result){
+              setAdminToken(result)
+            } else {
+              setAdminToken(null)
+            }        
+
+        }, [adminToken])
+  
+  
+      
       async function onSubmit(){
         
         
@@ -92,20 +105,21 @@ export default function CreateAsteria(){
         <form onSubmit={(e) => e.preventDefault()}>
           <p>Create Asteria Utxo by sending an admin token to the Asteria validator</p>
         
-          {connected ? 
+          {connected && adminToken ? 
           
            <button className="bg-black text-white" onClick={onSubmit}>send</button>: 
               
             
         
         
-           <p>need to be connected valid script address</p>
+           <p>Your wallet doesn't contain an admin token</p>
           
           }
       
         
          </form>
 
+       
          {success && <p>{success}</p>}
      
       </div>
