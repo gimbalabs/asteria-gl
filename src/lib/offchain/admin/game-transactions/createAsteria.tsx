@@ -7,6 +7,8 @@ import { refHash } from "config";
 import { fromScriptRef,resolvePlutusScriptAddress} from "@meshsdk/core-cst";
 import { CardanoWallet } from "@meshsdk/react";
 
+import { adminTokenPolicy } from "config";
+
 // scriptAddress = "addr_test1vrqd62jeu7jt67zt3ajl8agyfnsa0ltjksqahcsqlax3kvq8qhe3x" asteria 
 const maestroApiKey: string = process.env.NEXT_PUBLIC_MAESTRO_API 
 
@@ -29,7 +31,7 @@ export default function CreateAsteria(){
 
 
         useEffect( () => {
-            const result = connected ? walletAssets.find((a) => a.unit.startsWith( 'dd3314723ac41eb2d91e4b695869ff5597f0f0acea9f063d4adb60d5')) : null
+            const result = connected ? walletAssets.find((a) => a.unit.startsWith( adminTokenPolicy)) : null
 
             if(result){
               setAdminToken(result)
@@ -48,7 +50,7 @@ export default function CreateAsteria(){
         const utxoWithAdminToken = utxos.map((utxo) => {
     
                const assets = utxo.output.amount
-               const asset = assets.find((asset) => asset.unit.startsWith('dd3314723ac41eb2d91e4b695869ff5597f0f0acea9f063d4adb60d5') )
+               const asset = assets.find((asset) => asset.unit.startsWith(adminTokenPolicy) )
                if(asset){
                 setAdminToken(asset)
                }
