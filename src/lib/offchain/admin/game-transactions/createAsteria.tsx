@@ -1,48 +1,52 @@
+
+
 import { Asset, PlutusScript ,MaestroProvider, MeshTxBuilder, serializePlutusScript, serializeRewardAddress, integer, policyId, UTxO, Data} from "@meshsdk/core";
 import { useState } from "react";
 import { useWallet } from "@meshsdk/react";
 import { refHash } from "config";
 import { fromScriptRef,resolvePlutusScriptAddress} from "@meshsdk/core-cst";
+import { CardanoWallet } from "@meshsdk/react";
 
 // scriptAddress = "addr_test1vrqd62jeu7jt67zt3ajl8agyfnsa0ltjksqahcsqlax3kvq8qhe3x" asteria 
-const maestroApiKey = process.env.NEXT_PUBLIC_MAESTRO_API 
+const maestroApiKey: string = process.env.NEXT_PUBLIC_MAESTRO_API 
 
 
-export default async function CreateAsteria(){
+export default function CreateAsteria(){
 
-    const { wallet, connected } = useWallet();
+  const { wallet, connected } = useWallet();
     
-    const [success, setSuccess] = useState<string>()
-    const [adminToken, setAdminToken] = useState<string| null>()
+  const [success, setSuccess] = useState<string>()
+  const [adminToken, setAdminToken] = useState<Asset| null | undefined>()
 
-    const blockchainProvider = new MaestroProvider({
-      network: "Preprod",
-      apiKey: maestroApiKey, // Get yours by visiting https://docs.gomaestro.org/docs/Getting-started/Sign-up-login.
-      turboSubmit: false, // 
-    });
-
-
-    const utxos = await wallet.getUtxos()
-    const utxoWithAdminToken = utxos.map((utxo) => {
-
-           const assets = utxo.output.amount
-           const asset = assets.find((asset) => asset.unit.startsWith('dd3314723ac41eb2d91e4b695869ff5597f0f0acea9f063d4adb60d5') )
-           if(asset){
-            setAdminToken(asset)
-           }
-        }
-        )
+ const blockchainProvider = new MaestroProvider({
+          network: "Preprod",
+          apiKey: maestroApiKey, // Get yours by visiting https://docs.gomaestro.org/docs/Getting-started/Sign-up-login.
+          turboSubmit: false, // 
+        });
+    
+    
 
 
 
-    async function onSubmit(){
+      async function onSubmit(){
+        
+        
+        const utxos = await wallet.getUtxos()
+        const utxoWithAdminToken = utxos.map((utxo) => {
+    
+               const assets = utxo.output.amount
+               const asset = assets.find((asset) => asset.unit.startsWith('dd3314723ac41eb2d91e4b695869ff5597f0f0acea9f063d4adb60d5') )
+               if(asset){
+                setAdminToken(asset)
+               }
+            }
+            )
+        
         const txBuilder = new MeshTxBuilder({
             fetcher: blockchainProvider,
             verbose: true,
           });
 
-        
-       
 
         const changeAddress = await wallet.getChangeAddress()
 
@@ -80,33 +84,34 @@ export default async function CreateAsteria(){
       
     }
 
-    
-      return (
-        <div>
-          <p>Send transaction to create Asteria</p>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <p>Create Asteria Utxo by sending an admin token to the Asteria validator</p>
+  
+    return (
+      <div>
+        <CardanoWallet />
+        <p>Send transaction to create Asteria</p>
+        <form onSubmit={(e) => e.preventDefault()}>
+          <p>Create Asteria Utxo by sending an admin token to the Asteria validator</p>
+        
+          {connected ? 
           
-            {connected ? 
-            
-              adminToken ? <button className="bg-black text-white" onClick={onSubmit}>send</button>: 
-                  
-                  <p> Your wallet doesn't hold a valid Admin Token</p>
-            
-            
-              : <p>need to be connected valid script address</p>
+           <button className="bg-black text-white" onClick={onSubmit}>send</button>: 
               
-              }
+            
+        
+        
+           <p>need to be connected valid script address</p>
           
-          
-           </form>
+          }
+      
+        
+         </form>
 
-           {success && <p>{success}</p>}
-       
-        </div>
-      )
-      
-      
+         {success && <p>{success}</p>}
+     
+      </div>
+    )
     
+    
+  
 
   }
