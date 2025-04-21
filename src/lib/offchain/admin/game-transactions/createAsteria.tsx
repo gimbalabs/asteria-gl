@@ -1,5 +1,3 @@
-
-
 import { Asset, PlutusScript ,MaestroProvider, MeshTxBuilder, serializePlutusScript, serializeRewardAddress, integer, policyId, UTxO, Data, AssetExtended} from "@meshsdk/core";
 import { useState, useEffect } from "react";
 import { useAssets, useWallet } from "@meshsdk/react";
@@ -102,7 +100,7 @@ export default function CreateAsteria(){
   
     return (
       <div>
-        <CardanoWallet />
+        <CardanoWallet isDark={true} />
         <p>Send transaction to create Asteria</p>
         <form onSubmit={(e) => e.preventDefault()}>
           <p>Create Asteria Utxo by sending an admin token to the Asteria validator</p>
