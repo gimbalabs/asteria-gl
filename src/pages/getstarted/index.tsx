@@ -8,8 +8,7 @@ export default function GetStarted(){
     return (
         <>
             <nav>
-                <p>nav bar</p>
-                <CardanoWallet /> 
+                <CardanoWallet isDark={true} /> 
             </nav>
             <main>
                 <h1>Start playing Asteria by minting your Pilot token!</h1>

@@ -27,6 +27,7 @@ export default function AdminPage() {
             icon="🧭"
             borderColor="border-green-500"
           >
+            <p>Coming soon...</p>
             {/* <InputParameters /> */}
           </AdminSection>
 
@@ -35,6 +36,7 @@ export default function AdminPage() {
             icon="🎟️"
             borderColor="border-purple-500"
           >
+            <p>Coming soon...</p>
             {/* <CreateAdminToken /> */}
           </AdminSection>
 
@@ -43,6 +45,7 @@ export default function AdminPage() {
             icon="🌌"
             borderColor="border-indigo-500"
           >
+            <p>Coming soon...</p>
             {/* <DeployValidators /> */}
           </AdminSection>
 
@@ -59,6 +62,7 @@ export default function AdminPage() {
             icon="🌕"
             borderColor="border-cyan-500"
           >
+            <p>Coming soon...</p>
             {/* <CreatePellets /> */}
           </AdminSection>
 
@@ -67,6 +71,7 @@ export default function AdminPage() {
             icon="✅"
             borderColor="border-red-500"
           >
+            <p>Coming soon...</p>
             {/* <FinalizeSetup /> */}
           </AdminSection>
         </div>
