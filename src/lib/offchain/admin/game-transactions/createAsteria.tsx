@@ -1,12 +1,12 @@
 import { Asset, PlutusScript ,MaestroProvider, MeshTxBuilder, serializePlutusScript, serializeRewardAddress, integer, policyId, UTxO, Data, AssetExtended} from "@meshsdk/core";
 import { useState, useEffect } from "react";
 import { useAssets, useWallet } from "@meshsdk/react";
-import { refHash } from "config";
+
 import { fromScriptRef,resolvePlutusScriptAddress} from "@meshsdk/core-cst";
 import { CardanoWallet } from "@meshsdk/react";
 
-import { adminTokenPolicy } from "config";
-
+import { adminTokenPolicy, adminTokenName, refHash } from "config";
+import checkAdminToken from "~/hooks/checkAdminToken";
 // scriptAddress = "addr_test1vrqd62jeu7jt67zt3ajl8agyfnsa0ltjksqahcsqlax3kvq8qhe3x" asteria 
 const maestroApiKey: string = process.env.NEXT_PUBLIC_MAESTRO_API 
 
@@ -16,9 +16,7 @@ export default function CreateAsteria(){
   const { wallet, connected } = useWallet();
     
   const [success, setSuccess] = useState<string>()
-  const [adminToken, setAdminToken] = useState<Asset| null | undefined>()
-  const [assets, setAssets] = useState<Asset[]>()
-  const walletAssets: Asset[] = useAssets()
+  
 
     const blockchainProvider = new MaestroProvider({
           network: "Preprod",
@@ -26,20 +24,7 @@ export default function CreateAsteria(){
           turboSubmit: false, // 
         });
 
-
-
-        useEffect( () => {
-            const result = connected ? walletAssets.find((a) => a.unit.startsWith( adminTokenPolicy)) : null
-
-            if(result){
-              setAdminToken(result)
-            } else {
-              setAdminToken(null)
-            }        
-
-        }, [adminToken])
-  
-  
+    const {connectedAdminToken, isLoadingAdminToken } = checkAdminToken()
       
       async function onSubmit(){
         
@@ -80,7 +65,7 @@ export default function CreateAsteria(){
         
 
         const unsignedTx = await txBuilder
-        .txOut(asteriaValidatorAddress, [{unit: "dd3314723ac41eb2d91e4b695869ff5597f0f0acea9f063d4adb60d5617374657269612d61646d696e", quantity: "1" } ])
+        .txOut(asteriaValidatorAddress, [{unit: adminTokenPolicy+adminTokenName , quantity: "1" } ])
         .txOutInlineDatumValue(asteriaDatum)
         .changeAddress(changeAddress)
         .selectUtxosFrom(utxos)
@@ -100,19 +85,22 @@ export default function CreateAsteria(){
   
     return (
       <div>
+
         <CardanoWallet isDark={true} />
+
         <p>Send transaction to create Asteria</p>
         <form onSubmit={(e) => e.preventDefault()}>
           <p>Create Asteria Utxo by sending an admin token to the Asteria validator</p>
         
-          {connected && adminToken ? 
-          
-           <button className="bg-black text-white" onClick={onSubmit}>send</button>: 
-              
+          {connected && connectedAdminToken && !isLoadingAdminToken ? 
+            <div>
+              <button className="bg-black text-white" onClick={onSubmit}>send</button>
+              <p className="text-green"> Admin Token - {connectedAdminToken}</p>
+            </div> 
+              : 
             
-        
-        
-           <p>Your wallet doesn't contain an admin token</p>
+              <p>Your wallet doesn't contain an admin token</p>
+              
           
           }
       

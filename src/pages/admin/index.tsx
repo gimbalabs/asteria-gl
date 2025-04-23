@@ -12,6 +12,7 @@ import FinalizeSetup from "~/components/admin/FinalizeSetup";
  */
 export default function AdminPage() {
   return (
+
     <>
       <Head>
         <title>Asteria Admin Console</title>
@@ -37,6 +38,7 @@ export default function AdminPage() {
           >
             {/* <CreateAdminToken /> */}
           </AdminSection>
+
 
           <AdminSection
             title="Deploy Validators"
