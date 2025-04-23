@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { adminTokenPolicy } from "config";
 
 export default function checkAdminToken() {
-  const { wallet } = useWallet();
+  const { wallet, connected } = useWallet();
   const walletAssets = useAssets()
 
   const [connectedAdminToken, setConnectedAdminToken] = useState<
@@ -16,7 +16,7 @@ export default function checkAdminToken() {
 
   useEffect(() => {
     async function checkAdminToken() {
-        if (wallet) {
+        if (wallet && connected) {
             // get contributor token
             const walletAssets = await wallet.getAssets()
             walletAssets.forEach((a) => {
