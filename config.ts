@@ -5,8 +5,10 @@ import { integer, policyId, assetName, scriptHash, scriptAddress } from "@meshsd
 // use .env for passwords and api keys
 
 
+
 export const adminTokenName: assetName = '41737465726961746f6b656e'
 export const adminTokenPolicy: policyId = 'fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293' //bytestring
+
 
 export const fuelTokenName: assetName = '4655454c'
 export const fuelTokenPolicy: policyId = '3830a960240a7461fd8c121d2df596d5efb87fa7670c7285b9ad4000'
