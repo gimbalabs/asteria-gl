@@ -1,0 +1,32 @@
+/* AboutPage.module.css */
+
+.intro {
+    margin-bottom: 2rem;
+  }
+  
+  .intro h1 {
+    font-size: 2.25rem;      /* restore a nice big size */
+    font-weight: 700;        /* make it bold */
+    margin-bottom: 1rem;
+  }
+  
+  .columns {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  
+  .column {
+    flex: 1;
+  }
+  
+  .column h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .column ol {
+    padding-left: 1.5rem;
+  }
+  
