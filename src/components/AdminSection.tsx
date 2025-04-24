@@ -4,14 +4,12 @@ type AdminSectionProps = {
   title: string;
   icon?: string;
   borderColor?: string; // e.g., "border-yellow-500"
-  children: ReactNode;
 };
 
 export default function AdminSection({
   title,
   icon,
   borderColor = "border-gray-700",
-  children,
 }: AdminSectionProps) {
   return (
     <section
@@ -21,7 +19,6 @@ export default function AdminSection({
         {icon && <span>{icon}</span>}
         <span>{title}</span>
       </h2>
-      <div>{children}</div>
     </section>
   );
 }

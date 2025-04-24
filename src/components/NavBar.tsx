@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AdminPage from "~/pages/admin";
 
 export default function NavBar() {
   return (
@@ -6,8 +7,8 @@ export default function NavBar() {
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-lg font-bold"><Link href="/">Asteria</Link></div>
         <ul className="flex gap-4 text-sm font-medium">
-          <li><Link href="/map">Map</Link></li>
           <li><Link href="/about">About</Link></li>
+          <li><Link href="/admin">AdminPage</Link></li>
         </ul>
       </div>
     </nav>

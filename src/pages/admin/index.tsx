@@ -52,9 +52,7 @@ export default function AdminPage() {
             title="Create Asteria UTXO"
             icon="🏗️"
             borderColor="border-yellow-500"
-          >
-            <CreateAsteria />
-          </AdminSection>
+          />
 
           <AdminSection
             title="Create Pellet UTXOs"
