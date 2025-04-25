@@ -6,7 +6,6 @@ const colors = Object.entries(galaxyColors).map(([key, hex]) => ({
   key,
   hex,
 }));
-console.log(colors);
 
 export default function StyleGuide() {
   return (

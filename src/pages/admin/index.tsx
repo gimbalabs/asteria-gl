@@ -33,9 +33,7 @@ export default function AdminPage() {
                 borderColor="border-purple-500
                 hover:bg-green-400/20 
                 hover:border-green-400 
-                transition-all duration-300">
-                  {/* <CreateAdminToken /> */}
-            </AdminSection>
+                transition-all duration-300" />
           </Link>
 
           <AdminSection
