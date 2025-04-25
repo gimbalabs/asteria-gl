@@ -17,22 +17,24 @@ export default function AdminPage() {
       <Head>
         <title>Asteria Admin Console</title>
       </Head>
-      <div className="min-h-screen px-6 py-10 text-white">
+      <div className="mt-10 min-h-screen px-6 py-10 text-white">
         <h1 className="text-4xl font-bold mb-6 text-center">
           🛠️ Asteria Admin Console
         </h1>
 
+
+          
+        <div className="space-y-8">
         <AdminSection
-            title="Create Admin Token"
+            title="Create Admin Tokens and Rewards token "
             icon="🎟️"
             borderColor="border-purple-500"
           >
             {/* <CreateAdminToken /> */}
           </AdminSection>
-          
-        <div className="space-y-8">
+
           <AdminSection
-            title="Input Parameters"
+            title="Decide and Input Parameters"
             icon="🧭"
             borderColor="border-green-500"
           >
@@ -54,7 +56,9 @@ export default function AdminPage() {
             title="Create Asteria UTXO"
             icon="🏗️"
             borderColor="border-yellow-500">
-
+              
+              <CreateAsteria />
+            
             </AdminSection>
           
 
@@ -74,7 +78,7 @@ export default function AdminPage() {
             {/* <FinalizeSetup /> */}
           </AdminSection>
 
-          <CreateAsteria />
+          
         </div>
       </div>
     </>
