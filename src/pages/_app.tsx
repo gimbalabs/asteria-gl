@@ -1,7 +1,8 @@
+import Head from "next/head";
 import { GeistSans } from "geist/font/sans";
 import { type AppType } from "next/app";
 import { MeshProvider } from "@meshsdk/react";
-import Head from "next/head";
+
 
 import { api } from "~/utils/api";
 import Layout from "../components/Layout";

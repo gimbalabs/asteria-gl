@@ -22,6 +22,14 @@ export default function AdminPage() {
           🛠️ Asteria Admin Console
         </h1>
 
+        <AdminSection
+            title="Create Admin Token"
+            icon="🎟️"
+            borderColor="border-purple-500"
+          >
+            {/* <CreateAdminToken /> */}
+          </AdminSection>
+          
         <div className="space-y-8">
           <AdminSection
             title="Input Parameters"
@@ -31,13 +39,7 @@ export default function AdminPage() {
             {/* <InputParameters /> */}
           </AdminSection>
 
-          <AdminSection
-            title="Create Admin Token"
-            icon="🎟️"
-            borderColor="border-purple-500"
-          >
-            {/* <CreateAdminToken /> */}
-          </AdminSection>
+
 
 
           <AdminSection
@@ -51,8 +53,10 @@ export default function AdminPage() {
           <AdminSection
             title="Create Asteria UTXO"
             icon="🏗️"
-            borderColor="border-yellow-500"
-          />
+            borderColor="border-yellow-500">
+
+            </AdminSection>
+          
 
           <AdminSection
             title="Create Pellet UTXOs"
@@ -69,6 +73,8 @@ export default function AdminPage() {
           >
             {/* <FinalizeSetup /> */}
           </AdminSection>
+
+          <CreateAsteria />
         </div>
       </div>
     </>
