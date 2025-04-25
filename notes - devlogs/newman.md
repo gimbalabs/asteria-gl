@@ -1,4 +1,10 @@
 # Devlog of Newman
+## 2025-04-25 - Team meeting and working with Harsha
+- Tailwind style guides in github 
+- Make an Asteria Style guide
+- stubb out the other admin components
+
+
 ## 2025-04-16 - Making the first commitment in Andamio
 This is a simple commit to do a PR and satisfy the Acceptance Criteria / Research Phase (4 commits) in the Andamio Project - Asteria-GL.  I created A Newman plus the date branch and then created this notes Devlog folder and a newman.md file commit.  
 
