@@ -29,6 +29,7 @@ export default {
     extend: {
       colors: {
         galaxy: galaxyColors,
+        galaxy2: galaxyColors2,
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
