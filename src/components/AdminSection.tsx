@@ -15,7 +15,7 @@ export default function AdminSection({
 }: AdminSectionProps) {
   return (
     <section
-      className={`bg-gray-800 p-6 rounded-xl shadow-md border ${borderColor}`}
+      className={`bg-gray-800 p-6 rounded-xl shadow-md border ${borderColor}`} 
     >
       <h2 className="text-2xl font-semibold mb-2 flex items-center gap-2">
         {icon && <span>{icon}</span>}
