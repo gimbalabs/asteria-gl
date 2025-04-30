@@ -6,6 +6,7 @@ export function useMintAdminAndRewardTokens() {
   const [tokenName, setTokenName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [policyId, setPolicyId] = useState("");
+  const [dummyKey,   setDummyKey]   = useState("");
 
   const prepareTransaction = api.mintAdminAndReward.prepareTransaction.useMutation();
   const { wallet, connected } = useWallet(); // 👈 get wallet and connection state
@@ -20,16 +21,22 @@ export function useMintAdminAndRewardTokens() {
       const utxos = await wallet.getUtxos();
       const changeAddress = await wallet.getChangeAddress();
 
-      const unsignedTx = await prepareTransaction.mutateAsync({
+      const { unsignedTx, policyId: newPid, dummyKeyHash: newDk } 
+       = await prepareTransaction.mutateAsync({
         tokenName,
         quantity,
-        policyId,
+        policyId: policyId  || undefined,
+        dummyKeyHash: dummyKey || undefined,
         changeAddress,
         utxos,
       });
 
       const signedTx = await wallet.signTx(unsignedTx);
       const txHash = await wallet.submitTx(signedTx);
+
+      // cache identifiers for next mint
+      if (!policyId) setPolicyId(newPid);
+      if (!dummyKey) setDummyKey(newDk);
 
       console.log("Transaction Hash:", txHash);
       alert("Minted Successfully! TxHash: " + txHash);
@@ -43,6 +50,7 @@ export function useMintAdminAndRewardTokens() {
     tokenName, setTokenName,
     quantity, setQuantity,
     policyId, setPolicyId,
+    dummyKey, setDummyKey,
     handleSubmit,
   };
 }
