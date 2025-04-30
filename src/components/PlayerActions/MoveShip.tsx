@@ -1,31 +1,45 @@
-import { useState } from 'react'
-import { api } from '~/utils/api'
+type MoveShipProps = {
+  currentPosition: { x: number; y: number }
+  targetPosition: { x: number; y: number } | null
+  setCurrentPosition: (pos: { x: number; y: number }) => void
+  setTargetPosition: (pos: { x: number; y: number }) => void
+  fuelLevel: number
+  setFuelLevel: (fuel: number) => void
+}
 
-export function MoveShip() {
-    const [pilotName, setPilotName] = useState('')
-    const [deltaX, setDeltaX] = useState(0)
-    const [deltaY, setDeltaY] = useState(0)
-  
-    const utils = api.useUtils()
-    const moveShip = api.utxo.moveShip.useMutation({
-      onSuccess: () => {
-        utils.utxo.getAll.invalidate()
-        setDeltaX(0)
-        setDeltaY(0)
-      }
-    })
+export function MoveShip({
+  currentPosition,
+  targetPosition,
+  setCurrentPosition,
+  setTargetPosition,
+  fuelLevel,
+  setFuelLevel
+}: MoveShipProps) {
+  const handleMove = () => {
+    if (!targetPosition) return
 
-    return (
-        <div className="border rounded p-4 bg-white shadow">
-          <h3 className="text-md text-galaxy-border font-semibold mb-2">Move Ship</h3>
+    const deltaX = targetPosition.x - currentPosition.x
+    const deltaY = targetPosition.y - currentPosition.y
+    const distance = Math.abs(deltaX) + Math.abs(deltaY)
+    const fuelCost = distance * 1 // Example: 1 fuel per step
 
-            <button
-              onClick={() => moveShip.mutate({ pilot: pilotName, deltaX, deltaY })}
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded px-4 py-2"
-            >
-              Move
-            </button>
-          
-        </div>
-      )
+    if (fuelCost > fuelLevel) {
+      alert('Not enough fuel!')
+      return
     }
+
+    setCurrentPosition(targetPosition)
+    setFuelLevel(fuelLevel - fuelCost)
+    setTargetPosition(null)
+  }
+
+  return (
+    <button
+      className="w-full px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+      onClick={handleMove}
+      disabled={!targetPosition}
+    >
+      Confirm Move
+    </button>
+  )
+}
