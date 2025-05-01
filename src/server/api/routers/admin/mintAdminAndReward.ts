@@ -31,7 +31,8 @@ export const mintAdminAndRewardRouter = createTRPCRouter({
        if (policyId && dummyKeyHash) {
           const rebuilt = uniqueForgeScript(changeAddress, dummyKeyHash);
           forgingScript  = rebuilt.forgingScript;
-          finalPolicyId  = policyId;        finalDummy     = dummyKeyHash;
+          finalPolicyId  = policyId;        
+          finalDummy= dummyKeyHash;
 
           if (uniqueForgeScript(changeAddress, dummyKeyHash).policyId !== policyId) {
             throw new Error("policyId / dummyKey mismatch with wallet key");

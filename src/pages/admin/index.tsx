@@ -75,7 +75,7 @@ export default function AdminPage() {
             </Link>
 
             <AdminSection
-              title="Decide and Input Parameters"
+              title="Enter Input Parameters"
               icon="🧭"
               borderColor="border-green-500"
             >
