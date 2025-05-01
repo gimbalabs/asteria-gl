@@ -1,6 +1,7 @@
 import { postRouter } from "~/server/api/routers/post";
 import { mintAdminAndRewardRouter } from "~/server/api/routers/admin/mintAdminAndReward";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
+import { setParametersRouter } from "./routers/admin/setParameters";
 
 /**
  * This is the primary router for your server.
@@ -10,6 +11,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 export const appRouter = createTRPCRouter({
   post: postRouter,
   mintAdminAndReward: mintAdminAndRewardRouter,
+  setParameters: setParametersRouter,
 });
 
 // export type definition of API

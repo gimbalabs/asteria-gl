@@ -4,6 +4,7 @@ import AdminSection from "../../components/AdminSection";
 import Link from "next/link";
 
 import CreateAsteria from "~/lib/offchain/admin/game-transactions/createAsteria";
+import ParametersForm from "~/components/admin/ParametersForm";
 // These will be real components soon — placeholder content for now
 /* import InputParameters from "~/components/admin/InputParameters";
 import CreateAdminToken from "~/components/admin/CreateAdminToken";
@@ -26,6 +27,8 @@ export default function AdminPage() {
 
           
         <div className="space-y-8">
+          
+          <div>
           <Link href="/admin/create-admin-and-rewards-tokens">
             <AdminSection
                 title="Create Admin Tokens and Rewards token "
@@ -35,16 +38,20 @@ export default function AdminPage() {
                 hover:border-green-400 
                 transition-all duration-300" />
           </Link>
-
-          <AdminSection
-            title="Decide and Input Parameters"
-            icon="🧭"
-            borderColor="border-green-500"
-          >
-            {/* <InputParameters /> */}
-          </AdminSection>
-
-
+          </div>
+          
+          <div>
+          <Link href="admin/set-parameters">
+            <AdminSection
+              title="Decide and Input Parameters"
+              icon="🧭"
+              borderColor="border-green-500 hover:bg-green-400/20 hover:border-green-400 transition-all duration-300"
+            >
+            
+              {/* <InputParameters /> */}
+            </AdminSection>
+          </Link> 
+          </div>
 
 
           <AdminSection
