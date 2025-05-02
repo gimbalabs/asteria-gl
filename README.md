@@ -1,10 +1,21 @@
-# Create T3 App
+# Asteria-GL (Asteria Gimbalabs)
+Asteria front-end project Spring 2025
+
+## Introduction
+This is the Asteria-GL project. This is a three month long learning project conducted by four Gimbalabs contributors in order to learn the T3 tech stack and Mesh and collaboration in Web3 development.The real world project is the Astoria game by TX pipe, which is a project catalyst funded eUTXO learning game.
+
+Our guiding question is:How can we refactor and build a frontend for the game using Mesh instead of Lucid.
+
+This learning project has three phases.
+- Phase one is research. 
+- Phase two is "build it for ourselves". 
+- Third phase is "create a project for others to build". 
+
+This project is funded by Gimbalabs and was consented to during the open spaces on Thursdays.  The proposal for this is on our Notion.
+
+# Built with Create T3 App
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
-
-## What's next? How do I make an app with this?
-
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
 
 If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
 
@@ -17,13 +28,8 @@ If you are not familiar with the different technologies used in this project, pl
 
 ## Learn More
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+Drop by our discord or attend a Gimbalabs open session on Zoom - Find the calendar and more info at https://gimbalabs.com/
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
 
-## How do I deploy this?
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
