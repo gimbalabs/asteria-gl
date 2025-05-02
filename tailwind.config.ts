@@ -24,22 +24,35 @@ export const galaxyColors2 = {
 };
 
 export default {
-  content: ["./src/**/*.tsx"],
+ 
+    content: ["./src/**/*.tsx"],
   theme: {
-    extend: {
-      colors: {
-        galaxy: galaxyColors,
-        galaxy2: galaxyColors2,
-      },
-      fontFamily: {
-        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
-      },
-    },
+  	extend: {
+  		colors: {
+  			galaxy: galaxyColors,
+  			galaxy2: galaxyColors2,
+  		
+  		},
+  		fontFamily: {
+  			sans: [
+  				'var(--font-geist-sans)',
+                    ...fontFamily.sans
+                ]
+  		},
+  		borderRadius: {
+  			lg: 'var(--radius)',
+  			md: 'calc(var(--radius) - 2px)',
+  			sm: 'calc(var(--radius) - 4px)'
+  		}
+  	}
   },
+
   plugins: [
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/container-queries'),
+    require("tailwindcss-animate")
   ]
+
 } satisfies Config;
