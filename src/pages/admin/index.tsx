@@ -1,4 +1,3 @@
-
 import Head from "next/head";
 import AdminSection from "../../components/AdminSection";
 import Link from "next/link";
