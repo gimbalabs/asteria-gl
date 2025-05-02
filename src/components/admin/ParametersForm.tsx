@@ -4,6 +4,7 @@ import { setMaxIdleHTTPParsers } from "http";
 import { useState } from "react";
 import Trpc from "~/pages/api/trpc/[trpc]";
 
+
 import { api } from "~/utils/api";
 
 import { useWallet, useAssets } from "@meshsdk/react";
@@ -60,8 +61,8 @@ export default function ParametersForm(){
                 <h3>Start by selecting an admin token from your wallet</h3>
                 <p>{selectedToken}</p>
                 <DropdownMenu>
-                    <DropdownMenuTrigger>
-                        Select Token From Your Wallet
+                    <DropdownMenuTrigger className="bg-galaxy-light">
+                        Select Token From Your Wallet >
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         
