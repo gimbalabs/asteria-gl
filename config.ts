@@ -1,5 +1,9 @@
 
-import { integer, Integer, policyId, PolicyId, assetName, AssetName, scriptHash, ScriptHash, scriptAddress, ScriptAddress } from "@meshsdk/core";
+import { integer, Integer, 
+          policyId, PolicyId, 
+          assetName, AssetName, 
+          scriptAddress, ScriptAddress, 
+          TxOutRef, txOutRef } from "@meshsdk/core";
 
 // Variables to be used throughout App 
 // use .env for passwords and api keys
@@ -21,21 +25,22 @@ export const fuelTokenPolicy: PolicyId = policyId('3830a960240a7461fd8c121d2df59
 //export const shipYardPolicy = 
 //export const shipYardName =
 
-export const refHash: ScriptHash = scriptHash('08834a9c06c3bc5ede5c6a0845e67d077dbd0bcadd8b771f785ed45745907b0f')
+export const refHash: string = '08834a9c06c3bc5ede5c6a0845e67d077dbd0bcadd8b771f785ed45745907b0f'
 
 //pellet validator ref hash 
-export const pelletRefHash: ScriptHash = scriptHash('08834a9c06c3bc5ede5c6a0845e67d077dbd0bcadd8b771f785ed45745907b0f#1')
+export const pelletRefHash: TxOutRef = txOutRef('08834a9c06c3bc5ede5c6a0845e67d077dbd0bcadd8b771f785ed45745907b0f', 1)
   
 //asteria validator ref hash
-export const asteriaRefHash: ScriptHash = scriptHash('08834a9c06c3bc5ede5c6a0845e67d077dbd0bcadd8b771f785ed45745907b0f#0')
+export const asteriaRefHash: TxOutRef = txOutRef('08834a9c06c3bc5ede5c6a0845e67d077dbd0bcadd8b771f785ed45745907b0f', 0)
 //deploy validator ref hash
 
 //spacetime validator ref Hash 
-export const spacetimeRefHash: ScriptHash = scriptHash('08834a9c06c3bc5ede5c6a0845e67d077dbd0bcadd8b771f785ed45745907b0f#2') 
+export const spacetimeRefHash: TxOutRef = txOutRef('08834a9c06c3bc5ede5c6a0845e67d077dbd0bcadd8b771f785ed45745907b0f', 2) 
        
 
   //pellet validator address 
-export const pelletValidatorAddress: ScriptAddress = scriptAddress('addr_test1wqurp2tqys98gc0a3sfp6t04jm27lwrl5anscu59hxk5qqq4fhu8y')
+//export const pelletValidatorAddress = 'addr_test1wqurp2tqys98gc0a3sfp6t04jm27lwrl5anscu59hxk5qqq4fhu8y' as ScriptAddress  
+     //Above script address needs to be verified for the proper types as per Mesh
   //asteria validator address
 //export const asteriaValidatorAddress =  
   //spacetime validator address
