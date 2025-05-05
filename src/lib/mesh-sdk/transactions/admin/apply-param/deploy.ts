@@ -1,6 +1,6 @@
 
 import { applyParamsToScript } from "@meshsdk/core-cst";
-import plutusBlueprint from "../../../onchain/src/plutus.json" with {type: 'json'}; 
+import plutusBlueprint from "../../../../onchain/src/plutus.json" with {type: 'json'}; 
 import { PlutusScript } from "@meshsdk/core";
 
 const asteriaValidator = plutusBlueprint.validators.find(

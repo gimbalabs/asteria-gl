@@ -1,6 +1,6 @@
 
 import { applyParamsToScript } from "@meshsdk/core-cst";
-import plutusBlueprint from "../../../onchain/src/plutus.json" with {type: 'json'};
+import plutusBlueprint from "../../../../onchain/src/plutus.json" with {type: 'json'};
 import { PlutusScript } from "@meshsdk/core";
     
 const pelletValidator = plutusBlueprint.validators.find(
@@ -21,7 +21,7 @@ function  pelletScriptApliedParam(admin_token:any){
     code: appliedPelletParam,
     version: "V3"
     };
-return {pelletPlutusScript, appliedPelletParam};
+  return {pelletPlutusScript, appliedPelletParam};
 };
                       
 export {pelletScriptApliedParam};
