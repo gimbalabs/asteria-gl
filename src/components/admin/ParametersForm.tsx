@@ -19,7 +19,8 @@ export default function ParametersForm(){
     const [shipFee, setShipFee] = useState("")
     const [maxAsteria, setMaxAsteria] = useState("")
     const [fuelPerStep, setFuelPerStep] = useState("")
-    const [maxSpeed, setMaxSpeed] = useState("")
+    const [distance, setDistance] = useState("")
+    const [time, setTime] = useState("")
     const [initialFuel, setInitialFuel] = useState("")
     const [minDistance, setMinDistance] = useState("")
 
@@ -37,7 +38,13 @@ export default function ParametersForm(){
         e.preventDefault()
 
         const response = await setParameters.mutateAsync({
-            adminToken, shipFee, maxAsteria, fuelPerStep, maxSpeed, initialFuel, minDistance
+            adminToken, 
+            shipFee, 
+            maxAsteria, 
+            fuelPerStep, 
+            maxSpeed: {distance, time}, 
+            initialFuel, 
+            minDistance
         })
 
         alert(response.success)
@@ -110,14 +117,25 @@ export default function ParametersForm(){
                     required
                     className="p-1"
                 />
+                
+                <div className="semibold">Max Speed (Distance, Time)</div>
 
                 <input
                     type="number"
-                    placeholder="Maximum Ship Speed"
-                    value={maxSpeed}
-                    onChange={(e) => setMaxSpeed(e.target.value)}
+                    placeholder="Distance"
+                    value={distance}
+                    onChange={(e) => setDistance(e.target.value)}
                     required
                     className="p-1"
+                />
+
+                <input
+                    type="number"
+                    placeholder="Time in Milliseconds"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    required
+                    className="p-1 mb-4"
                 />
 
                 <input

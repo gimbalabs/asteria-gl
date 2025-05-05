@@ -10,7 +10,10 @@ export const setParametersRouter = createTRPCRouter({
             shipFee: z.string().nonempty(),
             maxAsteria: z.string().nonempty(),
             fuelPerStep: z.string().nonempty(), 
-            maxSpeed: z.string().nonempty(), 
+            maxSpeed: z.object({
+                distance: z.string().nonempty(),
+                time: z.string().nonempty()
+            }), 
             initialFuel: z.string().nonempty(), 
             minDistance: z.string().nonempty()
         }))

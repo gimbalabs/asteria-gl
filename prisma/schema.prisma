@@ -18,3 +18,15 @@ model Post {
 
     @@index([name])
 }
+
+model GameParameters {
+  id                   Int      @id @default(1)
+  shipMintLovelaceFee  Int
+  maxAsteriaMining     Int
+  maxSpeed             Json     // { distance: 1, timeMs: 30000 }
+  maxShipFuel          Int
+  fuelPerStep          Int
+  initialFuel          Int
+  minAsteriaDistance   Int
+  updatedAt            DateTime @updatedAt
+}
