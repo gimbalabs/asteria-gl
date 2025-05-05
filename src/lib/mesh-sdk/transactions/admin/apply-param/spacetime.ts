@@ -1,6 +1,6 @@
 
 import { applyParamsToScript} from "@meshsdk/core-cst";
-import  plutusBlueprint from "../../../onchain/src/plutus.json" with {type: 'json'};
+import  plutusBlueprint from "../../../../onchain/src/plutus.json" with {type: 'json'};
 import { Integer, PlutusScript, ScriptHash} from "@meshsdk/core";
 
 const asteriaValidator = plutusBlueprint.validators.find(
@@ -35,7 +35,7 @@ function spacetimeScriptAppliedParam (
         code: appliedSpacetimeParam,
         version: "V3"
     };
-return {spacetimePlutusScript,appliedSpacetimeParam};
+    return {spacetimePlutusScript,appliedSpacetimeParam};
 };
 
 export {spacetimeScriptAppliedParam};
