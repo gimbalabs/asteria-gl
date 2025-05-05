@@ -62,7 +62,7 @@ export default function ParametersForm(){
                 <p>{selectedToken}</p>
                 <DropdownMenu>
                     <DropdownMenuTrigger className="bg-galaxy-light">
-                        Select Token From Your Wallet >
+                        Select Token From Your Wallet
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         
