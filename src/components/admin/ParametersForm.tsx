@@ -73,9 +73,8 @@ export default function ParametersForm(){
 
             <form onSubmit={submit} className="form text-galaxy-info font-bold">
                 <h3>Start by selecting an admin token from your wallet</h3>
-                <p>{selectedToken}</p>
                 <p>PolicyID: {policyId}</p>
-                <p>AssetName: {assetName}</p>
+                <p>AssetName: {Buffer.from(assetName, "hex").toString("utf8")} ({assetName})</p>
                 <DropdownMenu>
                     <DropdownMenuTrigger className="bg-galaxy-light">
                         Select Token From Your Wallet
@@ -88,8 +87,7 @@ export default function ParametersForm(){
                             return (
                                 <DropdownMenuCheckboxItem
                                     key={i.unit}
-                                    onSelect={(e) => {
-                                        setSelectedToken(i.unit);          
+                                    onSelect={() => {          
                                         setPolicyId(policyId);           // hex policy ID
                                         setAssetName(assetName);         // UTF‑8 asset name
                                     }}
