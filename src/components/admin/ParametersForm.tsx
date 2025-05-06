@@ -3,6 +3,7 @@
 import { setMaxIdleHTTPParsers } from "http";
 import { useState } from "react";
 import Trpc from "~/pages/api/trpc/[trpc]";
+import { Buffer } from "buffer";
 
 
 import { api } from "~/utils/api";
@@ -23,14 +24,21 @@ export default function ParametersForm(){
     const [time, setTime] = useState("")
     const [initialFuel, setInitialFuel] = useState("")
     const [minDistance, setMinDistance] = useState("")
+    const [policyId,  setPolicyId]  = useState("");
+    const [assetName, setAssetName] = useState("");
 
     const [selectedToken, setSelectedToken] = useState("")
 
-    const setParameters = api.setParameters.prepareParameters.useMutation()
+    const setParameters = api.setParameters.setParameters.useMutation()
 
     const {connected} = useWallet()
     const walletItems = useAssets()
 
+    function splitUnit(unit: string) {
+        const policyId = unit.slice(0, 56);
+        const assetName  = unit.slice(56);
+        return { policyId, assetName };
+      }
     
     
      
@@ -38,7 +46,8 @@ export default function ParametersForm(){
         e.preventDefault()
 
         const response = await setParameters.mutateAsync({
-            adminToken, 
+            adminTokenPolicy,
+            adminTokenName, 
             shipFee, 
             maxAsteria, 
             fuelPerStep, 
@@ -48,8 +57,6 @@ export default function ParametersForm(){
         })
 
         alert(response.success)
-
-
     }
 
     
@@ -67,6 +74,8 @@ export default function ParametersForm(){
             <form onSubmit={submit} className="form text-galaxy-info font-bold">
                 <h3>Start by selecting an admin token from your wallet</h3>
                 <p>{selectedToken}</p>
+                <p>PolicyID: {policyId}</p>
+                <p>AssetName: {assetName}</p>
                 <DropdownMenu>
                     <DropdownMenuTrigger className="bg-galaxy-light">
                         Select Token From Your Wallet
@@ -74,15 +83,20 @@ export default function ParametersForm(){
                     <DropdownMenuContent>
                         
                     {
-                        walletItems?.map((i, index) => {
-
+                        walletItems?.map((i) => {
+                            const { policyId, assetName } = splitUnit(i.unit);
                             return (
                                 <DropdownMenuCheckboxItem
-                                    
-                                    onSelect={(e) => setSelectedToken(i.unit)}
+                                    key={i.unit}
+                                    onSelect={(e) => {
+                                        setSelectedToken(i.unit);          
+                                        setPolicyId(policyId);           // hex policy ID
+                                        setAssetName(assetName);         // UTF‑8 asset name
+                                    }}
                                 >
-                                    {i.unit}
+                                    {policyId + " + " + Buffer.from(assetName, "hex").toString("utf8")}
                                 </DropdownMenuCheckboxItem>
+
                             )
                         })
                     }
@@ -93,16 +107,25 @@ export default function ParametersForm(){
                 
                 <input
                     type="text"
-                    placeholder="Admin Token Policy Id"
-                    value={adminToken}
+                    placeholder="Admin Token Policy Id(fills automatically)"
+                    value={policyId}
                     onChange={(e) => setAdminToken(e.target.value)}
-                    required
+                    readOnly
+                    className="p-1"
+                />
+
+                <input
+                    type="text"
+                    placeholder="Admin Token Name(fills automatically)"
+                    value={assetName}
+                    onChange={(e) => setAdminToken(e.target.value)}
+                    readOnly
                     className="p-1"
                 />
 
                 <input
                     type="number"
-                    placeholder="Fee to mint new ship (Ada)"
+                    placeholder="Fee to mint new ship (lovelace)"
                     value={shipFee}
                     onChange={(e) => setShipFee(e.target.value)}
                     required
@@ -115,10 +138,10 @@ export default function ParametersForm(){
                     value={maxAsteria}
                     onChange={(e) => setMaxAsteria(e.target.value)}
                     required
-                    className="p-1"
+                    className="p-1 mb-4"
                 />
                 
-                <div className="semibold">Max Speed (Distance, Time)</div>
+                <div className="semibold">Max Speed (Distance, Time):</div>
 
                 <input
                     type="number"
