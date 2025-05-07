@@ -152,7 +152,7 @@ export default function ParametersForm(){
 
                 <input
                     type="number"
-                    placeholder="Maximum fuel per step"
+                    placeholder="Fuel per step"
                     value={fuelPerStep}
                     onChange={(e) => setFuelPerStep(e.target.value)}
                     required

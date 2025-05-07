@@ -26,10 +26,10 @@ export const setParametersRouter = createTRPCRouter({
       })
     )
     .mutation(({ ctx, input }) =>
-      ctx.db.gameParameters.upsert({
-        where:  { id: 1 },      // singleton
-        update: input,
-        create: { id: 1, ...input },
+      ctx.db.gameParameters.upsert({  // upsert means update or create
+        where:  { id: 1 },      // if you find id === 1
+        update: input,         // update the row with the input
+        create: { id: 1, ...input }, // if not, create the row 
       })
     ),
 });
