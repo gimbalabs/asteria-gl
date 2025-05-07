@@ -1,6 +1,8 @@
 -- CreateTable
 CREATE TABLE `GameParameters` (
     `id` INTEGER NOT NULL DEFAULT 1,
+    `admin_policy_id` VARCHAR(191) NOT NULL,
+    `admin_asset_name` VARCHAR(191) NOT NULL,
     `shipMintLovelaceFee` INTEGER NOT NULL,
     `maxAsteriaMining` INTEGER NOT NULL,
     `maxSpeed` JSON NOT NULL,

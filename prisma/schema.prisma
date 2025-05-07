@@ -12,6 +12,8 @@ datasource db {
 
 model GameParameters {
   id                   Int      @id @default(1)
+  adminToken           String   @map("admin_policy_id")
+  adminTokenName       String   @map("admin_asset_name")
   shipMintLovelaceFee  Int
   maxAsteriaMining     Int
   maxSpeed             Json     // { distance: 1, timeMs: 30000 }

@@ -11,16 +11,17 @@ export const setParametersRouter = createTRPCRouter({
   setParameters: publicProcedure
     .input(
       z.object({
-        adminToken: z.string().nonempty(),
+        adminToken: z.string().length(56).regex(/^[0-9a-fA-F]+$/),
+        adminTokenName: z.string().nonempty(),
         shipMintLovelaceFee: z.coerce.number().int().positive(),
         maxAsteriaMining:    z.coerce.number().int().positive(),
         maxSpeed: z.object({
           distance: z.coerce.number().int().positive(),
           timeMs:   z.coerce.number().int().positive(),
         }),
-        maxShipFuel:        z.coerce.number().int().positive(),
-        fuelPerStep:        z.coerce.number().int().positive(),
-        initialFuel:        z.coerce.number().int().nonnegative(),
+        maxShipFuel: z.coerce.number().int().positive(),
+        fuelPerStep: z.coerce.number().int().positive(),
+        initialFuel: z.coerce.number().int().nonnegative(),
         minAsteriaDistance: z.coerce.number().int().positive(),
       })
     )

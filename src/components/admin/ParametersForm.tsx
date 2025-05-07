@@ -1,8 +1,4 @@
-
-
-import { setMaxIdleHTTPParsers } from "http";
 import { useState } from "react";
-import Trpc from "~/pages/api/trpc/[trpc]";
 import { Buffer } from "buffer";
 
 
@@ -16,23 +12,21 @@ import { DropdownMenu, DropdownMenuTrigger ,DropdownMenuContent, DropdownMenuIte
 
 export default function ParametersForm(){
     
-    const [adminToken, setAdminToken] = useState("")
-    const [shipFee, setShipFee] = useState("")
-    const [maxAsteria, setMaxAsteria] = useState("")
-    const [fuelPerStep, setFuelPerStep] = useState("")
-    const [distance, setDistance] = useState("")
-    const [time, setTime] = useState("")
-    const [initialFuel, setInitialFuel] = useState("")
-    const [minDistance, setMinDistance] = useState("")
+    const [shipFee, setShipFee] = useState("");
+    const [maxAsteria, setMaxAsteria] = useState("");
+    const [fuelPerStep, setFuelPerStep] = useState("");
+    const [distance, setDistance] = useState("");
+    const [time, setTime] = useState("");
+    const [initialFuel, setInitialFuel] = useState("");
+    const [minDistance, setMinDistance] = useState("");
     const [policyId,  setPolicyId]  = useState("");
     const [assetName, setAssetName] = useState("");
+    const [maxShipFuel, setMaxShipFuel] = useState("");
 
-    const [selectedToken, setSelectedToken] = useState("")
+    const setParameters = api.setParameters.setParameters.useMutation();
 
-    const setParameters = api.setParameters.setParameters.useMutation()
-
-    const {connected} = useWallet()
-    const walletItems = useAssets()
+    const {connected} = useWallet();
+    const walletItems = useAssets();
 
     function splitUnit(unit: string) {
         const policyId = unit.slice(0, 56);
@@ -43,20 +37,19 @@ export default function ParametersForm(){
     
      
     async function submit(e: React.FormEvent){
-        e.preventDefault()
+        e.preventDefault();
 
-        const response = await setParameters.mutateAsync({
-            adminTokenPolicy,
-            adminTokenName, 
-            shipFee, 
-            maxAsteria, 
-            fuelPerStep, 
-            maxSpeed: {distance, time}, 
-            initialFuel, 
-            minDistance
-        })
-
-        alert(response.success)
+        setParameters.mutateAsync({
+            adminToken:     policyId,
+            adminTokenName: assetName,        // hex as‑is
+            shipMintLovelaceFee: Number(shipFee),
+            maxAsteriaMining:    Number(maxAsteria),
+            maxSpeed: { distance: Number(distance), timeMs: Number(time) },
+            maxShipFuel: Number(maxShipFuel),
+            fuelPerStep: Number(fuelPerStep),
+            initialFuel: Number(initialFuel),
+            minAsteriaDistance:  Number(minDistance),
+          });
     }
 
     
@@ -87,7 +80,7 @@ export default function ParametersForm(){
                             return (
                                 <DropdownMenuCheckboxItem
                                     key={i.unit}
-                                    onSelect={() => {          
+                                    onSelect={() => {         
                                         setPolicyId(policyId);           // hex policy ID
                                         setAssetName(assetName);         // UTF‑8 asset name
                                     }}
@@ -107,7 +100,6 @@ export default function ParametersForm(){
                     type="text"
                     placeholder="Admin Token Policy Id(fills automatically)"
                     value={policyId}
-                    onChange={(e) => setAdminToken(e.target.value)}
                     readOnly
                     className="p-1"
                 />
@@ -116,7 +108,6 @@ export default function ParametersForm(){
                     type="text"
                     placeholder="Admin Token Name(fills automatically)"
                     value={assetName}
-                    onChange={(e) => setAdminToken(e.target.value)}
                     readOnly
                     className="p-1"
                 />
@@ -182,6 +173,15 @@ export default function ParametersForm(){
                     placeholder="Min Asteria Distance"
                     value={minDistance}
                     onChange={(e) => setMinDistance(e.target.value)}
+                    required
+                    className="p-1"
+                />
+
+                <input
+                    type="number"
+                    placeholder="Maximum Ship Fuel"
+                    value={maxShipFuel}
+                    onChange={(e) => setMaxShipFuel(e.target.value)}
                     required
                     className="p-1"
                 />
