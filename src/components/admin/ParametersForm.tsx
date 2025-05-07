@@ -98,7 +98,7 @@ export default function ParametersForm(){
                 
                 <input
                     type="text"
-                    placeholder="Admin Token Policy Id(fills automatically)"
+                    placeholder="Admin Token PolicyId (fills automatically)"
                     value={policyId}
                     readOnly
                     className="p-1"
@@ -106,7 +106,7 @@ export default function ParametersForm(){
 
                 <input
                     type="text"
-                    placeholder="Admin Token Name(fills automatically)"
+                    placeholder="Admin Token Name (fills automatically)"
                     value={assetName}
                     readOnly
                     className="p-1"
