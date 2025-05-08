@@ -3,6 +3,7 @@ import { Buffer } from "buffer";
 
 
 import { api } from "~/utils/api";
+import { hexToString } from "~/utils/hextoString";
 
 import { useWallet, useAssets } from "@meshsdk/react";
 
@@ -23,6 +24,8 @@ export default function ParametersForm(){
     const [assetName, setAssetName] = useState("");
     const [maxShipFuel, setMaxShipFuel] = useState("");
 
+    const [assetNameReadable, setAssetNameReadable] = useState("")
+
     const setParameters = api.setParameters.setParameters.useMutation();
 
     const {connected} = useWallet();
@@ -31,7 +34,8 @@ export default function ParametersForm(){
     function splitUnit(unit: string) {
         const policyId = unit.slice(0, 56);
         const assetName  = unit.slice(56);
-        return { policyId, assetName };
+        const assetNameReadable = hexToString(unit.slice(56))
+        return { policyId, assetName, assetNameReadable };
       }
     
     
@@ -67,25 +71,28 @@ export default function ParametersForm(){
             <form onSubmit={submit} className="form text-galaxy-info font-bold">
                 <h3>Start by selecting an admin token from your wallet</h3>
                 <p>PolicyID: {policyId}</p>
-                <p>AssetName: {Buffer.from(assetName, "hex").toString("utf8")} ({assetName})</p>
+                <p>AssetName: {assetNameReadable}</p>
                 <DropdownMenu>
                     <DropdownMenuTrigger className="bg-galaxy-light">
                         Select Token From Your Wallet
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
+                    <DropdownMenuContent className="bg-galaxy-light">
                         
                     {
                         walletItems?.map((i) => {
-                            const { policyId, assetName } = splitUnit(i.unit);
+                            const { policyId, assetName, assetNameReadable} = splitUnit(i.unit);
                             return (
                                 <DropdownMenuCheckboxItem
                                     key={i.unit}
                                     onSelect={() => {         
                                         setPolicyId(policyId);           // hex policy ID
                                         setAssetName(assetName);         // UTF‑8 asset name
+                                        setAssetNameReadable(assetNameReadable)
                                     }}
+                                    
+                                    
                                 >
-                                    {policyId + " + " + Buffer.from(assetName, "hex").toString("utf8")}
+                                    {assetNameReadable}
                                 </DropdownMenuCheckboxItem>
 
                             )
@@ -107,7 +114,7 @@ export default function ParametersForm(){
                 <input
                     type="text"
                     placeholder="Admin Token Name (fills automatically)"
-                    value={assetName}
+                    value={assetNameReadable}
                     readOnly
                     className="p-1"
                 />
