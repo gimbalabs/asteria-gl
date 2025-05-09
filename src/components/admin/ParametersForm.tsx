@@ -145,112 +145,142 @@ export default function ParametersForm(){
                     className="p-1"
                 />
 
-            {/* all number inputs with dynamic placeholders */}
-            <input
-            type="text"
-            value={shipMintLovelaceFee}
-            onChange={(e) => setShipMintLovelaceFee(e.target.value)}
-            placeholder={
-                parameters
-                ? String(parameters.shipMintLovelaceFee)
-                : "Fee to mint new ship (lovelace)"
-            }
-            required
-            className="p-1"
-            />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        {/* all number inputs with dynamic placeholders */}
+                        <p>Ship Mint Lovelace Fee</p>
+                        <input
+                        type="text"
+                        value={shipMintLovelaceFee}
+                        onChange={(e) => setShipMintLovelaceFee(e.target.value)}
+                        placeholder={
+                            parameters
+                            ? String(parameters.shipMintLovelaceFee)
+                            : ""
+                        }
+                        required
+                        className="p-1"
+                        />
+                    </div>
 
-            <input
-            type="text"
-            value={maxAsteriaMining}
-            onChange={(e) => setMaxAsteriaMining(e.target.value)}
-            placeholder={
-                parameters
-                ? String(parameters.maxAsteriaMining)
-                : "Maximum Asteria to be mined"
-            }
-            required
-            className="p-1"
-            />
+                    <div>
+                        <p>Maximum Asteria to be mined</p>
+                        <input
+                        type="text"
+                        value={maxAsteriaMining}
+                        onChange={(e) => setMaxAsteriaMining(e.target.value)}
+                        placeholder={
+                            parameters
+                            ? String(parameters.maxAsteriaMining)
+                            : ""
+                        }
+                        required
+                        className="p-1"
+                        />
+                    </div>
 
-            <div className="font-semibold">Max Speed (Distance, Time):</div>
-            <input
-            type="text"
-            value={distance}
-            onChange={(e) => setDistance(e.target.value)}
-            placeholder={
-                parameters
-                ? String(parameters.maxSpeed.distance)
-                : "Distance"
-            }
-            required
-            className="p-1"
-            />
-            <input
-            type="text"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-            placeholder={
-                parameters ? String(parameters.maxSpeed.timeMs) : "Time (ms)"
-            }
-            required
-            className="p-1 mb-4"
-            />
+                    <div>
+                        <div className="font-semibold">Max Speed (Distance, Time):</div>
+                            <div>
+                                <input
+                                type="text"
+                                value={distance}
+                                onChange={(e) => setDistance(e.target.value)}
+                                placeholder={
+                                    parameters
+                                    ? String(parameters.maxSpeed.distance)
+                                    : "Distance"
+                                }
+                                required
+                                className="p-1"
+                                />
+                            </div>
 
-            <input
-            type="text"
-            value={fuelPerStep}
-            onChange={(e) => setFuelPerStep(e.target.value)}
-            placeholder={
-                parameters
-                ? String(parameters.fuelPerStep)
-                : "Fuel per step"
-            }
-            required
-            className="p-1"
-            />
-            <input
-            type="text"
-            value={initialFuel}
-            onChange={(e) => setInitialFuel(e.target.value)}
-            placeholder={
-                parameters
-                ? String(parameters.initialFuel)
-                : "Initial Fuel"
-            }
-            required
-            className="p-1"
-            />
-            <input
-            type="text"
-            value={minDistance}
-            onChange={(e) => setMinDistance(e.target.value)}
-            placeholder={
-                parameters
-                ? String(parameters.minAsteriaDistance)
-                : "Min Asteria Distance"
-            }
-            required
-            className="p-1"
-            />
-            <input
-            type="text"
-            value={maxShipFuel}
-            onChange={(e) => setMaxShipFuel(e.target.value)}
-            placeholder={
-                parameters
-                ? String(parameters.maxShipFuel)
-                : "Maximum Ship Fuel"
-            }
-            required
-            className="p-1 mb-4"
-            />
+                            <div>
+                                <input
+                                type="text"
+                                value={time}
+                                onChange={(e) => setTime(e.target.value)}
+                                placeholder={
+                                    parameters ? String(parameters.maxSpeed.timeMs) : "Time (ms)"
+                                }
+                                required
+                                className="p-1"
+                                />
+                            </div>
+                        </div>
 
-            <button
-            type="submit"
-            className={`inline-block px-6 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 ${buttonClasses}`}
-            >
-            {parameters ? "Update Parameters" : "Confirm Parameters"}
-            </button>
+                    <div>
+                        <p>Fuel per step</p>
+                        <input
+                        type="text"
+                        value={fuelPerStep}
+                        onChange={(e) => setFuelPerStep(e.target.value)}
+                        placeholder={
+                            parameters
+                            ? String(parameters.fuelPerStep)
+                            : ""
+                        }
+                        required
+                        className="p-1"
+                        />
+                    </div>
+
+                    <div>
+                    <p>Initial Fuel</p>
+                        <input
+                        type="text"
+                        value={initialFuel}
+                        onChange={(e) => setInitialFuel(e.target.value)}
+                        placeholder={
+                            parameters
+                            ? String(parameters.initialFuel)
+                            : ""
+                        }
+                        required
+                        className="p-1"
+                        />
+                    </div>
+
+                    <div>
+                        <p>Minimum Asteria Distance</p>
+                        <input
+                        type="text"
+                        value={minDistance}
+                        onChange={(e) => setMinDistance(e.target.value)}
+                        placeholder={
+                            parameters
+                            ? String(parameters.minAsteriaDistance)
+                            : ""
+                        }
+                        required
+                        className="p-1"
+                        />
+                    </div>
+
+                    <div>
+                        <p>Maximum Ship Fuel</p>
+                        <input
+                        type="text"
+                        value={maxShipFuel}
+                        onChange={(e) => setMaxShipFuel(e.target.value)}
+                        placeholder={
+                            parameters
+                            ? String(parameters.maxShipFuel)
+                            : ""
+                        }
+                        required
+                        className="p-1 mb-4"
+                        />
+                    </div>
+                </div>    
+
+                <button
+                type="submit"
+                className={`inline-block px-6 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 ${buttonClasses}`}
+                >
+                {parameters ? "Update Parameters" : "Add Parameters"}
+                </button>
         </form>
         </div>
     );
