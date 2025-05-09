@@ -5,10 +5,8 @@
 .form {
     display: flex;          /* turn on flexbox */
     flex-direction: column; /* stack children vertically */
-    gap: 0.75rem;           /* space between each field */
-  }
-
-
+    gap: 0.15rem;           /* space between each field */
+  }  
 
 @layer base {
   :root {
@@ -65,5 +63,7 @@
         --chart-5: 340 75% 55%
     }
 }
+
+
 
 
