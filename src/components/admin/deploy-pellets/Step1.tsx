@@ -164,7 +164,7 @@ export default function GetPelletsAndCsv({setPellets}: {setPellets: (pellets: Pe
                             bg-blue-500
                             mt-6
                             mb-10`}
-                >Download CSV (optional)</button>
+                >Download CSV</button>
             </form>
         </div>
     );

@@ -51,7 +51,7 @@ export default function DeployPellet() {
 
     const renderStep2 = () => (
         <>
-            <Step2/>
+            <Step2 setPellets={setPellets}/>
             <button onClick={() => setCurrentStep(currentStep - 1)} className="mr-5">
                 &larr; Previous Step
             </button>
