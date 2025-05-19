@@ -14,7 +14,8 @@ export default function DeployPellet() {
     const [pellets, setPellets] = useState<PelletParams>([]);
 
 
-    // 1. import data from db to get values for:
+    // 1. This step can happen in the backend
+    // import data from db to get values for:
     // shipyard policy: hash of spacetime.ak
     // pellet validator address
     // Pellet refernce tx hash
