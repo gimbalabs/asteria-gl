@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { ReactEventHandler, useState } from "react";
 import { Buffer } from "buffer";
 
+import { useDeployAsteriaValidators } from "~/hooks/useDeployValidators";
 
 import { api } from "~/utils/api";
 import { hexToString } from "~/utils/hextoString";
@@ -12,30 +13,27 @@ import { DropdownMenu, DropdownMenuTrigger ,DropdownMenuContent, DropdownMenuIte
 
 
 export default function ParametersForm(){
-    
-    const [shipFee, setShipFee] = useState("");
-    const [maxAsteria, setMaxAsteria] = useState("");
-    const [fuelPerStep, setFuelPerStep] = useState("");
-    const [distance, setDistance] = useState("");
-    const [time, setTime] = useState("");
-    const [initialFuel, setInitialFuel] = useState("");
-    const [minDistance, setMinDistance] = useState("");
-    const [policyId,  setPolicyId]  = useState("");
-    const [assetName, setAssetName] = useState("");
-    const [maxShipFuel, setMaxShipFuel] = useState("");
+   
+    const setParameters = api.setParameters.setParameters.useMutation();
+   
+
+    const {handleSubmit, adminToken, setAdminToken, shipMintLovelaceFee, setShipMintLovelaceFee, maxAsteriaMining, setMaxAsteriaMining,
+        initialFuel, setInitialFuel, minDistance, setMinDistance, fuelPerStep, setFuelPerStep, maxShipFuel, setMaxShipFuel, 
+        distance, setDistance, time, setTime, assetName, setAssetName
+    } = useDeployAsteriaValidators();
 
     const [assetNameReadable, setAssetNameReadable] = useState("")
 
-    const setParameters = api.setParameters.setParameters.useMutation();
+
 
     const {connected} = useWallet();
     const walletItems = useAssets();
 
     function splitUnit(unit: string) {
-        const policyId = unit.slice(0, 56);
+        const adminToken = unit.slice(0, 56);
         const assetName  = unit.slice(56);
         const assetNameReadable = hexToString(unit.slice(56))
-        return { policyId, assetName, assetNameReadable };
+        return { adminToken, assetName, assetNameReadable };
       }
     
     
@@ -44,10 +42,10 @@ export default function ParametersForm(){
         e.preventDefault();
 
         setParameters.mutateAsync({
-            adminToken:     policyId,
-            adminTokenName: assetName,        // hex as‑is
-            shipMintLovelaceFee: Number(shipFee),
-            maxAsteriaMining:    Number(maxAsteria),
+            adminToken: adminToken,
+            adminTokenName: assetName,       
+            shipMintLovelaceFee: Number(shipMintLovelaceFee),
+            maxAsteriaMining:    Number(maxAsteriaMining),
             maxSpeed: { distance: Number(distance), timeMs: Number(time) },
             maxShipFuel: Number(maxShipFuel),
             fuelPerStep: Number(fuelPerStep),
@@ -56,7 +54,7 @@ export default function ParametersForm(){
           });
     }
 
-    
+   
 
     return (
 
@@ -68,9 +66,9 @@ export default function ParametersForm(){
 
             {connected ? 
 
-            <form onSubmit={submit} className="form text-galaxy-info font-bold">
+            <form onSubmit={handleSubmit} onClick={submit} className="form text-galaxy-info font-bold">
                 <h3>Start by selecting an admin token from your wallet</h3>
-                <p>PolicyID: {policyId}</p>
+                <p>PolicyID: {adminToken}</p>
                 <p>AssetName: {assetNameReadable}</p>
                 <DropdownMenu>
                     <DropdownMenuTrigger className="bg-galaxy-light">
@@ -80,12 +78,12 @@ export default function ParametersForm(){
                         
                     {
                         walletItems?.map((i) => {
-                            const { policyId, assetName, assetNameReadable} = splitUnit(i.unit);
+                            const { adminToken, assetName, assetNameReadable} = splitUnit(i.unit);
                             return (
                                 <DropdownMenuCheckboxItem
                                     key={i.unit}
                                     onSelect={() => {         
-                                        setPolicyId(policyId);           // hex policy ID
+                                        setAdminToken(adminToken);           // hex policy ID
                                         setAssetName(assetName);         // UTF‑8 asset name
                                         setAssetNameReadable(assetNameReadable)
                                     }}
@@ -106,7 +104,7 @@ export default function ParametersForm(){
                 <input
                     type="text"
                     placeholder="Admin Token PolicyId (fills automatically)"
-                    value={policyId}
+                    value={adminToken}
                     readOnly
                     className="p-1"
                 />
@@ -120,19 +118,19 @@ export default function ParametersForm(){
                 />
 
                 <input
-                    type="number"
+                    type="text"
                     placeholder="Fee to mint new ship (lovelace)"
-                    value={shipFee}
-                    onChange={(e) => setShipFee(e.target.value)}
+                    value={shipMintLovelaceFee}
+                    onChange={(e) => setShipMintLovelaceFee(e.target.value)}
                     required
                     className="p-1"
                 />
 
                 <input
-                    type="number"
+                    type="text"
                     placeholder="Maximum Asteria to be mined"
-                    value={maxAsteria}
-                    onChange={(e) => setMaxAsteria(e.target.value)}
+                    value={maxAsteriaMining}
+                    onChange={(e) => setMaxAsteriaMining(e.target.value)}
                     required
                     className="p-1 mb-4"
                 />
@@ -140,7 +138,7 @@ export default function ParametersForm(){
                 <div className="semibold">Max Speed (Distance, Time):</div>
 
                 <input
-                    type="number"
+                    type="text"
                     placeholder="Distance"
                     value={distance}
                     onChange={(e) => setDistance(e.target.value)}
@@ -149,7 +147,7 @@ export default function ParametersForm(){
                 />
 
                 <input
-                    type="number"
+                    type="text"
                     placeholder="Time in Milliseconds"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
@@ -158,7 +156,7 @@ export default function ParametersForm(){
                 />
 
                 <input
-                    type="number"
+                    type="text"
                     placeholder="Fuel per step"
                     value={fuelPerStep}
                     onChange={(e) => setFuelPerStep(e.target.value)}
@@ -167,7 +165,7 @@ export default function ParametersForm(){
                 />
 
                 <input
-                    type="number"
+                    type="text"
                     placeholder="Initial Fuel"
                     value={initialFuel}
                     onChange={(e) => setInitialFuel(e.target.value)}
@@ -176,7 +174,7 @@ export default function ParametersForm(){
                 />
         
                 <input
-                    type="number"
+                    type="text"
                     placeholder="Min Asteria Distance"
                     value={minDistance}
                     onChange={(e) => setMinDistance(e.target.value)}
@@ -185,7 +183,7 @@ export default function ParametersForm(){
                 />
 
                 <input
-                    type="number"
+                    type="text"
                     placeholder="Maximum Ship Fuel"
                     value={maxShipFuel}
                     onChange={(e) => setMaxShipFuel(e.target.value)}
