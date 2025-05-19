@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { ReactEventHandler, useState } from "react";
 import { Buffer } from "buffer";
 
+import { useDeployAsteriaValidators } from "~/hooks/useDeployValidators";
 
 import { api } from "~/utils/api";
 import { hexToString } from "~/utils/hextoString";
@@ -22,26 +23,27 @@ export default function ParametersForm(){
       { enabled: connected }
     );
 
+
     const setParameters = api.setParameters.setParameters.useMutation();
     
-    const [shipFee, setShipFee] = useState("");
-    const [maxAsteria, setMaxAsteria] = useState("");
-    const [fuelPerStep, setFuelPerStep] = useState("");
-    const [distance, setDistance] = useState("");
-    const [time, setTime] = useState("");
-    const [initialFuel, setInitialFuel] = useState("");
-    const [minDistance, setMinDistance] = useState("");
-    const [policyId,  setPolicyId]  = useState("");
-    const [assetName, setAssetName] = useState("");
-    const [maxShipFuel, setMaxShipFuel] = useState("");
+    const { data: parameters, isLoading } =
+    api.setParameters.getParameters.useQuery(
+      undefined,
+      { enabled: connected }
+    );
+
+    const {handleSubmit, adminToken, setAdminToken, shipMintLovelaceFee, setShipMintLovelaceFee, maxAsteriaMining, setMaxAsteriaMining,
+        initialFuel, setInitialFuel, minDistance, setMinDistance, fuelPerStep, setFuelPerStep, maxShipFuel, setMaxShipFuel, 
+        distance, setDistance, time, setTime, assetName, setAssetName
+    } = useDeployAsteriaValidators();
 
     const [assetNameReadable, setAssetNameReadable] = useState("")
 
     function splitUnit(unit: string) {
-        const policyId = unit.slice(0, 56);
+        const adminToken = unit.slice(0, 56);
         const assetName  = unit.slice(56);
         const assetNameReadable = hexToString(unit.slice(56))
-        return { policyId, assetName, assetNameReadable };
+        return { adminToken, assetName, assetNameReadable };
       }
      
     async function submit(e: React.FormEvent){
@@ -55,10 +57,10 @@ export default function ParametersForm(){
           }
 
         setParameters.mutateAsync({
-            adminToken:     policyId,
-            adminTokenName: assetName,        // hex as‑is
-            shipMintLovelaceFee: Number(shipFee),
-            maxAsteriaMining:    Number(maxAsteria),
+            adminToken: adminToken,
+            adminTokenName: assetName,       
+            shipMintLovelaceFee: Number(shipMintLovelaceFee),
+            maxAsteriaMining:    Number(maxAsteriaMining),
             maxSpeed: { distance: Number(distance), timeMs: Number(time) },
             maxShipFuel: Number(maxShipFuel),
             fuelPerStep: Number(fuelPerStep),
@@ -76,6 +78,21 @@ export default function ParametersForm(){
         );
     }
 
+
+    // show a loading state
+    if (isLoading) {
+        return <div>Loading parameters…</div>;
+    }
+
+    // 3. dynamic button classes
+    const buttonClasses = parameters
+        ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
+        : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500";
+
+    return (
+        <div className="flex flex-col gap-2 items-center">
+
+
     // show a loading state
     if (isLoading) {
         return <div>Loading parameters…</div>;
@@ -92,7 +109,13 @@ export default function ParametersForm(){
                 <form onSubmit={submit} className="form text-galaxy-info font-bold">
                     <h3>Select an admin token from your wallet</h3>
 
-                    <DropdownMenu>
+
+            <form onSubmit={handleSubmit}  onClick={submit} className="form text-galaxy-info font-bold">
+                <h3>Start by selecting an admin token from your wallet</h3>
+                <p>PolicyID: {adminToken}</p>
+                <p>AssetName: {assetNameReadable}</p>
+                <DropdownMenu>
+
                     <DropdownMenuTrigger className="bg-galaxy-light">
                         Select Token
                     </DropdownMenuTrigger>
@@ -100,12 +123,12 @@ export default function ParametersForm(){
                         
                     {
                         walletItems?.map((i) => {
-                            const { policyId, assetName, assetNameReadable} = splitUnit(i.unit);
+                            const { adminToken, assetName, assetNameReadable} = splitUnit(i.unit);
                             return (
                                 <DropdownMenuCheckboxItem
                                     key={i.unit}
                                     onSelect={() => {         
-                                        setPolicyId(policyId);           // hex policy ID
+                                        setAdminToken(adminToken);           // hex policy ID
                                         setAssetName(assetName);         // UTF‑8 asset name
                                         setAssetNameReadable(assetNameReadable)
                                     }}
@@ -122,11 +145,13 @@ export default function ParametersForm(){
                     </DropdownMenuContent>
                     </DropdownMenu>
 
+
                     <p>Admin Token PolicyId (auto fills)</p> 
                     {/* readOnly inputs with dynamic placeholders */}
                     <input
                     readOnly
                     value={policyId}
+
                     placeholder={
                         parameters?.adminToken ?? ""
                     }
@@ -145,16 +170,20 @@ export default function ParametersForm(){
                         : ""
                     }
                     className="p-1"
+
                     />
+
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         {/* all number inputs with dynamic placeholders */}
                         <p>Ship Mint Lovelace Fee</p>
                         <input
-                        type="number"
-                        value={shipFee}
-                        onChange={(e) => setShipFee(e.target.value)}
+
+                        type="text"
+                        value={shipMintLovelaceFee}
+                        onChange={(e) => setShipMintLovelaceFee(e.target.value)}
+
                         placeholder={
                             parameters
                             ? String(parameters.shipMintLovelaceFee)
@@ -168,9 +197,11 @@ export default function ParametersForm(){
                     <div>
                         <p>Maximum Asteria to be mined</p>
                         <input
-                        type="number"
-                        value={maxAsteria}
-                        onChange={(e) => setMaxAsteria(e.target.value)}
+
+                        type="text"
+                        value={maxAsteriaMining}
+                        onChange={(e) => setMaxAsteriaMining(e.target.value)}
+
                         placeholder={
                             parameters
                             ? String(parameters.maxAsteriaMining)
@@ -185,7 +216,9 @@ export default function ParametersForm(){
                         <div className="font-semibold">Max Speed (Distance, Time):</div>
                             <div>
                                 <input
-                                type="number"
+
+                                type="text"
+
                                 value={distance}
                                 onChange={(e) => setDistance(e.target.value)}
                                 placeholder={
@@ -200,7 +233,7 @@ export default function ParametersForm(){
 
                             <div>
                                 <input
-                                type="number"
+                                type="text"
                                 value={time}
                                 onChange={(e) => setTime(e.target.value)}
                                 placeholder={
@@ -215,7 +248,7 @@ export default function ParametersForm(){
                     <div>
                         <p>Fuel per step</p>
                         <input
-                        type="number"
+                        type="text"
                         value={fuelPerStep}
                         onChange={(e) => setFuelPerStep(e.target.value)}
                         placeholder={
@@ -231,7 +264,7 @@ export default function ParametersForm(){
                     <div>
                     <p>Initial Fuel</p>
                         <input
-                        type="number"
+                        type="text"
                         value={initialFuel}
                         onChange={(e) => setInitialFuel(e.target.value)}
                         placeholder={
@@ -247,7 +280,7 @@ export default function ParametersForm(){
                     <div>
                         <p>Minimum Asteria Distance</p>
                         <input
-                        type="number"
+                        type="text"
                         value={minDistance}
                         onChange={(e) => setMinDistance(e.target.value)}
                         placeholder={
@@ -263,7 +296,7 @@ export default function ParametersForm(){
                     <div>
                         <p>Maximum Ship Fuel</p>
                         <input
-                        type="number"
+                        type="text"
                         value={maxShipFuel}
                         onChange={(e) => setMaxShipFuel(e.target.value)}
                         placeholder={
@@ -283,7 +316,12 @@ export default function ParametersForm(){
                 >
                 {parameters ? "Update Parameters" : "Add Parameters"}
                 </button>
-        </form>
+            </form>
+            :
+            <div>Please connect wallet to enter parameters</div>
+            }
+
+
         </div>
     );
     }
