@@ -13,8 +13,16 @@ import { DropdownMenu, DropdownMenuTrigger ,DropdownMenuContent, DropdownMenuIte
 
 
 export default function ParametersForm(){
-     const {connected} = useWallet();
-     const walletItems = useAssets();
+
+    const {connected} = useWallet();
+    const walletItems = useAssets();
+
+    const { data: parameters, isLoading } =
+    api.setParameters.getParameters.useQuery(
+      undefined,
+      { enabled: connected }
+    );
+
 
     const setParameters = api.setParameters.setParameters.useMutation();
     
@@ -30,10 +38,6 @@ export default function ParametersForm(){
     } = useDeployAsteriaValidators();
 
     const [assetNameReadable, setAssetNameReadable] = useState("")
-
-
-
-  
 
     function splitUnit(unit: string) {
         const adminToken = unit.slice(0, 56);
@@ -74,6 +78,7 @@ export default function ParametersForm(){
         );
     }
 
+
     // show a loading state
     if (isLoading) {
         return <div>Loading parameters…</div>;
@@ -88,18 +93,31 @@ export default function ParametersForm(){
         <div className="flex flex-col gap-2 items-center">
 
 
-            <h2>Specify Parameters for the Game</h2>
-        
+    // show a loading state
+    if (isLoading) {
+        return <div>Loading parameters…</div>;
+    }
 
-            {connected ? 
+    // 3. dynamic button classes
+    const buttonClasses = parameters
+        ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
+        : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500";
+
+    return (
+        <div className="flex flex-col gap-2 items-center">
+                <h2>Specify Parameters for the Game</h2>
+                <form onSubmit={submit} className="form text-galaxy-info font-bold">
+                    <h3>Select an admin token from your wallet</h3>
+
 
             <form onSubmit={handleSubmit}  onClick={submit} className="form text-galaxy-info font-bold">
                 <h3>Start by selecting an admin token from your wallet</h3>
                 <p>PolicyID: {adminToken}</p>
                 <p>AssetName: {assetNameReadable}</p>
                 <DropdownMenu>
+
                     <DropdownMenuTrigger className="bg-galaxy-light">
-                        Select Token From Your Wallet
+                        Select Token
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-galaxy-light">
                         
@@ -125,37 +143,47 @@ export default function ParametersForm(){
                     }
 
                     </DropdownMenuContent>
+                    </DropdownMenu>
 
-                </DropdownMenu>
-                
-                <input
-                    type="text"
-                    placeholder="Admin Token PolicyId (fills automatically)"
-                    value={adminToken}
+
+                    <p>Admin Token PolicyId (auto fills)</p> 
+                    {/* readOnly inputs with dynamic placeholders */}
+                    <input
                     readOnly
-                    value={adminToken}
+                    value={policyId}
+
                     placeholder={
                         parameters?.adminToken ?? ""
                     }
                     className="p-1"
-                />
+                    />
 
-                <input
-                    type="text"
-                    placeholder="Admin Token Name (fills automatically)"
-                    value={assetNameReadable}
+                    <p>Admin Token Name (auto fills)</p> 
+                    <input
                     readOnly
+                    value={assetNameReadable}
+                    placeholder={
+                        parameters
+                        ? `${Buffer.from(parameters.adminTokenName, "hex").toString(
+                            "utf8"
+                            )} (${parameters.adminTokenName})`
+                        : ""
+                    }
                     className="p-1"
-                />
+
+                    />
+
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         {/* all number inputs with dynamic placeholders */}
                         <p>Ship Mint Lovelace Fee</p>
                         <input
+
                         type="text"
                         value={shipMintLovelaceFee}
                         onChange={(e) => setShipMintLovelaceFee(e.target.value)}
+
                         placeholder={
                             parameters
                             ? String(parameters.shipMintLovelaceFee)
@@ -169,9 +197,11 @@ export default function ParametersForm(){
                     <div>
                         <p>Maximum Asteria to be mined</p>
                         <input
+
                         type="text"
                         value={maxAsteriaMining}
                         onChange={(e) => setMaxAsteriaMining(e.target.value)}
+
                         placeholder={
                             parameters
                             ? String(parameters.maxAsteriaMining)
@@ -186,7 +216,9 @@ export default function ParametersForm(){
                         <div className="font-semibold">Max Speed (Distance, Time):</div>
                             <div>
                                 <input
+
                                 type="text"
+
                                 value={distance}
                                 onChange={(e) => setDistance(e.target.value)}
                                 placeholder={
@@ -288,6 +320,7 @@ export default function ParametersForm(){
             :
             <div>Please connect wallet to enter parameters</div>
             }
+
 
         </div>
     );
