@@ -3,7 +3,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 // 1) Define a base “parameter shape” that matches your JSON fields
 const ParameterShape = z.object({
-  adminToken:           z.string().length(56).regex(/^[0-9a-fA-F]+$/),
+  adminToken:           z.string().regex(/^[0-9a-fA-F]+$/),
   adminTokenName:       z.string().nonempty(),
   shipMintLovelaceFee:  z.coerce.number().int().positive(),
   maxAsteriaMining:     z.coerce.number().int().positive(),
