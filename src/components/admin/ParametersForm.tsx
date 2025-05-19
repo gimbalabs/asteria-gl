@@ -13,29 +13,28 @@ import { DropdownMenu, DropdownMenuTrigger ,DropdownMenuContent, DropdownMenuIte
 
 
 export default function ParametersForm(){
+     const {connected} = useWallet();
+     const walletItems = useAssets();
 
-    const {connected} = useWallet();
-    const walletItems = useAssets();
-
+    const setParameters = api.setParameters.setParameters.useMutation();
+    
     const { data: parameters, isLoading } =
     api.setParameters.getParameters.useQuery(
       undefined,
       { enabled: connected }
     );
 
-    const setParameters = api.setParameters.setParameters.useMutation();
-    
-    const [shipFee, setShipFee] = useState("");
-    const [maxAsteria, setMaxAsteria] = useState("");
-    const [fuelPerStep, setFuelPerStep] = useState("");
-    const [distance, setDistance] = useState("");
-    const [time, setTime] = useState("");
-    const [initialFuel, setInitialFuel] = useState("");
-    const [minDistance, setMinDistance] = useState("");
-    const [policyId,  setPolicyId]  = useState("");
-    const [assetName, setAssetName] = useState("");
-    const [maxShipFuel, setMaxShipFuel] = useState(""); 
-    
+    const {handleSubmit, adminToken, setAdminToken, shipMintLovelaceFee, setShipMintLovelaceFee, maxAsteriaMining, setMaxAsteriaMining,
+        initialFuel, setInitialFuel, minDistance, setMinDistance, fuelPerStep, setFuelPerStep, maxShipFuel, setMaxShipFuel, 
+        distance, setDistance, time, setTime, assetName, setAssetName
+    } = useDeployAsteriaValidators();
+
+    const [assetNameReadable, setAssetNameReadable] = useState("")
+
+
+
+  
+
     function splitUnit(unit: string) {
         const adminToken = unit.slice(0, 56);
         const assetName  = unit.slice(56);
@@ -94,7 +93,7 @@ export default function ParametersForm(){
 
             {connected ? 
 
-            <form onSubmit={handleSubmit} onClick={submit} className="form text-galaxy-info font-bold">
+            <form onSubmit={handleSubmit}  onClick={submit} className="form text-galaxy-info font-bold">
                 <h3>Start by selecting an admin token from your wallet</h3>
                 <p>PolicyID: {adminToken}</p>
                 <p>AssetName: {assetNameReadable}</p>
@@ -134,6 +133,10 @@ export default function ParametersForm(){
                     placeholder="Admin Token PolicyId (fills automatically)"
                     value={adminToken}
                     readOnly
+                    value={adminToken}
+                    placeholder={
+                        parameters?.adminToken ?? ""
+                    }
                     className="p-1"
                 />
 
@@ -281,7 +284,11 @@ export default function ParametersForm(){
                 >
                 {parameters ? "Update Parameters" : "Add Parameters"}
                 </button>
-        </form>
+            </form>
+            :
+            <div>Please connect wallet to enter parameters</div>
+            }
+
         </div>
     );
     }
