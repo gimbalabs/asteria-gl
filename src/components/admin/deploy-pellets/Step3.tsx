@@ -1,5 +1,4 @@
 // pellet array is in the index of deploy-pellets
-// create a series of batches of transactions that create UTXOs on the pellet validator
 
 //recieve pellet state as a prop, clikc deploy send info to the backend
 // recieved from the front end, pull from database
@@ -7,8 +6,11 @@
 //pellet prop passed from parent (index of deploy-pellets)
 //click deploy pellets button, send the pellets to the backend (server/api/routers/admin/pelletDeploy.ts) 
 
+import { PelletParams } from "~/utils/pelletUtils";
+import { api } from "~/utils/api";
+export default function Step3({pellets}: {pellets: PelletParams}) {
+    const deployPellets = api.pelletDeploy.deploy.useMutation();
 
-export default function Step3() {
     return (
         <div>
 

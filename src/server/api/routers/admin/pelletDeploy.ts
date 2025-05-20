@@ -11,13 +11,20 @@ import { z } from "zod";
 import { MeshTxBuilder } from "@meshsdk/core";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { maestroProvider } from "~/server/provider/maestroProvider";
+import { PelletParams} from "~/utils/pelletUtils";
 
 export const pelletDeployRouter = createTRPCRouter({
     deploy: publicProcedure
     .input(z.object({
-
+        pellets: z.array(z.object({
+            fuel: z.number(),
+            pos_x: z.number(),
+            pos_y: z.number(),
+            shipyard_policy: z.string()
+        }))
     }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
+        
         
     }),
 });
