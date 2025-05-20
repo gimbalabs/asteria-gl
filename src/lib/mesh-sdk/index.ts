@@ -20,14 +20,11 @@ console.log(slot);
 const txHash = await createShip(
     ship_mint_lovelace_fee,
     initial_fuel,
-    -8,
-    3,
+    -8n,
+    3n,
     tx_latest_posix_time
 );
 
-//const txHash = await createTest();
-
-console.log(slot);
 console.log(txHash);
 
 // const txhash = await createAsteria();
