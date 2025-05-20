@@ -1,3 +1,8 @@
+// .input procedure to accept and validate the shape of the pellet array of ojbects
+// .mutate to create the tx
+// similar to mintAdminAndRewards 
+
+
 // import {
 //     pelletScriptAddress,
 //     spaceTimeScriptHash,                 // .scriptHash is the policy
