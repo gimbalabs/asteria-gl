@@ -45,7 +45,7 @@ export async function deployAsteriaValidators({adminToken, adminTokenName, shipM
 
     const deployScriptAddress = resolvePlutusScriptAddress(deployWithParams.deployPlutusScript, 0)
 
-    return {deployScriptAddress, deployWithParams, asteriaWithParams, pelletWithParams, spaceTimeWithParams, asteriaScriptAddress, pelletScriptAddress, spaceTimeAddress }
+    return {deployScriptAddress, deployWithParams, asteriaWithParams, pelletWithParams, spaceTimeWithParams, asteriaScriptAddress, pelletScriptAddress, spaceTimeAddress, asteriaScriptHash, pelletScriptHash, spaceTimeScriptHash }
 
 
 
