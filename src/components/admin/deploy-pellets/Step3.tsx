@@ -6,11 +6,11 @@ import { PelletParams } from "~/utils/pelletUtils";
 import { api } from "~/utils/api";
 
 export default function Step3({pellets}: {pellets: PelletParams}) {
-    const deployPellets = api.pelletDeploy.deploy.useMutation();
+    const deployPellets = api.pelletDeploy.startDeploy.useMutation();
 
     return (
         <div>
-
+            <button onClick={() => deployPellets.mutate({pellets, utxos, changeAddress})}>Deploy Pellets</button>
         </div>
     )
 }
