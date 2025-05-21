@@ -27,6 +27,14 @@ import { PelletDatum } from "~/types/pellet";
 
 const fueltokenNameHex = stringToHex("FUEL"); 
 
+// Admin asset (same for all pellets)
+const adminAsset: Asset[] = [
+  {
+    unit: admintoken.policyid + admintoken.name,
+    quantity: "1",
+  },
+];
+
 /* ── temporary in-memory session cache ── */
 type Session = { batches: PelletDatum[][]; next: number /*pointer*/ };
 const sessions = new Map<string, Session>();
@@ -55,6 +63,7 @@ export const pelletDeployRouter = createTRPCRouter({
         next: 0,
       });
 
+
       // Calculate toatlFuel in the first chunk/batch (for minting all fuel tokens at once)
       // Get the first batch (at index 0)
      const firstBatch = sessions.get(sessionId)!.batches[0];
@@ -68,13 +77,51 @@ export const pelletDeployRouter = createTRPCRouter({
         verbose: true
       });
 
+    txBuilder
+        .mintPlutusScriptV3()
+        .mint(totalFuel, fuelPolicyID!, fueltokenNameHex)
+        .mintTxInReference(pelletDeployScript.txHash, 0)
+        .mintRedeemerValue(fuelReedemer, "JSON");
+
+      // Add outputs for each pellet in the batch
+      firstBatch!.forEach((pellet) => {
+        const pelletDatum = conStr0([
+          integer(pellet.pos_x),
+          integer(pellet.pos_y),
+          scriptHash(pellet.shipyard_policy),
+        ]);
+
+        const fuelToken: Asset[] = [
+          {
+            unit: fuelPolicyID + fueltokenNameHex,
+            quantity: pellet.fuel.toString(),
+          },
+        ];
+
+        txBuilder
+          .txOut(pelletScriptAddress, fuelToken)
+          .txOutInlineDatumValue(pelletDatum, "JSON")
+          .txOut(pelletScriptAddress, adminAsset)
+          .txOutInlineDatumValue(pelletDatum, "JSON");
+      });
+
+      // Complete the transaction (collateral, change, utxos, network)
+      const unsignedTx = await txBuilder
+        .txInCollateral(
+          collateral.input.txHash,
+          collateral.input.outputIndex,
+          collateral.output.amount,
+          collateral.output.address
+        )
+        .changeAddress(input.changeAddress)
+        .selectUtxosFrom(input.utxos)
+        .setNetwork("preprod")
+        .complete();
+
+      return { sessionId, unsignedTx };
+    }),
 
 
-
-     const unsignedTx = "cbor_hex_placeholder";
- 
-     return { sessionId, unsignedTx };   // done: false implied
-     }),
 
     /* 2️⃣  client returns tx hash, asks for next batch */
     nextBatch: publicProcedure
