@@ -49,11 +49,24 @@ const PelletRow = z.object({
 
 export const pelletDeployRouter = createTRPCRouter({
 /* 1️⃣  user sends all pellets + wallet context once */
+// TODO: add the collateral from the wallet to the .input
     startDeploy: publicProcedure
     .input(z.object({
       pellets: z.array(PelletRow),
       utxos: z.array(z.any()),        // Mesh wallet UTxOs
       changeAddress: z.string(),
+      collateral: z.object({          // Single UTxO object
+          input: z.object({
+              txHash: z.string(),
+              outputIndex: z.number(),
+          }),
+          output: z.object({
+              address: z.string(),
+              amount: z.any(),
+              datum: z.any().optional(),
+              referenceScript: z.any().optional(),
+          })
+      }), 
     }))
     .mutation(async ({ input }) => {
       // const deployCtx = await ctx.db.deployContext.findFirstOrThrow();
@@ -102,21 +115,21 @@ export const pelletDeployRouter = createTRPCRouter({
           .txOut(pelletScriptAddress, fuelToken)
           .txOutInlineDatumValue(pelletDatum, "JSON")
           .txOut(pelletScriptAddress, adminAsset)
-          .txOutInlineDatumValue(pelletDatum, "JSON");
       });
 
       // Complete the transaction (collateral, change, utxos, network)
-      const unsignedTx = await txBuilder
+      // TODO: How to automatically add collateral from the list of UTXOs?
+      txBuilder
         .txInCollateral(
-          collateral.input.txHash,
-          collateral.input.outputIndex,
-          collateral.output.amount,
-          collateral.output.address
+          input.collateral.input.txHash,
+          input.collateral.input.outputIndex,
+          input.collateral.output.amount,
+          input.collateral.output.address
         )
         .changeAddress(input.changeAddress)
         .selectUtxosFrom(input.utxos)
         .setNetwork("preprod")
-        .complete();
+      const unsignedTx = await txBuilder.complete();
 
       return { sessionId, unsignedTx };
     }),
@@ -124,12 +137,25 @@ export const pelletDeployRouter = createTRPCRouter({
 
 
     /* 2️⃣  client returns tx hash, asks for next batch */
+    // TODO: add the collateral from the wallet to the .input
     nextBatch: publicProcedure
     .input(z.object({
         sessionId: z.string().uuid(),
         lastTxHash: z.string(),
         utxos: z.array(z.any()),
         changeAddress: z.string(),
+        collateral: z.object({          // Single UTxO object
+          input: z.object({
+              txHash: z.string(),
+              outputIndex: z.number(),
+          }),
+          output: z.object({
+              address: z.string(),
+              amount: z.any(),
+              datum: z.any().optional(),
+              referenceScript: z.any().optional(),
+          })
+        }),
     }))
     .mutation(async ({ input }) => {
         const session = sessions.get(input.sessionId);
@@ -143,9 +169,58 @@ export const pelletDeployRouter = createTRPCRouter({
         return { done: true as const };
         }
 
-        // TODO: build unsignedTx for this batch
-        const unsignedTx = `cbor_hex_placeholder_${session.next}`;
+        // Calculate toatlFuel in the current batch (for minting all fuel tokens at once)
+        const totalFuel = batch!.reduce((n, p) => n + p.fuel, 0);
+        // Assign fuel tokens and datum vales to txOut method for each pellet UTXO by looping through the current batch
+        
+        // TODO: build first unsignedTx with MeshTxBuilder
+        const txBuilder = new MeshTxBuilder({
+            fetcher: maestroProvider,
+            submitter: maestroProvider,
+            verbose: true
+        });
 
-        return { unsignedTx, done: false as const };
-    }),
+        txBuilder
+            .mintPlutusScriptV3()
+            .mint(totalFuel, fuelPolicyID!, fueltokenNameHex)
+            .mintTxInReference(pelletDeployScript.txHash, 0)
+            .mintRedeemerValue(fuelReedemer, "JSON");
+
+        // Add outputs for each pellet in the batch
+        batch!.forEach((pellet) => {
+            const pelletDatum = conStr0([
+                integer(pellet.pos_x),
+                integer(pellet.pos_y),
+                scriptHash(pellet.shipyard_policy),
+            ]);
+
+            const fuelToken: Asset[] = [
+            {
+                unit: fuelPolicyID + fueltokenNameHex,
+                quantity: pellet.fuel.toString(),
+            },
+            ];
+
+            txBuilder
+            .txOut(pelletScriptAddress, fuelToken)
+            .txOutInlineDatumValue(pelletDatum, "JSON")
+            .txOut(pelletScriptAddress, adminAsset)
+        });
+
+        // Complete the transaction (collateral, change, utxos, network)
+        // TODO: How to automatically add collateral from the list of UTXOs?
+        txBuilder
+            .txInCollateral(
+            input.collateral.input.txHash,
+            input.collateral.input.outputIndex,
+            input.collateral.output.amount,
+            input.collateral.output.address
+            )
+            .changeAddress(input.changeAddress)
+            .selectUtxosFrom(input.utxos)
+            .setNetwork("preprod")
+        const unsignedTx = await txBuilder.complete();
+
+            return { unsignedTx, done: false as const };
+        }),
 });
