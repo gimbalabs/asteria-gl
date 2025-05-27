@@ -17,13 +17,7 @@ export default function ParametersForm(){
     const {connected} = useWallet();
     const walletItems = useAssets();
 
-    const { data: parameters, isLoading } =
-    api.setParameters.getParameters.useQuery(
-      undefined,
-      { enabled: connected }
-    );
-
-
+ 
     const setParameters = api.setParameters.setParameters.useMutation();
     
     const { data: parameters, isLoading } =
@@ -89,39 +83,27 @@ export default function ParametersForm(){
         ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
         : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500";
 
-    return (
-        <div className="flex flex-col gap-2 items-center">
+           
+
+            return (
+                <div className="flex flex-col gap-2 items-center">
+                    <h2>Specify Parameters for the Game</h2>
+                    // show a loading state
+                
 
 
-    // show a loading state
-    if (isLoading) {
-        return <div>Loading parameters…</div>;
-    }
+                    <form onSubmit={handleSubmit}  onClick={submit} className="form text-galaxy-info font-bold">
+                        <h3>Start by selecting an admin token from your wallet</h3>
+                        <p>PolicyID: {adminToken}</p>
+                        <p>AssetName: {assetNameReadable}</p>
+                        <DropdownMenu>
 
-    // 3. dynamic button classes
-    const buttonClasses = parameters
-        ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
-        : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500";
-
-    return (
-        <div className="flex flex-col gap-2 items-center">
-                <h2>Specify Parameters for the Game</h2>
-                <form onSubmit={submit} className="form text-galaxy-info font-bold">
-                    <h3>Select an admin token from your wallet</h3>
-
-
-            <form onSubmit={handleSubmit}  onClick={submit} className="form text-galaxy-info font-bold">
-                <h3>Start by selecting an admin token from your wallet</h3>
-                <p>PolicyID: {adminToken}</p>
-                <p>AssetName: {assetNameReadable}</p>
-                <DropdownMenu>
-
-                    <DropdownMenuTrigger className="bg-galaxy-light">
-                        Select Token
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-galaxy-light">
-                        
-                    {
+                            <DropdownMenuTrigger className="bg-galaxy-light">
+                                Select Token
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="bg-galaxy-light">
+                                
+                            {
                         walletItems?.map((i) => {
                             const { adminToken, assetName, assetNameReadable} = splitUnit(i.unit);
                             return (
@@ -150,7 +132,7 @@ export default function ParametersForm(){
                     {/* readOnly inputs with dynamic placeholders */}
                     <input
                     readOnly
-                    value={policyId}
+                    value={adminToken}
 
                     placeholder={
                         parameters?.adminToken ?? ""
@@ -317,9 +299,8 @@ export default function ParametersForm(){
                 {parameters ? "Update Parameters" : "Add Parameters"}
                 </button>
             </form>
-            :
-            <div>Please connect wallet to enter parameters</div>
-            }
+           
+            
 
 
         </div>
