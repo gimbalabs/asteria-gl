@@ -25,12 +25,6 @@ export default function ParametersForm(){
 
 
     const setParameters = api.setParameters.setParameters.useMutation();
-    
-    const { data: parameters, isLoading } =
-    api.setParameters.getParameters.useQuery(
-      undefined,
-      { enabled: connected }
-    );
 
     const {handleSubmit, adminToken, setAdminToken, shipMintLovelaceFee, setShipMintLovelaceFee, maxAsteriaMining, setMaxAsteriaMining,
         initialFuel, setInitialFuel, minDistance, setMinDistance, fuelPerStep, setFuelPerStep, maxShipFuel, setMaxShipFuel, 

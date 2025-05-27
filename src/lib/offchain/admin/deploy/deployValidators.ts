@@ -22,22 +22,22 @@ interface DeployParameters {
 
 export async function deployAsteriaValidators({adminToken, adminTokenName, shipMintLovelaceFee, maxAsteriaMining,  maxSpeed, fuelPerStep, initialFuel, maxShipFuel, minAsteriaDistance}: DeployParameters){
 
-    const pelletWithParams = await pelletScriptApliedParam(adminToken, adminTokenName)
+    const pelletWithParams = pelletScriptApliedParam(adminToken, adminTokenName)
     
     const pelletScriptAddress =  resolvePlutusScriptAddress(pelletWithParams.pelletPlutusScript, 0)
     console.log(pelletScriptAddress)
     const pelletScriptHash = deserializeBech32Address(pelletScriptAddress)
     console.log(pelletScriptHash)
     
-    const asteriaWithParams = await asteriaScriptAppliedParam(pelletScriptAddress, adminToken, adminTokenName, shipMintLovelaceFee, maxAsteriaMining, minAsteriaDistance, initialFuel )
+    const asteriaWithParams = asteriaScriptAppliedParam(pelletScriptAddress, adminToken, adminTokenName, shipMintLovelaceFee, maxAsteriaMining, minAsteriaDistance, initialFuel )
     console.log(asteriaWithParams.asteriaPlutusScript.version)
-    const deployWithParams = await deployScriptAppliedParam(adminToken, adminTokenName)
+    const deployWithParams = deployScriptAppliedParam(adminToken, adminTokenName)
     console.log(deployWithParams.appliedDeployParam)
 
     const asteriaScriptAddress = resolvePlutusScriptAddress(asteriaWithParams.asteriaPlutusScript, 0)
     const asteriaScriptHash = deserializeBech32Address(asteriaScriptAddress)
     
-    const spaceTimeWithParams = await spacetimeScriptAppliedParam(pelletScriptHash.scriptHash, asteriaScriptHash.scriptHash, adminToken, adminTokenName, maxSpeed, maxShipFuel, fuelPerStep)
+    const spaceTimeWithParams = spacetimeScriptAppliedParam(pelletScriptHash.scriptHash, asteriaScriptHash.scriptHash, adminToken, adminTokenName, maxSpeed, maxShipFuel, fuelPerStep)
     const spaceTimeAddress = resolvePlutusScriptAddress(spaceTimeWithParams.spacetimePlutusScript, 0)
     const spaceTimeScriptHash = deserializeBech32Address(spaceTimeAddress)
 
