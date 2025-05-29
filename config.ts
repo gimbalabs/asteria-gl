@@ -16,8 +16,8 @@ export const adminTokenName: AssetName = assetName('41737465726961746f6b656e')
 export const adminTokenPolicy: PolicyId = policyId('fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293') //bytestring
 
 
-export const fuelTokenName: AssetName = assetName('4655454c')
-export const fuelTokenPolicy: PolicyId = policyId('3830a960240a7461fd8c121d2df596d5efb87fa7670c7285b9ad4000')
+export const fuelTokenName: AssetName = assetName('4655454c') /// different ?
+export const fuelTokenPolicy: PolicyId = policyId('3830a960240a7461fd8c121d2df596d5efb87fa7670c7285b9ad4000') /// different ?
 
 //export const prizeTokenName = 
 //export const prizeTokenPolicy = 
@@ -25,26 +25,26 @@ export const fuelTokenPolicy: PolicyId = policyId('3830a960240a7461fd8c121d2df59
 //export const shipYardPolicy = 
 //export const shipYardName =
 
-export const refHash: string = '08834a9c06c3bc5ede5c6a0845e67d077dbd0bcadd8b771f785ed45745907b0f'
+export const refHash: string = 'eda5d68d7f41c014c920d03d096a9e0e6f4d07e9491720675fa08f6584ebfacf'
 
 //pellet validator ref hash 
-export const pelletRefHash: TxOutRef = txOutRef('08834a9c06c3bc5ede5c6a0845e67d077dbd0bcadd8b771f785ed45745907b0f', 1)
+export const pelletRefHash: TxOutRef = txOutRef('eda5d68d7f41c014c920d03d096a9e0e6f4d07e9491720675fa08f6584ebfacf', 1)
   
 //asteria validator ref hash
-export const asteriaRefHash: TxOutRef = txOutRef('08834a9c06c3bc5ede5c6a0845e67d077dbd0bcadd8b771f785ed45745907b0f', 0)
+export const asteriaRefHash: TxOutRef = txOutRef('eda5d68d7f41c014c920d03d096a9e0e6f4d07e9491720675fa08f6584ebfacf', 0)
 //deploy validator ref hash
 
 //spacetime validator ref Hash 
-export const spacetimeRefHash: TxOutRef = txOutRef('08834a9c06c3bc5ede5c6a0845e67d077dbd0bcadd8b771f785ed45745907b0f', 2) 
+export const spacetimeRefHash: TxOutRef = txOutRef('eda5d68d7f41c014c920d03d096a9e0e6f4d07e9491720675fa08f6584ebfacf', 2) 
        
 
   //pellet validator address 
-//export const pelletValidatorAddress = 'addr_test1wqurp2tqys98gc0a3sfp6t04jm27lwrl5anscu59hxk5qqq4fhu8y' as ScriptAddress  
+export const pelletValidatorAddress = 'addr_test1wqq62t863eh8z3wmv2qs3fc075egfxr0kh0cp7kmgvynj8g9aj6tm'
      //Above script address needs to be verified for the proper types as per Mesh
   //asteria validator address
-//export const asteriaValidatorAddress =  
+export const asteriaValidatorAddress =  'addr_test1wqnjq6f6xtmqvy998g5dfvfjzlc2jysqxzf9hlnc2f4qmksq37dur'
   //spacetime validator address
-//export const spacetimeValidatorAddress = 
+export const spacetimeValidatorAddress = 'addr_test1wrk8neks4kuhq66l95vqpgnmfdyepmsqa6pf29vd6n2enwsjnrl6x'
 
 //Game Parameters
 
@@ -61,7 +61,7 @@ export const max_speed = (
   integer(1),
   integer(30000));  //mesh json format
 
-export const max_ship_fuel: Integer = integer (100);
+export const max_ship_fuel: Integer = integer (50);
 export const fuel_per_step: Integer = integer(1);
-export const initial_fuel: Integer = integer(30);
-export const min_asteria_distance: Integer = integer(10);
+export const initial_fuel: Integer = integer(20);
+export const min_asteria_distance: Integer = integer(40);
