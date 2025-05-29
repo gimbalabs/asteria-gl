@@ -25,14 +25,14 @@ export async function deployAsteriaValidators({adminToken, adminTokenName, shipM
     const pelletWithParams = await pelletScriptApliedParam(adminToken, adminTokenName)
     
     const pelletScriptAddress =  resolvePlutusScriptAddress(pelletWithParams.pelletPlutusScript, 0)
-    console.log(pelletScriptAddress)
+ 
     const pelletScriptHash = deserializeBech32Address(pelletScriptAddress)
-    console.log(pelletScriptHash)
+
     
     const asteriaWithParams = await asteriaScriptAppliedParam(pelletScriptAddress, adminToken, adminTokenName, shipMintLovelaceFee, maxAsteriaMining, minAsteriaDistance, initialFuel )
-    console.log(asteriaWithParams.asteriaPlutusScript.version)
+
     const deployWithParams = await deployScriptAppliedParam(adminToken, adminTokenName)
-    console.log(deployWithParams.appliedDeployParam)
+  
 
     const asteriaScriptAddress = resolvePlutusScriptAddress(asteriaWithParams.asteriaPlutusScript, 0)
     const asteriaScriptHash = deserializeBech32Address(asteriaScriptAddress)

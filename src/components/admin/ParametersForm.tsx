@@ -92,7 +92,7 @@ export default function ParametersForm(){
                 
 
 
-                    <form onSubmit={handleSubmit}  onClick={submit} className="form text-galaxy-info font-bold">
+                    <form onSubmit={handleSubmit}  className="form text-galaxy-info font-bold">
                         <h3>Start by selecting an admin token from your wallet</h3>
                         <p>PolicyID: {adminToken}</p>
                         <p>AssetName: {assetNameReadable}</p>
