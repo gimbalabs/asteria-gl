@@ -7,6 +7,7 @@ import { adminTokenName } from "config";
 
 
 
+
 export function useDeployAsteriaValidators(){
 
   const prepareTransaction = api.deployAsteriaValidators.prepareTransaction.useMutation();
@@ -52,10 +53,10 @@ export function useDeployAsteriaValidators(){
           maxShipFuel: Number(maxShipFuel),
           changeAddress,
         }
-          
+        
   
         
-        const {unsignedTx} = await prepareTransaction.mutateAsync(payload);
+        const {unsignedTx, asteriaScriptAddress, pelletScriptAddress, spaceTimeAddress} = await prepareTransaction.mutateAsync(payload);
 
         console.log(changeAddress)
 
@@ -67,6 +68,9 @@ export function useDeployAsteriaValidators(){
 
         console.log("Transaction Hash:", txHash);
         alert("Deployed Successfully! TxHash: " + txHash);
+        let content = `Asteria refScriptHash: ${txHash}#0 Address: ${asteriaScriptAddress} , Pellet refScriptHash: ${txHash}#1 Address: ${pelletScriptAddress} , SpaceTime refScriptHash: ${txHash}#2 Address: ${spaceTimeAddress}` 
+
+        console.log(content)
 
         } catch (error) {
             console.error(error);
