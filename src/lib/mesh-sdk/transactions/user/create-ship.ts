@@ -13,15 +13,17 @@ import {
     stringToHex, 
     UTxO,
 } from "@meshsdk/core";
-import { admintoken } from "../../config.js";
-import { blockchainProvider, myWallet, slot} from "../../utils.js";
+import { admintoken, refHash } from "../../config-dont-use.js";
+//import { blockchainProvider, myWallet, slot} from "../../utils.js";
 import { fromScriptRef} from "@meshsdk/core-cst";
-import { maestroprovider } from "../../utils.js";
+import { maestroProvider } from "../../utils.js";
 import { readFile } from "fs/promises";
 
-const changeAddress = await myWallet.getChangeAddress();
-const collateral: UTxO = (await myWallet.getCollateral())[0]!;
-const utxos = await myWallet.getUtxos();
+
+
+//const changeAddress = await myWallet.getChangeAddress();
+//const collateral: UTxO = (await myWallet.getCollateral())[0]!;
+//const utxos = await myWallet.getUtxos();
 //const utxos = await blockchainProvider.fetchUTxOs("420d1b6ddff2ce1188a3d9c37459fa6325d0f1aea6dcc9b3ec1a4de9a017e59e",0);
 
 async function createShip(
@@ -29,13 +31,24 @@ async function createShip(
     initial_fuel: string,
     posX: bigint,
     posY: bigint,
-    tx_latest_posix_time: number
+    tx_latest_posix_time: number,
+    changeAddress: string,
+    collateral: UTxO,
+    utxos: UTxO[],
+
 ){
 
-const asteriaDeployScript = JSON.parse(
-    await readFile("./scriptref-hash/asteria-script.json", "utf-8"));
-if(!asteriaDeployScript.txHash){
-    throw new Error ("asteria script-ref not found, deploy asteria first.");
+    const txBuilder = new MeshTxBuilder({
+        // submitter: blockchainProvider,
+         fetcher: maestroProvider,
+        // evaluator: maestroprovider,
+         verbose: true
+     });
+
+/*const deployScript = JSON.parse(
+    await readFile("../../scriptref-hash/refhash.json", "utf-8"));
+if(!deployScript.txHash){
+    throw new Error ("deployScript ref not found, deploy asteria first.");
 };
 const spacetimeDeployScript = JSON.parse(
     await readFile("./scriptref-hash/spacetime-script.json", "utf-8"));
@@ -47,28 +60,29 @@ const pelletDeployScript = JSON.parse(
 if(!pelletDeployScript.txHash){
     throw new Error ("pellet script-ref not found, deploy pellet first.");
 };
+*/
 
+const deployScriptUtxos = await maestroProvider.fetchUTxOs(refHash);
 
-const asteriaScriptRefUtxos = await blockchainProvider.fetchUTxOs(asteriaDeployScript.txHash);
-const asteriaScriptRef = fromScriptRef(asteriaScriptRefUtxos[0].output.scriptRef!);
+const asteriaScriptRef = fromScriptRef(deployScriptUtxos[0].output.scriptRef!);
 const asteriaPlutusScript = asteriaScriptRef as PlutusScript;
 const asteriaScriptAddress  = serializePlutusScript(asteriaPlutusScript).address;
 
-const spacetimeScriptRefUtxos = await blockchainProvider.fetchUTxOs(spacetimeDeployScript.txHash);
-const shipyardPolicyid =   spacetimeScriptRefUtxos[0].output.scriptHash;
-const spacetimeScriptRef = fromScriptRef(spacetimeScriptRefUtxos[0].output.scriptRef!);
+//const spacetimeScriptRefUtxos = await blockchainProvider.fetchUTxOs(spacetimeDeployScript.txHash);
+const shipyardPolicyid =   deployScriptUtxos[2].output.scriptHash;
+const spacetimeScriptRef = fromScriptRef(deployScriptUtxos[2].output.scriptRef!);
 const spacetimePlutusScript = spacetimeScriptRef as PlutusScript;
 const spacetimeAddress =   serializePlutusScript(spacetimePlutusScript).address;
 
-const pelletScriptRefUtxos = await blockchainProvider.fetchUTxOs(pelletDeployScript.txHash);
-const fuelPolicyId  = pelletScriptRefUtxos[0].output.scriptHash;
+//const pelletScriptRefUtxos = await blockchainProvider.fetchUTxOs(pelletDeployScript.txHash);
+const fuelPolicyId  = deployScriptUtxos[1].output.scriptHash;
 
 console.log(" spacetimeAddress: ", spacetimeAddress);
 console.log("fuel policyId : ", fuelPolicyId);
 console.log("asteria Script Address : ", asteriaScriptAddress);
 console.log("fuel policyId : ", fuelPolicyId);
 
-const asteriaInputUtxos = await blockchainProvider.fetchAddressUTxOs(asteriaScriptAddress,admintoken.policyid+admintoken.name);
+const asteriaInputUtxos = await maestroProvider.fetchAddressUTxOs(asteriaScriptAddress,admintoken.policyid+admintoken.name);
 const asteriaInputAda = asteriaInputUtxos[0].output.amount.find((Asset) => 
     Asset.unit === "lovelace"
 );
@@ -134,12 +148,7 @@ const mintShipRedeemer   = mConStr0([]);
 const addNewshipRedeemer = mConStr0([]);
 const mintFuelRedeemer   = mConStr0([]);
 
-const txBuilder = new MeshTxBuilder({
-    submitter: blockchainProvider,
-    fetcher: maestroprovider,
-   // evaluator: maestroprovider,
-    verbose: true
-});
+
 console.log(asteriaInputAda,"\n");
 console.log("Asteria input Assets",asteriaInputUtxos[0].output.amount);
 console.log("asteria output datum: ",asteriaOutputDatum);
@@ -147,35 +156,34 @@ console.log(" Ship Datum", shipDatum);
 console.log("latest posix time", tx_latest_posix_time)
 
 console.log(tx_latest_posix_time);
-const unsignedTx =  await txBuilder
+    //.invalidHereafter(tx_latest_posix_time)
 
-    .invalidHereafter(tx_latest_posix_time)
+    const unsignedTx =  await txBuilder
     .spendingPlutusScriptV3()
     .txIn(
         asteria.input.txHash,
         asteria.input.outputIndex,
     )
     .spendingReferenceTxInRedeemerValue(addNewshipRedeemer,"Mesh",{mem: 3500000, steps:2500000000 })
-    .spendingTxInReference(asteriaDeployScript.txHash,0) //
+    .spendingTxInReference(refHash,0) //
     .txInInlineDatumPresent()
     .txOut(asteriaScriptAddress,totalRewardsAsset)
     .txOutInlineDatumValue(asteriaOutputDatum,"JSON")
     .mintPlutusScriptV3()
     .mint("1",shipyardPolicyid!,shipTokenName)
-    .mintTxInReference(spacetimeDeployScript.txHash,0)
+    .mintTxInReference(refHash,2)
     .mintRedeemerValue(mintShipRedeemer,"Mesh",{mem: 3500000, steps:2500000000 })
     .mintPlutusScriptV3()
     .mint("1",shipyardPolicyid!,pilotTokenName)
-    .mintTxInReference(spacetimeDeployScript.txHash,0)
+    .mintTxInReference(refHash,2)
     .mintRedeemerValue(mintShipRedeemer,"Mesh",{mem: 3500000, steps:2500000000 })
     .mintPlutusScriptV3()
     .mint(initial_fuel, fuelPolicyId!, fuelTokenName)
-    .mintTxInReference(pelletDeployScript.txHash, 0)
+    .mintTxInReference(refHash, 1)
     .mintRedeemerValue(mintFuelRedeemer,"Mesh",{mem: 3500000, steps:2500000000 })
-    
     .txOut(spacetimeAddress,assetToSpacetimeAddress)
     .txOutInlineDatumValue(shipDatum,"JSON")
-    .txOut(myWallet.addresses.baseAddressBech32!,pilotTokenAsset)
+    .txOut(changeAddress,pilotTokenAsset)
     .txInCollateral(
         collateral.input.txHash,
         collateral.input.outputIndex
@@ -185,8 +193,9 @@ const unsignedTx =  await txBuilder
     .setNetwork("preprod")
     .complete();
 
-const signedTx = await myWallet.signTx(unsignedTx, true);
-const shiptxHash = await myWallet.submitTx(signedTx);
-return shiptxHash;
+//const signedTx = await myWallet.signTx(unsignedTx, true);
+//const shiptxHash = await myWallet.submitTx(signedTx);
+console.log("create-ship has created the tx")
+return {unsignedTx};
 };
 export {createShip};
