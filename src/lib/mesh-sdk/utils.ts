@@ -18,7 +18,9 @@ export const maestroprovider = new MaestroProvider({
   turboSubmit:false
 });
 
-export const blockData = await blockchainProvider.fetchLatestBlock();
-export const latestSlot = blockData.slot;
-export const tx_latest_posix_time = Number(latestSlot) + 600;
-export const slot = Number(latestSlot);
+const blockData = await blockchainProvider.fetchLatestBlock();
+export const time = blockData.time;
+const slot = blockData.slot;
+export const tx_latest_slot = Number(slot) + 600;
+export const tx_earliest_slot = Number(slot) - 60;
+export const tx_earliest_posix_time = time - 60 * 1000; 
