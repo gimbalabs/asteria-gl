@@ -18,6 +18,7 @@ export const maestroprovider = new MaestroProvider({
   turboSubmit:false
 });
 
+
 export const blockData = await blockchainProvider.fetchLatestBlock();
 export const latestSlot = blockData.slot;
 export const tx_latest_posix_time = Number(latestSlot) + 600;
@@ -46,3 +47,4 @@ export const getMaestroApiKey = (): string => {
     apiKey: apiKey, // Get yours by visiting https://docs.gomaestro.org/docs/Getting-started/Sign-up-login.
     turboSubmit: false, // Read about paid turbo transaction submission feature at https://docs.gomaestro.org/docs/Dapp%20Platform/Turbo%20Transaction.
   });
+

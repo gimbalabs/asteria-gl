@@ -4,7 +4,6 @@ import {
     conStr0,
     deserializeDatum,
     integer,
-    mConStr0,
     MeshTxBuilder,
     PlutusScript, 
     policyId,
@@ -13,6 +12,7 @@ import {
     stringToHex, 
     UTxO,
 } from "@meshsdk/core";
+
 import { admintoken, refHash } from "../../config-dont-use.js";
 //import { blockchainProvider, myWallet, slot} from "../../utils.js";
 import { fromScriptRef} from "@meshsdk/core-cst";
@@ -35,7 +35,6 @@ async function createShip(
     changeAddress: string,
     collateral: UTxO,
     utxos: UTxO[],
-
 ){
 
     const txBuilder = new MeshTxBuilder({
@@ -62,9 +61,11 @@ if(!pelletDeployScript.txHash){
 };
 */
 
+
 const deployScriptUtxos = await maestroProvider.fetchUTxOs(refHash);
 
 const asteriaScriptRef = fromScriptRef(deployScriptUtxos[0].output.scriptRef!);
+
 const asteriaPlutusScript = asteriaScriptRef as PlutusScript;
 const asteriaScriptAddress  = serializePlutusScript(asteriaPlutusScript).address;
 
@@ -82,14 +83,17 @@ console.log("fuel policyId : ", fuelPolicyId);
 console.log("asteria Script Address : ", asteriaScriptAddress);
 console.log("fuel policyId : ", fuelPolicyId);
 
+
 const asteriaInputUtxos = await maestroProvider.fetchAddressUTxOs(asteriaScriptAddress,admintoken.policyid+admintoken.name);
 const asteriaInputAda = asteriaInputUtxos[0].output.amount.find((Asset) => 
     Asset.unit === "lovelace"
 );
 
-const asteria = asteriaInputUtxos[0];
-console.log(asteria.output.amount);
 
+const asteria = asteriaInputUtxos[0];
+const asteriaInputAda = asteria.output.amount.find((Asset) => 
+    Asset.unit === "lovelace"
+);
 const asteriaInputData = asteria.output.plutusData;
 const asteriaInputDatum = deserializeDatum(asteriaInputData!).fields;
 
@@ -107,8 +111,8 @@ const fuelTokenName = stringToHex("FUEL");
 const shipTokenName = stringToHex("SHIP" + asteriaInputShipcounter.toString()); //ship counter from Datum
 const pilotTokenName = stringToHex("PILOT" + asteriaInputShipcounter.toString()); //ship counter from Datum
 
-
 const ttl = Date.now() + 10 * 60 * 1000;
+//const ttl1 = time + 10 * 60 * 1000;
 const shipDatum = conStr0([
     integer(posX),
     integer(posY),
@@ -117,10 +121,8 @@ const shipDatum = conStr0([
     posixTime(ttl)
 ]);
 
-
 console.log(shipDatum,'\n');
-console.log("shipyardpolicyId: ", shipyardPolicyid,'\n');
-
+console.log("shipyardpolicyId: ", shipyardPolicyid);
 
 //defining assets
 const assetToSpacetimeAddress: Asset[] = [{
@@ -144,9 +146,10 @@ const pilotTokenAsset: Asset [] = [{
     quantity: "1"
 }];
 
-const mintShipRedeemer   = mConStr0([]);
-const addNewshipRedeemer = mConStr0([]);
-const mintFuelRedeemer   = mConStr0([]);
+const mintShipRedeemer   = conStr0([]);
+const addNewshipRedeemer = conStr0([]);
+const mintFuelRedeemer   = conStr0([]);
+
 
 
 console.log(asteriaInputAda,"\n");
@@ -159,13 +162,16 @@ console.log(tx_latest_posix_time);
     //.invalidHereafter(tx_latest_posix_time)
 
     const unsignedTx =  await txBuilder
+
     .spendingPlutusScriptV3()
     .txIn(
         asteria.input.txHash,
         asteria.input.outputIndex,
     )
+
     .spendingReferenceTxInRedeemerValue(addNewshipRedeemer,"Mesh",{mem: 3500000, steps:2500000000 })
     .spendingTxInReference(refHash,0) //
+
     .txInInlineDatumPresent()
     .txOut(asteriaScriptAddress,totalRewardsAsset)
     .txOutInlineDatumValue(asteriaOutputDatum,"JSON")
@@ -184,10 +190,11 @@ console.log(tx_latest_posix_time);
     .txOut(spacetimeAddress,assetToSpacetimeAddress)
     .txOutInlineDatumValue(shipDatum,"JSON")
     .txOut(changeAddress,pilotTokenAsset)
+
     .txInCollateral(
         collateral.input.txHash,
         collateral.input.outputIndex
-    )
+     )
     .selectUtxosFrom(utxos)
     .changeAddress(changeAddress)
     .setNetwork("preprod")
