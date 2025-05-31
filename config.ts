@@ -65,3 +65,5 @@ export const max_ship_fuel: Integer = integer (50);
 export const fuel_per_step: Integer = integer(1);
 export const initial_fuel: Integer = integer(20);
 export const min_asteria_distance: Integer = integer(40);
+
+export const createAsteriaRefHash = "459b67a583f2c9a06d9dc1fc9ac7ea077a77fb82170feb2c9351dbb4622cbfea"

@@ -1,4 +1,4 @@
-import { MeshWallet, BlockfrostProvider, MaestroProvider} from "@meshsdk/core";
+/*import { MeshWallet, BlockfrostProvider, MaestroProvider} from "@meshsdk/core";
 
 //get blockfrost provider api key
 export const blockchainProvider = new BlockfrostProvider('');
@@ -18,9 +18,33 @@ export const maestroprovider = new MaestroProvider({
   turboSubmit:false
 });
 
-const blockData = await blockchainProvider.fetchLatestBlock();
-export const time = blockData.time;
-const slot = blockData.slot;
-export const tx_latest_slot = Number(slot) + 600;
-export const tx_earliest_slot = Number(slot) - 60;
-export const tx_earliest_posix_time = time - 60 * 1000; 
+
+export const blockData = await blockchainProvider.fetchLatestBlock();
+export const latestSlot = blockData.slot;
+export const tx_latest_posix_time = Number(latestSlot) + 600;
+export const slot = Number(latestSlot);
+*/
+
+import { MaestroProvider } from "@meshsdk/core";
+
+
+export const getEnv = (key: string): string => {
+    const value = process.env[key];
+    if (!value) {
+      throw new Error(`Environment variable ${key} is not set.`);
+    }
+    return value;
+  };
+
+export const getMaestroApiKey = (): string => {
+    return getEnv("MAESTRO_PREPROD_KEY");
+  };
+
+  const apiKey = getMaestroApiKey()
+
+ export const maestroProvider = new MaestroProvider({
+    network: "Preprod",
+    apiKey: apiKey, // Get yours by visiting https://docs.gomaestro.org/docs/Getting-started/Sign-up-login.
+    turboSubmit: false, // Read about paid turbo transaction submission feature at https://docs.gomaestro.org/docs/Dapp%20Platform/Turbo%20Transaction.
+  });
+
