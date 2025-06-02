@@ -59,7 +59,8 @@ export function getRingAreaSample(
     shipyard_policy: string = ""
   ): PelletParams {
     const coordinates = getRingAreaCoordinates(inner_r, outer_r);
-    const sample_size = Math.floor(coordinates.length * density);
+    const densityBasedSize = Math.floor(coordinates.length * density);
+    const sample_size = Math.min(densityBasedSize, 100);
     const sample_coordinates = getRandomSubarray(coordinates, sample_size);
     const pellets = sample_coordinates.map((c) => ({
       fuel: Math.floor(
