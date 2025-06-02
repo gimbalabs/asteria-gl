@@ -1,14 +1,10 @@
-// .input procedure to accept and validate the shape of the pellet array of ojbects
-// .mutate btaches the pellets in size of 7 and sends one btach at a time to frontend for signing
-// Front end sends back tx hash for submitted tx and backend sends in the next batch of 7 pellets for signing
-// This continues until all pellets are deployed
-
-
-// import {
-//     pelletScriptAddress,
-//     spaceTimeScriptHash,                 // .scriptHash is the policy
-//   } from "~/lib/offchain/admin/deploy/deployValidators";
 import { z } from "zod";
+import { adminTokenPolicy, 
+        adminTokenName, 
+        fuelTokenPolicy, 
+        fuelTokenName,
+        pelletRefHash,
+        pelletValidatorAddress } from "config";
 import {
     Asset,
     conStr0,
@@ -23,20 +19,23 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { maestroProvider } from "~/server/provider/maestroProvider";
 import { randomUUID } from "crypto";
 import { chunk } from "lodash";
-import { PelletDatum } from "~/types/pellet";
-
-const fueltokenNameHex = stringToHex("FUEL"); 
+import { PelletDatum } from "~/types/pellet"; 
 
 // Admin asset (same for all pellets)
 const adminAsset: Asset[] = [
   {
-    unit: admintoken.policyid + admintoken.name,
+    unit: adminTokenPolicy.bytes + adminTokenName.bytes,
     quantity: "1",
   },
 ];
 
+const fuelReedemer = conStr0([]);
+
 /* ── temporary in-memory session cache ── */
-type Session = { batches: PelletDatum[][]; next: number /*pointer*/ };
+type Session = { 
+                 batches: PelletDatum[][]; 
+                 next: number /*pointer*/ 
+               };
 const sessions = new Map<string, Session>();
 
 /* ── single row validator ── */
@@ -49,7 +48,7 @@ const PelletRow = z.object({
 
 export const pelletDeployRouter = createTRPCRouter({
 /* 1️⃣  user sends all pellets + wallet context once */
-// TODO: add the collateral from the wallet to the .input
+// TODO: add the collateral from the wallet to the .input - DONE
     startDeploy: publicProcedure
     .input(z.object({
       pellets: z.array(PelletRow),
@@ -64,7 +63,6 @@ export const pelletDeployRouter = createTRPCRouter({
               address: z.string(),
               amount: z.any(),
               datum: z.any().optional(),
-              referenceScript: z.any().optional(),
           })
       }), 
     }))
@@ -92,8 +90,8 @@ export const pelletDeployRouter = createTRPCRouter({
 
     txBuilder
         .mintPlutusScriptV3()
-        .mint(totalFuel, fuelPolicyID!, fueltokenNameHex)
-        .mintTxInReference(pelletDeployScript.txHash, 0)
+        .mint(totalFuel.toString(), fuelTokenPolicy.bytes, fuelTokenName.bytes)
+        .mintTxInReference(pelletRefHash.fields[0].toString(), Number(pelletRefHash.fields[1]))
         .mintRedeemerValue(fuelReedemer, "JSON");
 
       // Add outputs for each pellet in the batch
@@ -106,15 +104,15 @@ export const pelletDeployRouter = createTRPCRouter({
 
         const fuelToken: Asset[] = [
           {
-            unit: fuelPolicyID + fueltokenNameHex,
+            unit: fuelTokenPolicy.bytes + fuelTokenName.bytes,
             quantity: pellet.fuel.toString(),
           },
         ];
 
         txBuilder
-          .txOut(pelletScriptAddress, fuelToken)
+          .txOut(pelletValidatorAddress, fuelToken)
           .txOutInlineDatumValue(pelletDatum, "JSON")
-          .txOut(pelletScriptAddress, adminAsset)
+          .txOut(pelletValidatorAddress, adminAsset)
       });
 
       // Complete the transaction (collateral, change, utxos, network)
@@ -153,7 +151,6 @@ export const pelletDeployRouter = createTRPCRouter({
               address: z.string(),
               amount: z.any(),
               datum: z.any().optional(),
-              referenceScript: z.any().optional(),
           })
         }),
     }))
@@ -182,8 +179,8 @@ export const pelletDeployRouter = createTRPCRouter({
 
         txBuilder
             .mintPlutusScriptV3()
-            .mint(totalFuel, fuelPolicyID!, fueltokenNameHex)
-            .mintTxInReference(pelletDeployScript.txHash, 0)
+            .mint(totalFuel.toString(), fuelTokenPolicy.bytes, fuelTokenName.bytes)
+            .mintTxInReference(pelletRefHash.fields[0].toString(), Number(pelletRefHash.fields[1]))
             .mintRedeemerValue(fuelReedemer, "JSON");
 
         // Add outputs for each pellet in the batch
@@ -196,15 +193,15 @@ export const pelletDeployRouter = createTRPCRouter({
 
             const fuelToken: Asset[] = [
             {
-                unit: fuelPolicyID + fueltokenNameHex,
+                unit: fuelTokenPolicy.bytes + fuelTokenName.bytes,
                 quantity: pellet.fuel.toString(),
             },
             ];
 
             txBuilder
-            .txOut(pelletScriptAddress, fuelToken)
+            .txOut(pelletValidatorAddress, fuelToken)
             .txOutInlineDatumValue(pelletDatum, "JSON")
-            .txOut(pelletScriptAddress, adminAsset)
+            .txOut(pelletValidatorAddress, adminAsset)
         });
 
         // Complete the transaction (collateral, change, utxos, network)

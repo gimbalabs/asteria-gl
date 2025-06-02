@@ -64,7 +64,7 @@ export default function DeployPellet() {
 
     const renderStep3 = () => (
         <>
-            <Step3/>
+            <Step3 pellets={pellets}/>
             <button onClick={() => setCurrentStep(currentStep - 1)}>
                 &larr; Previous Step
             </button>
