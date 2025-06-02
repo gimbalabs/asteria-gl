@@ -1,4 +1,4 @@
-import { initial_fuel, ship_mint_lovelace_fee } from "./config.js";
+import { initial_fuel, ship_mint_lovelace_fee } from "./config-dont-use.js";
 import { createAsteria,createTest } from "./transactions/admin/asteria/create-asteria.js";
 import { createShip } from "./transactions/user/create-ship.js";
 import { slot,tx_latest_posix_time } from "./utils.js";

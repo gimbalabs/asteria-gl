@@ -1,5 +1,6 @@
 import Mapbutton from "~/components/Mapbutton";
 import React, { useState } from "react";
+import CreateShipComponent from "~/components/user/CreateShipComponent";
 
 const GRID_SIZE = 100;
 
@@ -44,8 +45,12 @@ export default function MapPage() {
     };
 
     return (
+        <>
         <div>
-
+            <CreateShipComponent />
+        </div>
+        <div>
+        
         <Mapbutton/>
             <div className="controls">
                 <input
@@ -61,7 +66,7 @@ export default function MapPage() {
             <div
                 className="grid"
                 style={{
-                    position: "absolute",
+                    position: "relative",
                     top: 0,
                     left: 0,
                     width: "140%",
@@ -101,6 +106,7 @@ export default function MapPage() {
                 ))}
             </div>
         </div>
+        </>
     );
 }
 
