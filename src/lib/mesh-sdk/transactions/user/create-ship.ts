@@ -85,9 +85,6 @@ console.log("fuel policyId : ", fuelPolicyId);
 
 
 const asteriaInputUtxos = await maestroProvider.fetchAddressUTxOs(asteriaScriptAddress,admintoken.policyid+admintoken.name);
-const asteriaInputAda = asteriaInputUtxos[0].output.amount.find((Asset) => 
-    Asset.unit === "lovelace"
-);
 
 
 const asteria = asteriaInputUtxos[0];
