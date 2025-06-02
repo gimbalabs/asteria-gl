@@ -1,6 +1,6 @@
 import { readFile } from "fs/promises";
 import { blockchainProvider, myWallet } from "../../../utils.js";
-import { admintoken } from "../../../config.js";
+import { admintoken } from "../../../config-dont-use.js";
 import { conStr2, MeshTxBuilder } from "@meshsdk/core";
 
 
