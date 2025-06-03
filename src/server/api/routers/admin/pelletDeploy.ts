@@ -91,7 +91,7 @@ export const pelletDeployRouter = createTRPCRouter({
     txBuilder
         .mintPlutusScriptV3()
         .mint(totalFuel.toString(), fuelTokenPolicy.bytes, fuelTokenName.bytes)
-        .mintTxInReference(pelletRefHash.fields[0].toString(), Number(pelletRefHash.fields[1]))
+        .mintTxInReference(pelletRefHash.fields[0].toString(), Number(pelletRefHash.fields[1])) 
         .mintRedeemerValue(fuelReedemer, "JSON");
 
       // Add outputs for each pellet in the batch
