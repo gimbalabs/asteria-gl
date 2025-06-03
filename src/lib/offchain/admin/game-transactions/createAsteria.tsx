@@ -1,4 +1,4 @@
-import { Asset, PlutusScript ,MaestroProvider, MeshTxBuilder, serializePlutusScript, serializeRewardAddress, integer, policyId, UTxO, Data, AssetExtended} from "@meshsdk/core";
+import { Asset, PlutusScript ,MaestroProvider, MeshTxBuilder, integer, policyId, UTxO, conStr0, ByteString} from "@meshsdk/core";
 import { useState, useEffect } from "react";
 import { useAssets, useWallet } from "@meshsdk/react";
 
@@ -8,7 +8,7 @@ import { CardanoWallet } from "@meshsdk/react";
 import { adminTokenPolicy, adminTokenName, refHash } from "config";
 import checkAdminToken from "~/hooks/checkAdminToken";
 // scriptAddress = "addr_test1vrqd62jeu7jt67zt3ajl8agyfnsa0ltjksqahcsqlax3kvq8qhe3x" asteria 
-const maestroApiKey: string = process.env.NEXT_PUBLIC_MAESTRO_API 
+const maestroApiKey = process.env.NEXT_PUBLIC_MAESTRO_PREPROD_KEY
 
 
 export default function CreateAsteria(){
@@ -16,6 +16,10 @@ export default function CreateAsteria(){
   const { wallet, connected } = useWallet();
     
   const [success, setSuccess] = useState<string>()
+  const [refHashUtxo, setRefHashUtxo] = useState<UTxO[]>()
+  const [adminToken, setAdminToken] = useState<Asset | undefined>()
+  const [asteriaDatum, setDatum] = useState<ByteString | undefined>()
+  const [asteriaValidatorAddress, setAsteriaValidatorAddress] = useState<string| undefined>()
   
 
     const blockchainProvider = new MaestroProvider({
@@ -25,6 +29,39 @@ export default function CreateAsteria(){
         });
 
     const {connectedAdminToken, isLoadingAdminToken } = checkAdminToken()
+    
+    
+    
+    useEffect(() => {
+
+            async function findDeployUtxos(){
+            const deployUtxos: UTxO[] = await blockchainProvider.fetchUTxOs(refHash) 
+            setRefHashUtxo(deployUtxos)
+    
+            console.log(deployUtxos)    
+
+                if(deployUtxos){
+                const asteriaScriptReffromTx: string = deployUtxos[0].output.scriptRef
+                const asteriaScriptRef = fromScriptRef(asteriaScriptReffromTx)
+                const asteriaPlutusScript = asteriaScriptRef as PlutusScript
+                const asteriaValidatorAddress = resolvePlutusScriptAddress(asteriaPlutusScript) // gets the address of the validator from the script Hash
+                setAsteriaValidatorAddress(asteriaValidatorAddress)
+                console.log(asteriaValidatorAddress)
+                const shipyardPolicyId = deployUtxos[2].output.scriptHash
+
+                const asteriaDatum = conStr0([
+                  integer(0), //ship counter
+                  policyId(shipyardPolicyId) // policyId of spacetime validator
+                ])
+                setDatum(asteriaDatum)
+                }  
+              
+            }
+              void findDeployUtxos()
+    }, [])
+    
+
+
       
       async function onSubmit(){
         
@@ -33,7 +70,7 @@ export default function CreateAsteria(){
         const utxoWithAdminToken = utxos.map((utxo) => {
     
                const assets = utxo.output.amount
-               const asset = assets.find((asset) => asset.unit.startsWith(adminTokenPolicy) )
+               const asset = assets.find((asset) => asset.unit.startsWith(adminTokenPolicy.bytes) )
                if(asset){
                 setAdminToken(asset)
                }
@@ -47,28 +84,14 @@ export default function CreateAsteria(){
 
 
         const changeAddress = await wallet.getChangeAddress()
-
-        const deployUtxos: Promise<UTxO[]> = await blockchainProvider.fetchUTxOs(refHash) 
-
-        const asteriaScriptReffromTx: string = deployUtxos[0].output.scriptRef
-        const asteriaScriptRef = fromScriptRef(asteriaScriptReffromTx)
-        const asteriaPlutusScript = asteriaScriptRef as PlutusScript
-        const asteriaValidatorAddress = resolvePlutusScriptAddress(asteriaPlutusScript) // gets the address of the validator from the script Hash
-
-        const shipyardPolicyId = deployUtxos[2].output.scriptHash
-
-        const asteriaDatum = (
-          integer(0), //ship counter
-          policyId(shipyardPolicyId) // policyId of spacetime validator
-        )
-        
         
 
         const unsignedTx = await txBuilder
-        .txOut(asteriaValidatorAddress, [{unit: adminTokenPolicy+adminTokenName , quantity: "1" } ])
-        .txOutInlineDatumValue(asteriaDatum)
+        .txOut(asteriaValidatorAddress, [{unit: adminTokenPolicy.bytes+adminTokenName.bytes , quantity: "1" } ])
+        .txOutInlineDatumValue(asteriaDatum, "JSON")
         .changeAddress(changeAddress)
         .selectUtxosFrom(utxos)
+        .setNetwork("preprod")
         .complete()
        
 
@@ -93,9 +116,14 @@ export default function CreateAsteria(){
           <p>Create Asteria Utxo by sending an admin token to the Asteria validator</p>
         
           {connected && connectedAdminToken && !isLoadingAdminToken ? 
-            <div>
-              <button className="bg-black text-white" onClick={onSubmit}>send</button>
-              <p className="text-green"> Admin Token - {connectedAdminToken}</p>
+            <div className=" flex flex-col gap-3 items-center">
+              
+              <p className="text-galaxy-info"> Admin Token - {connectedAdminToken}</p>
+              {refHashUtxo && asteriaValidatorAddress ? 
+                <button className="bg-black text-white w-1/5" onClick={onSubmit}>send</button> :
+                <p className="text-galaxy-danger">Awaiting ref utxo and validator address... </p>
+              }
+
             </div> 
               : 
             

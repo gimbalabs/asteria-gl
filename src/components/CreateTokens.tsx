@@ -11,8 +11,21 @@ export default function CreateTokens() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="form text-black">
-        <div className="text-2xl font-bold text-galaxy2-info">Mint Your Admin & Reward Tokens</div>
+      <form onSubmit={handleSubmit} 
+      className="
+            form
+            mx-auto
+            space-y-4
+            [&_input]:rounded-lg
+            [&_input]:border
+            [&_input]:border-gray-300
+            [&_input]:px-4
+            [&_input]:py-2
+            [&_input]:focus:outline-none
+            [&_input]:focus:ring-2
+            [&_input]:focus:ring-blue-500
+          ">
+        <div className="text-2xl font-bold text-galaxy2-info text-center">Mint Your Admin & Reward Tokens</div>
         <input
           type="text"
           placeholder="Token Name"
@@ -46,7 +59,7 @@ export default function CreateTokens() {
         />
         <input
           type="text"
-          placeholder="Dummy Key Hash (optional)"
+          placeholder="Dummy Key Hash (mandatory if using Policy ID)"
           value={dummyKey}
           onChange={(e) => setDummyKey(e.target.value)}
         />

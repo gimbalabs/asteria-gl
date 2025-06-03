@@ -29,7 +29,3 @@ If you are not familiar with the different technologies used in this project, pl
 ## Learn More
 
 Drop by our discord or attend a Gimbalabs open session on Zoom - Find the calendar and more info at https://gimbalabs.com/
-
-
-
-

@@ -1,7 +1,9 @@
 import { postRouter } from "~/server/api/routers/post";
 import { mintAdminAndRewardRouter } from "~/server/api/routers/admin/mintAdminAndReward";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
-
+import { setParametersRouter } from "./routers/admin/setParameters";
+import { deployAsteriaValidatorsRouter } from "./routers/admin/deployValidatorsRouter";
+import { createShipRouter } from "./routers/userTx/createShipRouter";
 /**
  * This is the primary router for your server.
  *
@@ -10,6 +12,10 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 export const appRouter = createTRPCRouter({
   post: postRouter,
   mintAdminAndReward: mintAdminAndRewardRouter,
+  setParameters: setParametersRouter,
+  deployAsteriaValidators: deployAsteriaValidatorsRouter,
+  createShip: createShipRouter,
+
 });
 
 // export type definition of API

@@ -44,3 +44,6 @@ yarn-error.log*
 
 # idea files
 .idea
+
+/src/lib/mesh-sdk/dist
+/src/lib/mesh-sdk/node_modules
