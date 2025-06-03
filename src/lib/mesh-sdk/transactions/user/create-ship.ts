@@ -2,6 +2,7 @@ import {
     Asset,
     assetName,
     conStr0,
+    mConStr0,
     deserializeDatum,
     integer,
     MeshTxBuilder,
@@ -85,9 +86,6 @@ console.log("fuel policyId : ", fuelPolicyId);
 
 
 const asteriaInputUtxos = await maestroProvider.fetchAddressUTxOs(asteriaScriptAddress,admintoken.policyid+admintoken.name);
-const asteriaInputAda = asteriaInputUtxos[0].output.amount.find((Asset) => 
-    Asset.unit === "lovelace"
-);
 
 
 const asteria = asteriaInputUtxos[0];
@@ -146,9 +144,9 @@ const pilotTokenAsset: Asset [] = [{
     quantity: "1"
 }];
 
-const mintShipRedeemer   = conStr0([]);
-const addNewshipRedeemer = conStr0([]);
-const mintFuelRedeemer   = conStr0([]);
+const mintShipRedeemer   = mConStr0([]);
+const addNewshipRedeemer = mConStr0([]);
+const mintFuelRedeemer   = mConStr0([]);
 
 
 
@@ -161,7 +159,7 @@ console.log("latest posix time", tx_latest_posix_time)
 console.log(tx_latest_posix_time);
     //.invalidHereafter(tx_latest_posix_time)
 
-    const unsignedTx =  await txBuilder
+    const unsignedTx: string =  await txBuilder
 
     .spendingPlutusScriptV3()
     .txIn(
