@@ -81,7 +81,6 @@ export const pelletDeployRouter = createTRPCRouter({
      const totalFuel = firstBatch!.reduce((n, p) => n + p.fuel, 0);
       // Assign fuel tokens and datum vales to txOut method for each pellet UTXO by looping through the first chunk/batch
       
-     // TODO: build first unsignedTx with MeshTxBuilder
      const txBuilder = new MeshTxBuilder({
         fetcher: maestroProvider,
         submitter: maestroProvider,
@@ -127,7 +126,9 @@ export const pelletDeployRouter = createTRPCRouter({
         .changeAddress(input.changeAddress)
         .selectUtxosFrom(input.utxos)
         .setNetwork("preprod")
+      console.dir(txBuilder, { depth: null });  
       const unsignedTx = await txBuilder.complete();
+      console.log("unsignedTx", unsignedTx);
 
       return { sessionId, unsignedTx };
     }),
