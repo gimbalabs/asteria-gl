@@ -1,8 +1,8 @@
-import { postRouter } from "~/server/api/routers/post";
 import { mintAdminAndRewardRouter } from "~/server/api/routers/admin/mintAdminAndReward";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { setParametersRouter } from "./routers/admin/setParameters";
 import { deployAsteriaValidatorsRouter } from "./routers/admin/deployValidatorsRouter";
+import { pelletDeployRouter } from "./routers/admin/pelletDeploy";
 import { createShipRouter } from "./routers/userTx/createShipRouter";
 /**
  * This is the primary router for your server.
@@ -10,10 +10,10 @@ import { createShipRouter } from "./routers/userTx/createShipRouter";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
   mintAdminAndReward: mintAdminAndRewardRouter,
   setParameters: setParametersRouter,
   deployAsteriaValidators: deployAsteriaValidatorsRouter,
+  pelletDeploy: pelletDeployRouter,
   createShip: createShipRouter,
 
 });

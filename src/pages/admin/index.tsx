@@ -70,14 +70,18 @@ export default function AdminPage() {
             
             </AdminSection>
           
-
-          <AdminSection
-            title="Create Pellet UTXOs"
-            icon="🌕"
-            borderColor="border-cyan-500"
-          >
-            {/* <CreatePellets /> */}
-          </AdminSection>
+          <div>
+            <Link href="/admin/deploy-pellets">
+              <AdminSection
+                title="Create Pellet UTXOs"
+                icon="🌕"
+                borderColor="border-cyan-500
+                hover:bg-green-400/20 
+                hover:border-green-400 
+                transition-all duration-300"
+              />
+            </Link>
+          </div>
 
           <AdminSection
             title="Finalize & Launch"
