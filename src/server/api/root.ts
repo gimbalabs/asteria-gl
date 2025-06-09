@@ -1,4 +1,3 @@
-import { postRouter } from "~/server/api/routers/post";
 import { mintAdminAndRewardRouter } from "~/server/api/routers/admin/mintAdminAndReward";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { setParametersRouter } from "./routers/admin/setParameters";
@@ -12,7 +11,6 @@ import { pelletDeployRouter } from "./routers/admin/pelletDeploy";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
   mintAdminAndReward: mintAdminAndRewardRouter,
   setParameters: setParametersRouter,
   deployAsteriaValidators: deployAsteriaValidatorsRouter,

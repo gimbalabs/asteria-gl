@@ -13,7 +13,8 @@ import {
     PlutusScript,
     scriptHash,
     stringToHex,
-    UTxO
+    UTxO,
+    Transaction,
   } from "@meshsdk/core";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { maestroProvider } from "~/server/provider/maestroProvider";
@@ -88,8 +89,9 @@ export const pelletDeployRouter = createTRPCRouter({
       });
 
     txBuilder
+        .setNetwork("preprod")
         .mintPlutusScriptV3()
-        .mint(totalFuel.toString(), fuelTokenPolicy.bytes, fuelTokenName.bytes)
+        .mint(totalFuel.toString(), '734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2', fuelTokenName.bytes)
         .mintTxInReference(pelletRefHash.fields[0].fields[0].bytes, Number(pelletRefHash.fields[1].int)) 
         .mintRedeemerValue(fuelReedemer, "JSON");
 
@@ -103,7 +105,7 @@ export const pelletDeployRouter = createTRPCRouter({
 
         const fuelToken: Asset[] = [
           {
-            unit: fuelTokenPolicy.bytes + fuelTokenName.bytes,
+            unit: '734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2' + fuelTokenName.bytes,
             quantity: pellet.fuel.toString(),
           },
         ];
@@ -125,10 +127,8 @@ export const pelletDeployRouter = createTRPCRouter({
         )
         .changeAddress(input.changeAddress)
         .selectUtxosFrom(input.utxos)
-        .setNetwork("preprod")
-      console.dir(txBuilder, { depth: null });  
+      // console.dir(txBuilder, { depth: null });  
       const unsignedTx = await txBuilder.complete();
-      console.log("unsignedTx", unsignedTx);
 
       return { sessionId, unsignedTx };
     }),
@@ -179,8 +179,9 @@ export const pelletDeployRouter = createTRPCRouter({
         });
 
         txBuilder
+            .setNetwork("preprod")
             .mintPlutusScriptV3()
-            .mint(totalFuel.toString(), fuelTokenPolicy.bytes, fuelTokenName.bytes)
+            .mint(totalFuel.toString(), '734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2', fuelTokenName.bytes)
             .mintTxInReference(pelletRefHash.fields[0].fields[0].bytes, Number(pelletRefHash.fields[1].int))
             .mintRedeemerValue(fuelReedemer, "JSON");
 
@@ -194,7 +195,7 @@ export const pelletDeployRouter = createTRPCRouter({
 
             const fuelToken: Asset[] = [
             {
-                unit: fuelTokenPolicy.bytes + fuelTokenName.bytes,
+                unit: '734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2' + fuelTokenName.bytes,
                 quantity: pellet.fuel.toString(),
             },
             ];
@@ -216,7 +217,6 @@ export const pelletDeployRouter = createTRPCRouter({
             )
             .changeAddress(input.changeAddress)
             .selectUtxosFrom(input.utxos)
-            .setNetwork("preprod")
         const unsignedTx = await txBuilder.complete();
 
             return { unsignedTx, done: false as const };

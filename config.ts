@@ -25,7 +25,7 @@ export const fuelTokenPolicy: PolicyId = policyId('01a52cfa8e6e7145db628108a70ff
 export const shipYardPolicy = 'ec79e6d0adb9706b5f2d1800a27b4b4990ee00ee8295158dd4d599ba'
 //export const shipYardName =
 
-export const refHash: string = 'eda5d68d7f41c014c920d03d096a9e0e6f4d07e9491720675fa08f6584ebfacf'
+export const refHash: string = 'eda5d68d7f41c014c920d03d096a9e0e6f4d07e9491720675fa08f6584ebfacf' //Might be the old one
 
 //pellet validator ref hash 
 export const pelletRefHash: TxOutRef = txOutRef('40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3', 0)

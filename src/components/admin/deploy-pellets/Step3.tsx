@@ -32,7 +32,7 @@ export default function Step3({pellets}: {pellets: PelletParams}) {
                 collateral
             });
 
-            const signedTx = await wallet.signTx(unsignedTx, true);
+            const signedTx = await wallet.signTx(unsignedTx);
             const firstTxHash = await wallet.submitTx(signedTx);
             setSubmittedBatches(prev => [...prev, { batchNum: 0, txHash: firstTxHash }]);
 
@@ -41,6 +41,8 @@ export default function Step3({pellets}: {pellets: PelletParams}) {
             let lastTxHash = firstTxHash; // Track the most recent transaction hash
             
             while (!batchResult.done) {
+                const utxos = await wallet.getUtxos();
+                const collateral = (await wallet.getCollateral())[0]!;
                 batchResult = await nextBatch.mutateAsync({
                     sessionId,
                     lastTxHash,
