@@ -23,12 +23,12 @@ import { chunk } from "lodash";
 import { PelletDatum } from "~/types/pellet"; 
 
 // Admin asset (same for all pellets)
-const adminAsset: Asset[] = [
-  {
-    unit: adminTokenPolicy.bytes + adminTokenName.bytes,
-    quantity: "1",
-  },
-];
+// const adminAsset: Asset[] = [
+//   {
+//     unit: adminTokenPolicy.bytes + adminTokenName.bytes,
+//     quantity: "1",
+//   },
+// ];
 
 const fuelReedemer = conStr0([]);
 
@@ -103,17 +103,20 @@ export const pelletDeployRouter = createTRPCRouter({
           scriptHash(pellet.shipyard_policy),
         ]);
 
-        const fuelToken: Asset[] = [
+        const fuelAndAdminAsset: Asset[] = [
           {
             unit: '734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2' + fuelTokenName.bytes,
             quantity: pellet.fuel.toString(),
           },
+          {
+            unit: adminTokenPolicy.bytes + adminTokenName.bytes,
+            quantity: "1",
+          },
         ];
 
         txBuilder
-          .txOut(pelletValidatorAddress, fuelToken)
+          .txOut(pelletValidatorAddress, fuelAndAdminAsset)
           .txOutInlineDatumValue(pelletDatum, "JSON")
-          .txOut(pelletValidatorAddress, adminAsset)
       });
 
       // Complete the transaction (collateral, change, utxos, network)
@@ -193,17 +196,20 @@ export const pelletDeployRouter = createTRPCRouter({
                 scriptHash(pellet.shipyard_policy),
             ]);
 
-            const fuelToken: Asset[] = [
+            const fuelAndAdminAsset: Asset[] = [
             {
                 unit: '734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2' + fuelTokenName.bytes,
                 quantity: pellet.fuel.toString(),
             },
+            {
+                unit: adminTokenPolicy.bytes + adminTokenName.bytes,
+                quantity: "1",
+            },
             ];
 
             txBuilder
-            .txOut(pelletValidatorAddress, fuelToken)
+            .txOut(pelletValidatorAddress, fuelAndAdminAsset)
             .txOutInlineDatumValue(pelletDatum, "JSON")
-            .txOut(pelletValidatorAddress, adminAsset)
         });
 
         // Complete the transaction (collateral, change, utxos, network)
