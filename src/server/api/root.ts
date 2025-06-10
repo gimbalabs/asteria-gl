@@ -2,6 +2,7 @@ import { mintAdminAndRewardRouter } from "~/server/api/routers/admin/mintAdminAn
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { setParametersRouter } from "./routers/admin/setParameters";
 import { deployAsteriaValidatorsRouter } from "./routers/admin/deployValidatorsRouter";
+import { pelletDeployRouter } from "./routers/admin/pelletDeploy";
 import { createShipRouter } from "./routers/userTx/createShipRouter";
 import { pelletDeployRouter } from "./routers/admin/pelletDeploy";
 
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   mintAdminAndReward: mintAdminAndRewardRouter,
   setParameters: setParametersRouter,
   deployAsteriaValidators: deployAsteriaValidatorsRouter,
+  pelletDeploy: pelletDeployRouter,
   createShip: createShipRouter,
 
   pelletDeploy: pelletDeployRouter,
