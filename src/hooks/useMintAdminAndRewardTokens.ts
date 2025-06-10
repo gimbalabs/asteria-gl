@@ -9,7 +9,7 @@ export function useMintAdminAndRewardTokens() {
   const [dummyKey,   setDummyKey]   = useState("");
 
   const prepareTransaction = api.mintAdminAndReward.prepareTransaction.useMutation();
-  const { wallet, connected } = useWallet(); // 👈 get wallet and connection state
+  const { wallet, connected } = useWallet(); // get wallet and connection state
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

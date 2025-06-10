@@ -13,7 +13,7 @@ import {
     UTxO} from "@meshsdk/core";
 import { fromScriptRef} from "@meshsdk/core-cst";
 import { blockchainProvider, myWallet, slot } from "../../utils.js";
-import { admintoken} from "../../config.js";
+import { admintoken} from "../../config-dont-use.js";
 import { readFile } from "fs/promises";
 
 const changeAddress = await myWallet.getChangeAddress();

@@ -1,5 +1,5 @@
 import { fromScriptRef, resolvePlutusScriptAddress } from "@meshsdk/core-cst";
-import { admintoken,fuelToken} from "../../config.js";
+import { admintoken,fuelToken} from "../../config-dont-use.js";
 import { blockchainProvider } from "../../utils.js";
 import { Asset, conStr0, conStr1, conStr2, deserializeDatum, integer, MeshTxBuilder, PlutusScript, policyId, stringToHex } from "@meshsdk/core";
 import { readFile } from "fs/promises";

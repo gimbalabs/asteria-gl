@@ -17,6 +17,7 @@ import {
 } from "@meshsdk/core";
 import { deployScriptAppliedParam } from "../apply-param/deploy.js";
 import { resolvePlutusScriptAddress} from "@meshsdk/core-csl";
+import { resolvePlutusScriptHash } from "@meshsdk/core-cst";
 import { spacetimeScriptAppliedParam } from "../apply-param/spacetime.js";
 import { readFile, writeFile} from "fs/promises";
 
@@ -44,8 +45,9 @@ const pelletScriptUtxo = await blockchainProvider.fetchUTxOs(pelletDeployScript.
 const asteriaScriptHash = asteriaScriptUtxo[0].output.scriptHash;
 const pelletScriptHash = pelletScriptUtxo[0].output.scriptHash;
 
-const deployScript = deployScriptAppliedParam(
-    admin_token
+/*const deployScript = deployScriptAppliedParam(
+    admin_token,
+
 );
 
 const deployScriptAddressBech32 = resolvePlutusScriptAddress(deployScript.deployPlutusScript,0);
@@ -59,6 +61,8 @@ const spacetimeScript = spacetimeScriptAppliedParam(
     initial_fuel,
     min_asteria_distance
 );
+
+
 
 const spacetimeAsset: Asset[] = [
     {
@@ -92,3 +96,4 @@ await writeFile(
 };
 
 export {deploySpacetime};
+*/

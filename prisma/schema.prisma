@@ -6,15 +6,20 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@index([name])
+model GameParameters {
+  id                   Int      @id @default(1)
+  adminToken           String   @map("admin_policy_id")
+  adminTokenName       String   @map("admin_asset_name")
+  shipMintLovelaceFee  Int
+  maxAsteriaMining     Int
+  maxSpeed             Json     // { distance: 1, timeMs: 30000 }
+  maxShipFuel          Int
+  fuelPerStep          Int
+  initialFuel          Int
+  minAsteriaDistance   Int
+  updatedAt            DateTime @updatedAt
 }

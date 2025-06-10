@@ -9,7 +9,7 @@ import {
   UTxO
 } from "@meshsdk/core";
 import { blockchainProvider, myWallet } from "../../../utils.js";
-import { admintoken } from "../../../config.js";
+import { admintoken } from "../../../config-dont-use.js";
 import { fromScriptRef, resolvePlutusScriptAddress } from "@meshsdk/core-cst";
 import { readFile } from "fs/promises";
 

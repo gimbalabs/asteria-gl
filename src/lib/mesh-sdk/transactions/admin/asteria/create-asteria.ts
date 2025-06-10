@@ -8,7 +8,7 @@ import {
     policyId} from "@meshsdk/core";
 import { myWallet ,blockchainProvider} from "../../../utils.js";
 import { fromScriptRef, resolvePlutusScriptAddress} from "@meshsdk/core-cst";
-import { admintoken } from "../../../config.js";
+import { admintoken } from "../../../config-dont-use.js";
 import { readFile } from "fs/promises";
 
 
