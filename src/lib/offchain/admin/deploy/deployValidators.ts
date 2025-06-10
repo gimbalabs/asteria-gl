@@ -3,8 +3,9 @@ import { deployScriptAppliedParam } from "~/lib/mesh-sdk/transactions/admin/appl
 import { pelletScriptApliedParam } from "~/lib/mesh-sdk/transactions/admin/apply-param/pellet";
 import { spacetimeScriptAppliedParam } from "~/lib/mesh-sdk/transactions/admin/apply-param/spacetime";
 
-import { Integer, PlutusScript, ScriptHash, serializePlutusScript} from "@meshsdk/core";
-import { deserializeBech32Address, resolvePlutusScriptAddress } from "@meshsdk/core-csl";
+import { Integer, PlutusScript, ScriptHash, serializePlutusScript, resolvePlutusScriptHash} from "@meshsdk/core";
+import { deserializeBech32Address, resolvePlutusScriptAddress, deserializePlutusScript } from "@meshsdk/core-csl";
+
 
 
 interface DeployParameters {
@@ -23,10 +24,14 @@ interface DeployParameters {
 export async function deployAsteriaValidators({adminToken, adminTokenName, shipMintLovelaceFee, maxAsteriaMining,  maxSpeed, fuelPerStep, initialFuel, maxShipFuel, minAsteriaDistance}: DeployParameters){
 
     const pelletWithParams = pelletScriptApliedParam(adminToken, adminTokenName)
+ 
     
     const pelletScriptAddress =  resolvePlutusScriptAddress(pelletWithParams.pelletPlutusScript, 0)
+    const scriptHash = resolvePlutusScriptHash(pelletScriptAddress)
+    console.log("script hash:" ,scriptHash)
  
     const pelletScriptHash = deserializeBech32Address(pelletScriptAddress)
+    console.log("script hash 2nd:", pelletScriptHash)
 
     
     const asteriaWithParams = await asteriaScriptAppliedParam(pelletScriptAddress, adminToken, adminTokenName, shipMintLovelaceFee, maxAsteriaMining, minAsteriaDistance, initialFuel )
