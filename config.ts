@@ -17,7 +17,7 @@ export const adminTokenPolicy: PolicyId = policyId('fbeafbfb456a440b174001793c54
 
 
 export const fuelTokenName: AssetName = assetName('4655454c') /// different ?
-export const fuelTokenPolicy: PolicyId = policyId('01a52cfa8e6e7145db628108a70ff53284986fb5df80fadb4309391d') /// different ?
+export const fuelTokenPolicy: PolicyId = policyId('734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2') /// different ?
 
 //export const prizeTokenName = 
 //export const prizeTokenPolicy = 
