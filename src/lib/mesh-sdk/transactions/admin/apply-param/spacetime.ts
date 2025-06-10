@@ -1,7 +1,7 @@
 
 import { applyParamsToScript} from "@meshsdk/core-cst";
 import  plutusBlueprint from "../../../../onchain/src/plutus.json" with {type: 'json'};
-import { integer, PlutusScript, scriptHash, policyId, conStr0, byteString, stringToHex} from "@meshsdk/core";
+import { integer, PlutusScript, scriptHash, policyId, conStr0, byteString, stringToHex, assetName} from "@meshsdk/core";
 
 const asteriaValidator = plutusBlueprint.validators.find(
         ({ title }) => title === "spacetime.spacetime.spend"
@@ -22,7 +22,7 @@ function spacetimeScriptAppliedParam (
 
     const AdminTokenData =  conStr0([
         policyId(admin_token), 
-        byteString(stringToHex(adminTokenName))                              
+        assetName(stringToHex(adminTokenName))                              
       ]);
 
     const maxSpeed = conStr0([

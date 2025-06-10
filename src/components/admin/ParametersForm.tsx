@@ -37,13 +37,13 @@ export default function ParametersForm(){
     async function submit(e: React.FormEvent){
         e.preventDefault();
 
-        if (parameters) {
+      /*  if (parameters) {
             const ok = window.confirm(
               "Changing the parameters would require re-deploying the contracts. Would you like to proceed?"
             );
             if (!ok) return;
           }
-
+*/
         setParameters.mutateAsync({
             adminToken: adminToken,
             adminTokenName: assetName,       
@@ -67,16 +67,11 @@ export default function ParametersForm(){
     }
 
 
-    // show a loading state
-    if (isLoading) {
-        return <div>Loading parameters…</div>;
-    }
-
     // 3. dynamic button classes
-    const buttonClasses = parameters
+    /*const buttonClasses = parameters
         ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
         : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500";
-
+*/
            
 
             return (
@@ -127,10 +122,6 @@ export default function ParametersForm(){
                     <input
                     readOnly
                     value={adminToken}
-
-                    placeholder={
-                        parameters?.adminToken ?? ""
-                    }
                     className="p-1"
                     />
 
@@ -138,13 +129,6 @@ export default function ParametersForm(){
                     <input
                     readOnly
                     value={assetNameReadable}
-                    placeholder={
-                        parameters
-                        ? `${Buffer.from(parameters.adminTokenName, "hex").toString(
-                            "utf8"
-                            )} (${parameters.adminTokenName})`
-                        : ""
-                    }
                     className="p-1"
 
                     />
@@ -160,11 +144,6 @@ export default function ParametersForm(){
                         value={shipMintLovelaceFee}
                         onChange={(e) => setShipMintLovelaceFee(e.target.value)}
 
-                        placeholder={
-                            parameters
-                            ? String(parameters.shipMintLovelaceFee)
-                            : ""
-                        }
                         required
                         className="p-1"
                         />
@@ -177,12 +156,7 @@ export default function ParametersForm(){
                         type="text"
                         value={maxAsteriaMining}
                         onChange={(e) => setMaxAsteriaMining(e.target.value)}
-
-                        placeholder={
-                            parameters
-                            ? String(parameters.maxAsteriaMining)
-                            : ""
-                        }
+                         
                         required
                         className="p-1"
                         />
@@ -197,11 +171,7 @@ export default function ParametersForm(){
 
                                 value={distance}
                                 onChange={(e) => setDistance(e.target.value)}
-                                placeholder={
-                                    parameters
-                                    ? String(parameters.maxSpeed.distance)
-                                    : "Distance"
-                                }
+                               
                                 required
                                 className="p-1"
                                 />
@@ -212,9 +182,7 @@ export default function ParametersForm(){
                                 type="text"
                                 value={time}
                                 onChange={(e) => setTime(e.target.value)}
-                                placeholder={
-                                    parameters ? String(parameters.maxSpeed.timeMs) : "Time (ms)"
-                                }
+                             
                                 required
                                 className="p-1"
                                 />
@@ -227,11 +195,7 @@ export default function ParametersForm(){
                         type="text"
                         value={fuelPerStep}
                         onChange={(e) => setFuelPerStep(e.target.value)}
-                        placeholder={
-                            parameters
-                            ? String(parameters.fuelPerStep)
-                            : ""
-                        }
+                      
                         required
                         className="p-1"
                         />
@@ -243,11 +207,7 @@ export default function ParametersForm(){
                         type="text"
                         value={initialFuel}
                         onChange={(e) => setInitialFuel(e.target.value)}
-                        placeholder={
-                            parameters
-                            ? String(parameters.initialFuel)
-                            : ""
-                        }
+                    
                         required
                         className="p-1"
                         />
@@ -259,11 +219,7 @@ export default function ParametersForm(){
                         type="text"
                         value={minDistance}
                         onChange={(e) => setMinDistance(e.target.value)}
-                        placeholder={
-                            parameters
-                            ? String(parameters.minAsteriaDistance)
-                            : ""
-                        }
+                     
                         required
                         className="p-1"
                         />
@@ -275,11 +231,7 @@ export default function ParametersForm(){
                         type="text"
                         value={maxShipFuel}
                         onChange={(e) => setMaxShipFuel(e.target.value)}
-                        placeholder={
-                            parameters
-                            ? String(parameters.maxShipFuel)
-                            : ""
-                        }
+                    
                         required
                         className="p-1 mb-4"
                         />
@@ -288,9 +240,9 @@ export default function ParametersForm(){
 
                 <button
                 type="submit"
-                className={`inline-block px-6 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 ${buttonClasses}`}
+                className={`inline-block px-6 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2`}
                 >
-                {parameters ? "Update Parameters" : "Add Parameters"}
+                Deploy
                 </button>
             </form>
            

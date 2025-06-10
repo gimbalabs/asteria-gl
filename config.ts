@@ -16,8 +16,10 @@ export const adminTokenName: AssetName = assetName('41737465726961746f6b656e')
 export const adminTokenPolicy: PolicyId = policyId('fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293') //bytestring
 
 
-export const fuelTokenName: AssetName = assetName('4655454c') /// different ? // old?
-export const fuelTokenPolicy: PolicyId = policyId('734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2')
+
+export const fuelTokenName: AssetName = assetName('4655454c') /// different ?
+export const fuelTokenPolicy: PolicyId = policyId('734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2') /// different ?
+
 
 //export const prizeTokenName = 
 //export const prizeTokenPolicy = 

@@ -11,8 +11,8 @@ export const createShipRouter = createTRPCRouter({
     .input(z.object({
         ship_mint_lovelace_fee: z.number(),
         initial_fuel: z.string(),
-        posX: z.bigint(),
-        posY: z.bigint(),
+        posX: z.number(),
+        posY: z.number(),
         tx_latest_posix_time: z.number(),
         changeAddress: z.string(),
         utxos: z.array(z.any()),
@@ -34,6 +34,7 @@ export const createShipRouter = createTRPCRouter({
                         utxos,
                     )
             console.log("tx ready")
+         
             return {unsignedTx}
             
         } catch(error){

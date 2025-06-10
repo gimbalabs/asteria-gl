@@ -1,12 +1,12 @@
 
 import { applyParamsToScript } from "@meshsdk/core-cst";
 import plutusBlueprint from "../../../../onchain/src/plutus.json" with {type: 'json'};
-import { Integer, PlutusScript, integer, policyId ,byteString, conStr0, stringToHex, scriptHash, deserializeAddress}  from "@meshsdk/core";
+import { Integer, PlutusScript, integer, policyId ,byteString, conStr0, stringToHex, scriptHash, deserializeAddress, assetName}  from "@meshsdk/core";
 
  
 const asteriaValidator = plutusBlueprint.validators.find(
         ({ title }) => title === "asteria.asteria.spend"
-  );
+  );  
 const ASTERIA_SCRIPT = asteriaValidator!.compiledCode;
 
 function asteriaScriptAppliedParam(
@@ -24,7 +24,7 @@ function asteriaScriptAppliedParam(
 
   const AdminTokenData =  conStr0([
       policyId(admin_token), 
-      byteString(stringToHex(adminTokenName))                              
+      assetName(stringToHex(adminTokenName))                              
     ]);
 
   const pelletAddress = deserializeAddress(pellet_address)

@@ -25,7 +25,7 @@ export const tx_latest_posix_time = Number(latestSlot) + 600;
 export const slot = Number(latestSlot);
 */
 
-import { MaestroProvider } from "@meshsdk/core";
+import { MaestroProvider , BlockfrostProvider} from "@meshsdk/core";
 
 
 export const getEnv = (key: string): string => {
@@ -40,7 +40,13 @@ export const getMaestroApiKey = (): string => {
     return getEnv("MAESTRO_PREPROD_KEY");
   };
 
-  const apiKey = getMaestroApiKey()
+export const getBlockfrostApi = () : string => {
+  return getEnv("BLOCKFROSTAPI");
+}
+
+const apiKey = getMaestroApiKey()
+const blockfrostApi = getBlockfrostApi()
+
 
  export const maestroProvider = new MaestroProvider({
     network: "Preprod",
@@ -48,3 +54,4 @@ export const getMaestroApiKey = (): string => {
     turboSubmit: false, // Read about paid turbo transaction submission feature at https://docs.gomaestro.org/docs/Dapp%20Platform/Turbo%20Transaction.
   });
 
+export const blockfrostProvider = new BlockfrostProvider(blockfrostApi)

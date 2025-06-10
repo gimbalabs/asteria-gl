@@ -35,14 +35,15 @@ export function useCreateShipTx(){
           collateral: collateral[0] ,
           ship_mint_lovelace_fee: Number(shipFee),
           initial_fuel: initialFuel,
-          posX: BigInt(posX),
-          posY: BigInt(posY),
+          posX: Number(posX),
+          posY: Number(posY),
           tx_latest_posix_time: Date.now(),
         }
         
   
         
         const {unsignedTx, error} = await prepareTx.mutateAsync(payload);
+        console.log("unstx" , unsignedTx)
 
         if(error){
             console.log(error)
