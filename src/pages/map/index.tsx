@@ -1,113 +1,148 @@
-import Mapbutton from "~/components/Mapbutton";
-import React, { useState } from "react";
-import CreateShipComponent from "~/components/user/CreateShipComponent";
+import React, { useEffect, useRef, useState } from "react";
 
-const GRID_SIZE = 100;
+// Example input centered around 0
+let changeShipPos: {x: number, y: number}[];
+const inputPellets = [
+  { x: -40, y: 20 },
+  { x: 0, y: 0 },
+  { x: 40, y: -10 },
+  { x: 25, y: 30 },
+  { x: -15, y: -20 },
+  { x: -35, y: 10 },
+];
+const inputShips = [
+  { x: -5, y: -5 },
+  { x: 10, y: 15 },
+  { x: -10, y: 15 },
+];
+ 
+const GalaxyMap = ({ pellets = inputPellets, ships = inputShips }) => {
+  const gridSize = 100; // Full grid range (-50 to 50)
+  const moveStep = 1;
+  const containerRef = useRef(null);
 
-function generateGrid() {
-    const grid = [];
-    for (let y = -GRID_SIZE / 2; y < GRID_SIZE / 2; y++) {
-        const row = [];
-        for (let x = -GRID_SIZE / 2; x < GRID_SIZE / 2; x++) {
-            row.push({ x, y, content: null as string | null });
+  const [ship, setShip] = useState(ships);
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (selectedIndex === null) return;
+
+      setShip((prevShips) => {
+        const updated = [...prevShips];
+        const node = { ...updated[selectedIndex] };
+
+        switch (e.key) {
+          case "ArrowUp":
+            node.y = Math.max(-50, node.y - moveStep);
+            break;
+          case "ArrowDown":
+            node.y = Math.min(50, node.y + moveStep);
+            break;
+          case "ArrowLeft":
+            node.x = Math.max(-50, node.x - moveStep);
+            break;
+          case "ArrowRight":
+            node.x = Math.min(50, node.x + moveStep);
+            break;
+          default:
+            return prevShips;
         }
-        grid.push(row);
-    }
-    return grid;
-}
 
-export default function MapPage() {
-    const [grid, setGrid] = useState<{ x: number; y: number; content: string | null }[][]>(generateGrid());
-    const [inputValue, setInputValue] = useState("");
-    const [selectedCell, setSelectedCell] = useState<{ x: number; y: number } | null>(null);
-   const [zoom, setZoom] = useState(1); // State to manage zoom level
-
-
-
-    const handleCellClick = (x: number, y: number) => {
-        setSelectedCell({ x, y });
+        updated[selectedIndex] = node;
+        changeShipPos = updated;
+        return updated;
+      });
     };
+  
 
-    const handleAddContent = () => {
-        if (selectedCell) {
-            setGrid((prevGrid) => {
-                return prevGrid.map((row) =>
-                    row.map((cell) =>
-                        cell.x === selectedCell?.x && cell.y === selectedCell?.y
-                            ? { ...cell, content: inputValue }
-                            : cell
-                    )
-                );
-            });
-            setInputValue("");
-            setSelectedCell(null);
-        }
-    };
 
-    return (
-        <>
-        <div>
-            <CreateShipComponent />
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedIndex]);
+
+  const handleClick = (index) => {
+    setSelectedIndex(index);
+    //moveShips();
+  };
+
+  const toPercent = (val) => `${((val + 50) / gridSize) * 100}%`;
+
+  return (
+    <div
+      ref={containerRef}
+      tabIndex={0}
+      className="relative w-full h-screen flex items-center justify-center overflow-hidden outline-none"
+      style={{
+        backgroundImage: "url('/starfield.svg')",
+        backgroundSize: "conver",
+        backgroundPosition: "center",
+      }}
+    >
+      {pellets.map((node, idx) => (
+        <img
+          key={idx}
+          src="/landing-fuel-1.svg"
+          alt="pellet"
+          className="absolute w-6 h-6"
+          style={{
+            left: toPercent(node.x),
+            top: toPercent(node.y),
+            transform: "translate(-50%, -50%)",
+          }}
+        />
+      ))}
+
+      <img
+        src="/favicon.png"
+        alt="asteria"
+        className="absolute w-16 h-16"
+        style={{
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: 10,
+        }}
+      />
+
+      {ship.map((s, index) => (
+        <img
+          key={index}
+          src="/landing-ship-1.svg"
+          alt="ship"
+          className={`absolute w-6 h-6 cursor-pointer ${
+            index === selectedIndex ? "ring-2 ring-yellow-400" : ""
+          }`}
+          style={{
+            left: toPercent(s.x),
+            top: toPercent(s.y),
+            transform: "translate(-50%, -50%)",
+            zIndex: index === selectedIndex ? 10 : 1,
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClick(index);
+          }}
+        />
+      ))}
+      {/* Center Grid at (0,0) */}
+        <div
+          className="absolute border-2 border-black-400 bg-transparent pointer-events-none"
+          style={{
+            width: "1%",
+            height: "1%",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 3,
+          }}
+        >
+          <span className="absolute text-green-400 text-xs" style={{ top: "100%", left: "50%", transform: "translateX(-50%)" }}>
+            (0, 0)
+          </span>
         </div>
-        <div>
-        
-        <Mapbutton/>
-            <div className="controls">
-                <input
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Enter content"
-                />
-                <button onClick={handleAddContent} disabled={!selectedCell}>
-                    Add to Grid
-                </button>
-            </div>
-            <div
-                className="grid"
-                style={{
-                    position: "relative",
-                    top: 0,
-                    left: 0,
-                    width: "140%",
-                    height: "280vh",
-                    backgroundImage: "url('/visualizer/background.png')",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    transform: `scale(${zoom})`, // Apply zoom level
-                    transformOrigin: "center", // Zoom from the center
-                }}
-            >
-                {grid.map((row, rowIndex) => (
-                    <div key={rowIndex} className="row" style={{ display: "flex" }}>
-                        {row.map((cell) => (
-                            <div
-                                key={`${cell.x},${cell.y}`}
-                                className="cell"
-                                style={{
-                                    width: "20px",
-                                    height: "20px",
-                                    border: "0.1px solid black",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    backgroundImage:
-                                        selectedCell?.x === cell.x && selectedCell?.y === cell.y
-                                            ? "linear-gradient(rgba(128, 128, 128, 0.5), rgba(128, 128, 128, 0.5))"
-                                            : "none",
-                                }}
-                                onClick={() => handleCellClick(cell.x, cell.y)}
-                            >
-                                {cell.content}
-                            </div>
-                        ))}
-                    </div>
-                ))}
-            </div>
-        </div>
-        </>
-    );
-}
+    </div>
+  );
+};
 
-
+export default GalaxyMap;
