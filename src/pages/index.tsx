@@ -1,11 +1,8 @@
 import Head from "next/head";
-import Link from "next/link";
 import PlayButton from "~/components/PlayButton";
 
-import { api } from "~/utils/api";
 
 export default function Home() {
-  const hello = api.post.hello.useQuery({ text: "from tRPC" });
 
   return (
     <>
