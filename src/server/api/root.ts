@@ -4,7 +4,8 @@ import { setParametersRouter } from "./routers/admin/setParameters";
 import { deployAsteriaValidatorsRouter } from "./routers/admin/deployValidatorsRouter";
 import { pelletDeployRouter } from "./routers/admin/pelletDeploy";
 import { createShipRouter } from "./routers/userTx/createShipRouter";
-import { pelletDeployRouter } from "./routers/admin/pelletDeploy";
+import { moveShipRouter } from "./routers/userTx/moveShip";
+
 
 /**
  * This is the primary router for your server.
@@ -17,8 +18,7 @@ export const appRouter = createTRPCRouter({
   deployAsteriaValidators: deployAsteriaValidatorsRouter,
   pelletDeploy: pelletDeployRouter,
   createShip: createShipRouter,
-
-  pelletDeploy: pelletDeployRouter,
+  moveShip: moveShipRouter,
 });
 
 // export type definition of API

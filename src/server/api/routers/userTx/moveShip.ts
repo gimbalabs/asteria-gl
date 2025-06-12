@@ -1,6 +1,38 @@
+import { createTRPCRouter, publicProcedure } from "../../trpc";
+import { z } from "zod";
+import { maestroProvider } from "~/server/provider/maestroProvider";
+import { spacetimeValidatorAddress } from "config";
+import { shipYardPolicy } from "config";
+import { UTxO, TxOutRef, TxIn, AssetExtended} from "@meshsdk/core";
 
-
-
+export const moveShipRouter = createTRPCRouter({
+    queryShipStateDatum: publicProcedure
+        .input(z.array(z.object({
+            unit: z.string(),
+            assetName: z.string(),
+            policyId: z.string(),
+            assetFingerprint: z.string(),
+            quantity: z.string(),
+        })))
+        .query(async ({ input }) => {
+            // TODO: Implement logic to filter UTXO w/ pilot token
+            const pilotAsset = input.filter(
+                (asset) => asset.policyId === shipYardPolicy
+            );
+            if (!pilotAsset.length) {
+                throw new Error("Ship not minted yet!");
+            }
+            const pilotTokenName: string = pilotAsset[0]?.assetName ?? "";
+            const shipStateUtxos = await maestroProvider.fetchAddressUTxOs(spacetimeValidatorAddress);
+            // const shipStateUtxo = shipStateUtxos.filter(
+            //     (utxo) => utxo.output.plutusData?.pilot_token_name === pilotTokenName
+            // ) // TODO: How to access inline datum when it is an object?
+            // if (!shipStateUtxo) {
+            //     throw new Error("Ship state UTXO not found");
+            // query spacetime validator address for shipState UTXOs 
+            // filter them for the specific shipState UTXO based on datum having the same pilot token name
+        })
+})
 
 
 

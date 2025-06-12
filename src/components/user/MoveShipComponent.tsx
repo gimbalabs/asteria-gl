@@ -1,6 +1,7 @@
 import { useWallet } from "@meshsdk/react";
 import { useEffect, useState } from "react";
 import { AssetExtended } from "@meshsdk/core";
+import { api } from "~/utils/api";
 
 export default function MoveShipComponent() {
     const { wallet, connected } = useWallet();
