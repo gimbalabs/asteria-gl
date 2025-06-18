@@ -1,13 +1,13 @@
 //import { api } from "~/utils/api";
 import { useWallet } from "@meshsdk/react";
-import { pelletRefHash, spacetimeRefHash } from "config";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Asset, stringToHex, TxOutput, UTxO, serializePlutusScript, PlutusScript} from "@meshsdk/core";
 import { fromScriptRef} from "@meshsdk/core-cst";
 import { hexToString } from "~/utils/hextoString";
 
 
-import { spacetimeRefHashWOUtil } from "config";
+import { spacetimeRefHashWOUtil, pelletRefHashWOUtil } from "config";
 
 import { MaestroProvider } from "@meshsdk/core";
 
@@ -25,8 +25,33 @@ export function useGatherFuelTx(){
     const [pilotUtxo, setPilotUtxo] = useState<UTxO>()
     const [shipUtxo, setShipUtxo] = useState<UTxO>()
     const [pilotToken, setPilotToken] = useState<string>("")
+    const [pelletUtxoList, setPelletUtxoList] = useState<UTxO[]>()
+    const [pelletUtxo, setPelletUtxo] = useState<UTxO>()
+
+    const [availableFuel, setAvailableFuel] = useState<number|undefined>()
+    const [fuel, setFuel] = useState<number|undefined>()
 
     const { wallet, connected } = useWallet(); 
+
+    useEffect( () => {
+
+
+        async function getPelletData(){
+
+            const pelletRefUtxo = await clientMaestroProvider.fetchUTxOs(pelletRefHashWOUtil, 0)
+            const pelletScriptRef = fromScriptRef(pelletRefUtxo[0]?.output.scriptRef!)
+            const pelletPlutusScript = pelletScriptRef as PlutusScript
+            const pelletAddress = serializePlutusScript(pelletPlutusScript).address
+                
+            const pelletUtxos = await clientMaestroProvider.fetchAddressUTxOs(pelletAddress)
+            setPelletUtxoList(pelletUtxos)
+        }
+
+        getPelletData()
+        .catch(console.error)
+
+    }, [])
+
 
     const handleSubmit = async (e: React.FormEvent) => {
 
@@ -70,6 +95,14 @@ export function useGatherFuelTx(){
             setShipUtxo(findShipUtxo)
             setTest(shipUtxo?.input.txHash+"#"+shipUtxo?.input.outputIndex)
 
+            if(!pelletUtxo){
+                return alert('Please select a Pellet utxo first')
+            }
+
+            if(availableFuel < fuel){
+                return alert('You can only select a maximum of'+{availableFuel})
+            }
+           
 
         } 
         catch(error){
@@ -78,6 +111,6 @@ export function useGatherFuelTx(){
         }
     }
 
-    return {handleSubmit, test}
+    return {handleSubmit, test, pelletUtxoList, setPelletUtxo, pelletUtxo, setAvailableFuel, availableFuel, fuel, setFuel}
 
 }

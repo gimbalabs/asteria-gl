@@ -30,6 +30,7 @@ export default async function gatherFuel(
  utxos: UTxO[],
  changeAddress: string,
  gatherAmount: number,
+ pilotUtxo: UTxO,
  shipUtxo: UTxO,
  pelletUtxo: UTxO,  
  spaceTimeRefHash: string,
@@ -130,7 +131,12 @@ const spacetimeOutputAssets : Asset[] = [{
 },{
     unit: pelletInputFuel?.unit!,
     quantity:(Number(shipFuel!) + gatherAmount).toString()
-}];
+},
+{
+    quantity: shipInputAda?.quantity!,
+    unit: shipInputAda?.unit!
+}
+];
 
 const pelletOutputAssets : Asset[] = [{
     unit: adminToken.policyId + adminToken.name,
@@ -138,7 +144,12 @@ const pelletOutputAssets : Asset[] = [{
 },{
     unit: pelletInputFuel?.unit!,
     quantity: (Number(pelletFuel!) - gatherAmount).toString()
-}];
+},
+{
+    quantity: pelletInputAda?.quantity!,
+    unit:     pelletInputAda?.unit!
+}
+];
 
 const pilottokenAsset: Asset[] = [{
     unit: shipyardPolicyId + pilotTokenName,
@@ -168,7 +179,6 @@ const unsignedTx = await txBuilder
 .txInInlineDatumPresent()
 .txOut(spacetimeAddress,spacetimeOutputAssets)
 .txOutInlineDatumValue(shipOutDatum,"JSON")
-
 .spendingPlutusScriptV3()
 .txIn(
     ship.input.txHash,
@@ -181,7 +191,7 @@ const unsignedTx = await txBuilder
 .txInInlineDatumPresent()
 .txOut(pelletAddress,pelletOutputAssets)
 .txOutInlineDatumValue(pelletOuputDatum,"JSON")
-
+.txIn(pilotUtxo.input.txHash, pilotUtxo.input.outputIndex)
 .txOut(changeAddress, pilottokenAsset) 
 .txInCollateral(
    collateralUtxo.input.txHash,
