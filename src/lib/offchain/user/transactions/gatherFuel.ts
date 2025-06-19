@@ -13,6 +13,7 @@ import {
 } from "@meshsdk/core";
 import { fromScriptRef} from "@meshsdk/core-cst";
 import { MeshTxBuilder } from "@meshsdk/core";
+import { hexToString } from "@meshsdk/core";
 
 
 import { maestroProvider } from "~/server/provider/maestroProvider";
@@ -85,11 +86,12 @@ console.log("Pellet : ", pellet.output.amount)
 const shipInputData = ship.output.plutusData;
 const shipInputDatum = deserializeDatum(shipInputData).fields;
 console.log(shipInputDatum)
-//get shipDatum Prpperties
+//get shipDatum Properties
 const ShipPosX:number = shipInputDatum[0].int;
 const shipPoxY: number = shipInputDatum[1].int;
 const shipTokenName: string = shipInputDatum[2].bytes;
 const pilotTokenName: string= shipInputDatum[3].bytes;
+console.log(hexToString(pilotTokenName))
 const lastMoveLatestTime: number = shipInputDatum[4].int;
 
 const ttl = Date.now() + 30 * 60 * 1000;
@@ -151,10 +153,14 @@ const pelletOutputAssets : Asset[] = [{
 }
 ];
 
+console.log(pelletOutputAssets)
+
 const pilottokenAsset: Asset[] = [{
     unit: shipyardPolicyId + pilotTokenName,
     quantity: "1"
 }];
+
+console.log(pilottokenAsset)
 
 const shipRedeemer = conStr1([integer(gatherAmount)]);  //note to change redeemer index if error
 const pelletRedemer = conStr0([integer(gatherAmount)]);
@@ -167,6 +173,7 @@ const txBuilder = new MeshTxBuilder({
 
 const unsignedTx = await txBuilder
 
+.txIn(pilotUtxo.input.txHash, pilotUtxo.input.outputIndex, )
 .spendingPlutusScriptV3()
 .txIn(
     pellet.input.txHash,
@@ -174,11 +181,9 @@ const unsignedTx = await txBuilder
     pellet.output.amount,
     pellet.output.address
 )
-.spendingReferenceTxInRedeemerValue(shipRedeemer, "JSON")
-.spendingTxInReference(spaceTimeRefHash,0)
+.spendingReferenceTxInRedeemerValue(pelletRedemer,"JSON")
+.spendingTxInReference(pelletRefHash,0)
 .txInInlineDatumPresent()
-.txOut(spacetimeAddress,spacetimeOutputAssets)
-.txOutInlineDatumValue(shipOutDatum,"JSON")
 .spendingPlutusScriptV3()
 .txIn(
     ship.input.txHash,
@@ -186,18 +191,18 @@ const unsignedTx = await txBuilder
     ship.output.amount,
     ship.output.address
 )
-.spendingReferenceTxInRedeemerValue(pelletRedemer,"JSON")
-.spendingTxInReference(pelletRefHash,0)
+.spendingReferenceTxInRedeemerValue(shipRedeemer, "JSON")
+.spendingTxInReference(spaceTimeRefHash,0)
 .txInInlineDatumPresent()
+.txOut(changeAddress, pilottokenAsset) 
 .txOut(pelletAddress,pelletOutputAssets)
 .txOutInlineDatumValue(pelletOuputDatum,"JSON")
-.txIn(pilotUtxo.input.txHash, pilotUtxo.input.outputIndex)
-.txOut(changeAddress, pilottokenAsset) 
+.txOut(spacetimeAddress,spacetimeOutputAssets)
+.txOutInlineDatumValue(shipOutDatum,"JSON")
 .txInCollateral(
    collateralUtxo.input.txHash,
    collateralUtxo.input.outputIndex
 )
-.selectUtxosFrom(utxos)
 .changeAddress(changeAddress)
 .setNetwork("preprod")
 .complete();

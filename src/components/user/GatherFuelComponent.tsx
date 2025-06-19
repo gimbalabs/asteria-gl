@@ -5,7 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 export default function GatherFuel(){
 
-    const {handleSubmit, test, pelletUtxoList, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel} = useGatherFuelTx()
+    const {handleSubmit, test, pelletUtxoList, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel, txHash} = useGatherFuelTx()
     
 
     return (
@@ -36,11 +36,12 @@ export default function GatherFuel(){
                 
                 : null}
 
-                <input placeholder="Choose fuel to take" onChange={(e) => setFuel(Number(e.target.value))}>{fuel}</input>
+                <input className="text-black" value={fuel} placeholder="Choose fuel to take" onChange={(e) => setFuel(Number(e.target.value))}></input>
                 
                 <button type="submit">Click to test</button>
             </form>
             <pre className="text-white">{JSON.stringify({test})}</pre>
+            {txHash && <p>Gather fuel has been submitted, hash...{txHash}  </p>}
         </div>
     )
 

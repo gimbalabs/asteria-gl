@@ -1,10 +1,11 @@
-//import { api } from "~/utils/api";
+import { api } from "~/utils/api";
 import { useWallet } from "@meshsdk/react";
 
 import { useState, useEffect } from "react";
-import { Asset, stringToHex, TxOutput, UTxO, serializePlutusScript, PlutusScript} from "@meshsdk/core";
+import { Asset, stringToHex, TxOutput, UTxO, serializePlutusScript, PlutusScript, policyId} from "@meshsdk/core";
 import { fromScriptRef} from "@meshsdk/core-cst";
 import { hexToString } from "~/utils/hextoString";
+import { adminTokenPolicy, adminTokenName } from "config";
 
 
 import { spacetimeRefHashWOUtil, pelletRefHashWOUtil } from "config";
@@ -19,7 +20,7 @@ export function useGatherFuelTx(){
         network: "Preprod",
     })
 
-    //const prepareTx = api.gatherFuel.prepareGatherFuelTx.useMutation()
+    const prepareTx = api.gatherFuel.prepareGatherFuelTx.useMutation()
 
     const [test, setTest] = useState("Testing")
     const [pilotUtxo, setPilotUtxo] = useState<UTxO>()
@@ -30,6 +31,8 @@ export function useGatherFuelTx(){
 
     const [availableFuel, setAvailableFuel] = useState<number|undefined>()
     const [fuel, setFuel] = useState<number|undefined>()
+
+    const [txHash, setTxHash] = useState<string|undefined>()
 
     const { wallet, connected } = useWallet(); 
 
@@ -74,7 +77,7 @@ export function useGatherFuelTx(){
             const pilotNumber = pilotToken.slice(5)
          
 
-            const findPilotUtxo = utxos.find((utxo) => utxo.output.amount.find((asset: Asset) => {
+            const findPilotUtxo = await utxos.find((utxo) => utxo.output.amount.find((asset: Asset) => {
                return asset.unit.includes(stringToHex("PILOT"))
 
             }) )
@@ -88,20 +91,57 @@ export function useGatherFuelTx(){
 
             const spaceTimeUtxos = await clientMaestroProvider.fetchAddressUTxOs(spacetimeAddress)
 
-            const findShipUtxo = spaceTimeUtxos.find((utxo) => utxo.output.amount.find((asset: Asset) => {
+            const findShipUtxo = await spaceTimeUtxos.find((utxo) => utxo.output.amount.find((asset: Asset) => {
                return asset.unit.includes(stringToHex("SHIP"+pilotNumber))
 
             }) )
             setShipUtxo(findShipUtxo)
-            setTest(shipUtxo?.input.txHash+"#"+shipUtxo?.input.outputIndex)
+            
 
             if(!pelletUtxo){
                 return alert('Please select a Pellet utxo first')
             }
 
-            if(availableFuel < fuel){
-                return alert('You can only select a maximum of'+{availableFuel})
+             if(!fuel){
+                return alert("Choose the fuel that you wish to claim for your ship")
             }
+
+            if(availableFuel && fuel){
+                if(availableFuel < fuel){
+                return alert("You cannot select more that the available fuel")
+            }
+           
+           
+            const payload = {
+                collateralUtxo: collateral[0],
+                utxos: utxos,
+                changeAddress,
+                gatherAmount: fuel,
+                pilotUtxo,
+                shipUtxo,
+                pelletUtxo,
+                spacetimeRefHash: spacetimeRefHashWOUtil,
+                pelletRefHash: pelletRefHashWOUtil,
+                adminToken: {policyId: adminTokenPolicy.bytes.toString(), name: adminTokenName.bytes.toString() }
+            }
+
+
+            const {unsignedTx, error} = await prepareTx.mutateAsync(payload);
+
+            if(error){
+                console.log(error)
+                alert("Error from router" + error)
+            }
+
+
+            console.log("received unsigned tx")
+
+            const signedTx = await wallet.signTx(unsignedTx);
+            const txHash = await wallet.submitTx(signedTx);
+            setTxHash(txHash)
+        
+        }
+            
            
 
         } 
@@ -111,6 +151,6 @@ export function useGatherFuelTx(){
         }
     }
 
-    return {handleSubmit, test, pelletUtxoList, setPelletUtxo, pelletUtxo, setAvailableFuel, availableFuel, fuel, setFuel}
+    return {handleSubmit, test, pelletUtxoList, setPelletUtxo, pelletUtxo, setAvailableFuel, availableFuel, fuel, setFuel, txHash}
 
 }

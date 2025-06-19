@@ -150,6 +150,8 @@ const pilottokenAsset: Asset[] = [{
     quantity: "1"
 }];
 
+
+
 const shipRedeemer = conStr1([integer(gather_amount)]);  //note to change redeemer index if error
 const pelletRedemer = conStr0([integer(gather_amount)]);
 
