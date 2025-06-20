@@ -136,7 +136,7 @@ export function useGatherFuelTx(){
 
             console.log("received unsigned tx")
 
-            const signedTx = await wallet.signTx(unsignedTx);
+            const signedTx = await wallet.signTx(unsignedTx, true);
             const txHash = await wallet.submitTx(signedTx);
             setTxHash(txHash)
         
