@@ -9,8 +9,8 @@ export const moveShipRouter = createTRPCRouter({
     queryShipStateDatum: publicProcedure
         .input(z.array(z.object({
             unit: z.string(),
-            assetName: z.string(),
             policyId: z.string(),
+            assetName: z.string(),
             assetFingerprint: z.string(),
             quantity: z.string(),
         })))
@@ -19,11 +19,13 @@ export const moveShipRouter = createTRPCRouter({
             const pilotAsset = input.filter(
                 (asset) => asset.policyId === shipYardPolicy
             );
+            console.log(pilotAsset);
             if (!pilotAsset.length) {
                 throw new Error("Ship not minted yet!");
             }
             const pilotTokenName: string = pilotAsset[0]?.assetName ?? "";
-            const shipStateUtxos = await maestroProvider.fetchAddressUTxOs(spacetimeValidatorAddress);
+            console.log(pilotTokenName);
+            // const shipStateUtxos = await maestroProvider.fetchAddressUTxOs(spacetimeValidatorAddress);
             // const shipStateUtxo = shipStateUtxos.filter(
             //     (utxo) => utxo.output.plutusData?.pilot_token_name === pilotTokenName
             // ) // TODO: How to access inline datum when it is an object?
