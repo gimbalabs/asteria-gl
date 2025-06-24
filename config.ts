@@ -31,6 +31,7 @@ export const refHash: string = 'eda5d68d7f41c014c920d03d096a9e0e6f4d07e949172067
 
 //pellet validator ref hash 
 export const pelletRefHash: TxOutRef = txOutRef('40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3', 0)
+export const pelletRefHashWOUtil = '40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3'
   
 //asteria validator ref hash
 export const asteriaRefHash: TxOutRef = txOutRef('d20d15965e6bcfe0541938e7caf8a37b74852ece9cfed3314f1d9048b66cf8a5', 0)
@@ -38,7 +39,7 @@ export const asteriaRefHash: TxOutRef = txOutRef('d20d15965e6bcfe0541938e7caf8a3
 
 //spacetime validator ref Hash 
 export const spacetimeRefHash: TxOutRef = txOutRef('f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde', 0) 
-       
+export const spacetimeRefHashWOUtil = 'f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde'    
 
   //pellet validator address 
 export const pelletValidatorAddress = 'addr_test1wqq62t863eh8z3wmv2qs3fc075egfxr0kh0cp7kmgvynj8g9aj6tm'

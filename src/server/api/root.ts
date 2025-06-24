@@ -5,6 +5,9 @@ import { deployAsteriaValidatorsRouter } from "./routers/admin/deployValidatorsR
 import { pelletDeployRouter } from "./routers/admin/pelletDeploy";
 import { createShipRouter } from "./routers/userTx/createShipRouter";
 
+import { gatherFuelRouter } from "./routers/userTx/gatherFuelRouter";
+
+
 /**
  * This is the primary router for your server.
  *
@@ -16,6 +19,10 @@ export const appRouter = createTRPCRouter({
   deployAsteriaValidators: deployAsteriaValidatorsRouter,
   pelletDeploy: pelletDeployRouter,
   createShip: createShipRouter,
+
+  gatherFuel: gatherFuelRouter,
+  
+
 });
 
 // export type definition of API
