@@ -11,13 +11,13 @@ export const moveShipRouter = createTRPCRouter({
             unit: z.string(),
             policyId: z.string(),
             assetName: z.string(),
-            assetFingerprint: z.string(),
+            fingerprint: z.string(),
             quantity: z.string(),
         })))
         .query(async ({ input }) => {
             // TODO: Implement logic to filter UTXO w/ pilot token
             const pilotAsset = input.filter(
-                (asset) => asset.policyId === shipYardPolicy
+                (asset) => asset.policyId === "b5b0569387404d97341bcdd7b54916bde5976e2503fb1c7d9f7093aa"         //asset.policyId === shipYardPolicy this should be the actual one but currently I used a placeholder
             );
             console.log(pilotAsset);
             if (!pilotAsset.length) {
@@ -25,7 +25,9 @@ export const moveShipRouter = createTRPCRouter({
             }
             const pilotTokenName: string = pilotAsset[0]?.assetName ?? "";
             console.log(pilotTokenName);
-            // const shipStateUtxos = await maestroProvider.fetchAddressUTxOs(spacetimeValidatorAddress);
+            const shipStateUtxos = await maestroProvider.fetchAddressUTxOs(spacetimeValidatorAddress);
+            console.log(shipStateUtxos.length);
+            return shipStateUtxos;
             // const shipStateUtxo = shipStateUtxos.filter(
             //     (utxo) => utxo.output.plutusData?.pilot_token_name === pilotTokenName
             // ) // TODO: How to access inline datum when it is an object?

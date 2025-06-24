@@ -24,7 +24,7 @@ export const fuelTokenPolicy: PolicyId = policyId('734c3d33d223890dcf389a493e9ec
 //export const prizeTokenName = 
 //export const prizeTokenPolicy = 
 
-export const shipYardPolicy = 'ec79e6d0adb9706b5f2d1800a27b4b4990ee00ee8295158dd4d599ba'
+export const shipYardPolicy = 'ec79e6d0adb9706b5f2d1800a27b4b4990ee00ee8295158dd4d599ba' // Is this correct? It does not match the policy for the pilot token.
 //export const shipYardName =
 
 export const refHash: string = 'eda5d68d7f41c014c920d03d096a9e0e6f4d07e9491720675fa08f6584ebfacf' //Might be the old one
