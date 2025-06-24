@@ -4,6 +4,7 @@ import { setParametersRouter } from "./routers/admin/setParameters";
 import { deployAsteriaValidatorsRouter } from "./routers/admin/deployValidatorsRouter";
 import { pelletDeployRouter } from "./routers/admin/pelletDeploy";
 import { createShipRouter } from "./routers/userTx/createShipRouter";
+
 import { gatherFuelRouter } from "./routers/userTx/gatherFuelRouter";
 
 
@@ -18,8 +19,10 @@ export const appRouter = createTRPCRouter({
   deployAsteriaValidators: deployAsteriaValidatorsRouter,
   pelletDeploy: pelletDeployRouter,
   createShip: createShipRouter,
+
   gatherFuel: gatherFuelRouter,
   
+
 });
 
 // export type definition of API
