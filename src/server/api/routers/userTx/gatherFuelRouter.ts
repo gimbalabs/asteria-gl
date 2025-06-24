@@ -37,7 +37,7 @@ export const gatherFuelRouter = createTRPCRouter({
        
         try {
 
-            const {unsignedTx, error} = await gatherFuel(collateralUtxo,
+            const {unsignedTx} = await gatherFuel(collateralUtxo,
         utxos,
         changeAddress,
         gatherAmount,
@@ -49,10 +49,7 @@ export const gatherFuelRouter = createTRPCRouter({
         adminToken)
 
         console.log("tx Ready")
-        if(error){
-            console.log(error)
-            return {error}
-        }
+       
 
         return {unsignedTx}
 

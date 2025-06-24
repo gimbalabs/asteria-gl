@@ -4,12 +4,16 @@ import {
     serializePlutusScript,
     stringToHex,
     deserializeDatum,
+    conStr,
     conStr0,
-    conStr1, 
+    conStr1,
+    mConStr0,
+    mConStr1, 
     integer,
     byteString,
     policyId,
-    Asset
+    Asset,
+    ConStr
 } from "@meshsdk/core";
 import { fromScriptRef} from "@meshsdk/core-cst";
 import { MeshTxBuilder } from "@meshsdk/core";
@@ -46,13 +50,16 @@ const spacetimeScriptRef = fromScriptRef(spacetimeRefUtxo[0]?.output.scriptRef!)
 const spacetimePlutusScript = spacetimeScriptRef as PlutusScript;
 const spacetimeAddress =   serializePlutusScript(spacetimePlutusScript).address;
 
+console.log(spacetimeAddress)
+console.log("pelletref", pelletRefHash)
+console.log("spacetimeRef", spaceTimeRefHash)
 const pelletRefUtxo = await maestroProvider.fetchUTxOs(pelletRefHash, 0)
 const fuelPolicyId = pelletRefUtxo[0]?.output.scriptHash!;
 const pelletScriptRef = fromScriptRef(pelletRefUtxo[0]?.output.scriptRef!);
 const pelletPlutusScript = pelletScriptRef as PlutusScript
 const pelletAddress = serializePlutusScript(pelletPlutusScript).address
 
-console.log("Pilot UTXO, pilot name" , hexToString(pilotUtxo.output.amount[1]?.unit))
+
 
 const ship = shipUtxo;
     if(!ship.output.plutusData){
@@ -117,6 +124,7 @@ console.log("Pellet Input", pelletInputDatum)
 const pelletPosX: number = pelletInputDatum[0].int;
 const pelletPosY: number = pelletInputDatum[1].int;
 const pelletInputShipyardPolicy: string = pelletInputDatum[2].bytes;
+console.log("Pellet posX from datum ", pelletPosX)
 
 //pellet output Datum
 const pelletOuputDatum = conStr0([
@@ -125,6 +133,7 @@ const pelletOuputDatum = conStr0([
     policyId(pelletInputShipyardPolicy)
 ]);
 
+console.log("Pellet Datum output", pelletOuputDatum)
 
 const pelletFuel = pelletInputFuel?.quantity
 const shipFuel = shipInputFuel?.quantity
@@ -169,8 +178,15 @@ const pilottokenAsset: Asset[] = [{
 
 console.log("Pilot Token", pilottokenAsset)
 
-const shipRedeemer = conStr1([integer(gatherAmount)]);  //note to change redeemer index if error
-const pelletRedemer = conStr0([integer(gatherAmount)]);
+//const shipRedeemer = conStr1([integer(gatherAmount)]);  //note to change redeemer index if error
+//const pelletRedemer = conStr0([integer(gatherAmount)]);
+
+console.log("gather amount ", gatherAmount)
+//const shipRedeemer = mConStr1([gatherAmount]);  //note to change redeemer index if error
+const shipRedeemer = conStr(1, [{int: gatherAmount}])
+const pelletRedemer = conStr(0, [{int: gatherAmount}]);
+
+console.log("Ship redeemer", shipRedeemer)
 
 const txBuilder = new MeshTxBuilder({
     fetcher: maestroProvider,
@@ -188,20 +204,24 @@ const unsignedTx = await txBuilder
     pellet.output.amount,
     pellet.output.address
 )
-.spendingReferenceTxInRedeemerValue(pelletRedemer,"JSON")
-.spendingTxInReference(pelletRefHash,0)
 .txInInlineDatumPresent()
+//.txInRedeemerValue(pelletRedemer, "JSON")
+//.spendingReferenceTxInRedeemerValue(pelletRedemer,"Mesh",{mem: 2592000, steps:2500000000 })
+.spendingReferenceTxInRedeemerValue(pelletRedemer, "JSON")
+.spendingTxInReference(pelletRefHash,0)
 .spendingPlutusScriptV3()
+
 .txIn(
     ship.input.txHash,
     ship.input.outputIndex,
     ship.output.amount,
     ship.output.address
 )
+.txInInlineDatumPresent()
+//.txInRedeemerValue(shipRedeemer, "JSON")
+//.spendingReferenceTxInRedeemerValue(shipRedeemer, "Mesh",{mem: 2592000, steps:2500000000 })
 .spendingReferenceTxInRedeemerValue(shipRedeemer, "JSON")
 .spendingTxInReference(spaceTimeRefHash,0)
-.txInInlineDatumPresent()
-
 .txOut(changeAddress, pilottokenAsset) 
 .txOut(pelletAddress,pelletOutputAssets)
 .txOutInlineDatumValue(pelletOuputDatum,"JSON")

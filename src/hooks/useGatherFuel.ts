@@ -67,15 +67,15 @@ export function useGatherFuelTx(){
             const collateral = await wallet.getCollateral() 
             const assets = await wallet.getAssets()
 
-            const pilot = assets.find((asset) => {
+            const pilot = await assets.find((asset) => {
                 const pilotToken = asset.unit.includes(stringToHex("PILOT"))
                 return pilotToken
             })
             pilot ? setPilotToken(hexToString(pilot.assetName)) : alert("Please mint a ship to play the game")
    
 
-            const pilotNumber = pilotToken.slice(5)
-         
+            const pilotNumber: string | undefined = hexToString(pilot.assetName).slice(5)
+            console.log(pilotNumber)
 
             const findPilotUtxo = await utxos.find((utxo) => utxo.output.amount.find((asset: Asset) => {
                return asset.unit.includes(stringToHex("PILOT"))
@@ -117,8 +117,8 @@ export function useGatherFuelTx(){
                 utxos: utxos,
                 changeAddress,
                 gatherAmount: fuel,
-                pilotUtxo,
-                shipUtxo,
+                pilotUtxo: findPilotUtxo,
+                shipUtxo: findShipUtxo,
                 pelletUtxo,
                 spacetimeRefHash: spacetimeRefHashWOUtil,
                 pelletRefHash: pelletRefHashWOUtil,
