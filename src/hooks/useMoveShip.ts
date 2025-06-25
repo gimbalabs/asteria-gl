@@ -9,6 +9,8 @@ export function useMoveShip() {
     const { wallet, connected } = useWallet();
     const [assets, setAssets] = useState<AssetExtended[]>([]);
     const [shipStateDatum, setShipStateDatum] = useState<any>(null);
+    const [newPosX, setNewPosX] = useState<number>(0);
+    const [newPosY, setNewPosY] = useState<number>(0);
 
     useEffect(() => {
         const getAssets = async () => {
@@ -21,6 +23,7 @@ export function useMoveShip() {
     }, [connected, wallet]);
 
     const ShipStateDatum = api.moveShip.queryShipStateDatum.useMutation();
+    const moveShip = api.moveShip.moveShip.useMutation();
 
     const shipState = async(e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -28,7 +31,16 @@ export function useMoveShip() {
         setShipStateDatum(result);
     }
 
+    const handleMoveShip = async(e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const unsignedTx = await moveShip.mutateAsync(newPosX, newPosY, shipStateDatum); // Build the input here
+        const signedTx = await wallet.signTx(unsignedTx, true);
+        const txHash = await wallet.submitTx(unsignedTx);
+        console.log("Transaction Hash:", txHash);
+        alert("Moved Successfully! TxHash: " + txHash);
+    }
+
     return {
-        shipState, shipStateDatum
+        shipState, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY
     }
 }

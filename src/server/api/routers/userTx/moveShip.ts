@@ -69,14 +69,40 @@ export const moveShipRouter = createTRPCRouter({
                 };
                 console.log(shipStateDatum);
                 return shipStateDatum;
-                // ) // TODO: How to access inline datum when it is an object?
-                // if (!shipStateUtxo) {
-                //     throw new Error("Ship state UTXO not found");
-                // query spacetime validator address for shipState UTXOs 
-                // filter them for the specific shipState UTXO based on datum having the same pilot token name
-            }
-            
-        })
+            }           
+        }),
+
+        moveShip: publicProcedure
+            .input(z.object({
+                newPosX: z.number(),
+                newPosY: z.number(),
+                shipStateDatum: z.object({
+                    fuel: z.number(),
+                    coordinateX: z.number(),
+                    coordinateY: z.number(),
+                    shipName: z.string(),
+                    pilotName: z.string(),
+                    posixTime: z.number(),
+                }),
+                changeAddress: z.string(),
+                utxos: z.array(z.any()),
+                collateral: z.object({          // Single UTxO object
+                    input: z.object({
+                        txHash: z.string(),
+                        outputIndex: z.number(),
+                    }),
+                    output: z.object({
+                        address: z.string(),
+                        amount: z.any(),
+                        datum: z.any().optional(),
+                    }),
+                }),
+            }))
+            .mutation(async ({ input }) => {
+                const { newPosX, newPosY, shipStateDatum, changeAddress, utxos } = input;
+                const { fuel, coordinateX, coordinateY, shipName, pilotName, posixTime } = shipStateDatum;
+                const { txId, txIndex } = utxos[0];
+            })
 })
 
 
