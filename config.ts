@@ -24,7 +24,8 @@ export const fuelTokenPolicy: PolicyId = policyId('734c3d33d223890dcf389a493e9ec
 //export const prizeTokenName = 
 //export const prizeTokenPolicy = 
 
-export const shipYardPolicy = 'ec79e6d0adb9706b5f2d1800a27b4b4990ee00ee8295158dd4d599ba' // Is this correct? It does not match the policy for the pilot token.
+// export const shipYardPolicy = 'ec79e6d0adb9706b5f2d1800a27b4b4990ee00ee8295158dd4d599ba' // Is this correct? It does not match the policy for the pilot token.
+export const shipYardPolicy = 'b5b0569387404d97341bcdd7b54916bde5976e2503fb1c7d9f7093aa' // new one
 //export const shipYardName =
 
 export const refHash: string = 'eda5d68d7f41c014c920d03d096a9e0e6f4d07e9491720675fa08f6584ebfacf' //Might be the old one
@@ -46,7 +47,8 @@ export const pelletValidatorAddress = 'addr_test1wqq62t863eh8z3wmv2qs3fc075egfxr
   //asteria validator address
 export const asteriaValidatorAddress =  'addr_test1wqnjq6f6xtmqvy998g5dfvfjzlc2jysqxzf9hlnc2f4qmksq37dur'
   //spacetime validator address
-export const spacetimeValidatorAddress = 'addr_test1wrk8neks4kuhq66l95vqpgnmfdyepmsqa6pf29vd6n2enwsjnrl6x'
+// export const spacetimeValidatorAddress = 'addr_test1wrk8neks4kuhq66l95vqpgnmfdyepmsqa6pf29vd6n2enwsjnrl6x'   // old one
+export const spacetimeValidatorAddress = 'addr_test1wz6mq45nsaqym9e5r0xa0d2fz677t9mwy5plk8ranacf82sjxy58f'
 
 //Game Parameters
 

@@ -2,8 +2,9 @@ import { createTRPCRouter, publicProcedure } from "../../trpc";
 import { z } from "zod";
 import { maestroProvider } from "~/server/provider/maestroProvider";
 import { spacetimeValidatorAddress } from "config";
-import { shipYardPolicy } from "config";
-import { UTxO, TxOutRef, TxIn, AssetExtended} from "@meshsdk/core";
+import { shipYardPolicy, fuelTokenPolicy, fuelTokenName } from "config";
+import { UTxO, TxOutRef, TxIn, AssetExtended, stringToHex, hexToString, deserializeDatum} from "@meshsdk/core";
+
 
 export const moveShipRouter = createTRPCRouter({
     queryShipStateDatum: publicProcedure
@@ -14,27 +15,67 @@ export const moveShipRouter = createTRPCRouter({
             fingerprint: z.string(),
             quantity: z.string(),
         })))
-        .query(async ({ input }) => {
+        .output(z.object({
+                fuel: z.number(),
+                coordinateX: z.number(),
+                coordinateY: z.number(),
+                shipName: z.string(),
+                pilotName: z.string(),
+                posixTime: z.number(),
+        }))
+        .mutation(async ({ input }) => {
             // TODO: Implement logic to filter UTXO w/ pilot token
             const pilotAsset = input.filter(
-                (asset) => asset.policyId === "b5b0569387404d97341bcdd7b54916bde5976e2503fb1c7d9f7093aa"         //asset.policyId === shipYardPolicy this should be the actual one but currently I used a placeholder
+                (asset) => asset.policyId === shipYardPolicy
             );
-            console.log(pilotAsset);
             if (!pilotAsset.length) {
                 throw new Error("Ship not minted yet!");
+            }else if (pilotAsset.length > 1) {
+                throw new Error("Multiple ships minted! Try sending the extra PILOT tokens to a different address.");
+            }else {
+                const pilotTokenName: string = hexToString(pilotAsset[0]?.assetName ?? "");
+                console.log(pilotTokenName);
+                /// Extract the number from pilot token: eg. PILOT13 (gets "13")
+                const pilotNumber = pilotTokenName.replace("PILOT", "");
+                // Create ship token name by adding "SHIP" prefix (makes "SHIP13")
+                const shipTokenName = stringToHex(`SHIP${pilotNumber}`);
+                const shipStateUtxos_array = await maestroProvider.fetchAddressUTxOs(spacetimeValidatorAddress);
+                const shipStateUtxo_array = shipStateUtxos_array.filter(
+                    (utxo) => utxo.output.amount.some(
+                        (asset) => asset.unit === `${shipYardPolicy}${shipTokenName}`
+                    )
+                );
+
+                if (shipStateUtxo_array.length === 0) {
+                    throw new Error(`No UTXOs found containing ship token: ${shipTokenName}`);
+                }
+                const fuelTokens = shipStateUtxo_array[0]?.output.amount.filter((asset) => asset.unit === `${fuelTokenPolicy}${fuelTokenName}`)??[];
+                const fuel = fuelTokens[0]?.quantity ?? 0;
+                console.log("Fuel: ", fuel);
+                const shipStateDatum_plutusData = shipStateUtxo_array[0]?.output.plutusData;
+                if (!shipStateDatum_plutusData) {
+                    throw new Error(`No datum found for ship token: ${shipTokenName}`);
+                }
+
+                const shipStateDatum_constr = deserializeDatum(shipStateDatum_plutusData);
+                console.log(shipStateDatum_constr);
+                const shipStateDatum = {
+                    fuel: Number(fuel),
+                    coordinateX: Number(shipStateDatum_constr.fields[0].int),
+                    coordinateY: Number(shipStateDatum_constr.fields[1].int),
+                    shipName: hexToString(shipStateDatum_constr.fields[2].bytes),
+                    pilotName: hexToString(shipStateDatum_constr.fields[3].bytes),
+                    posixTime: Number(shipStateDatum_constr.fields[4].int),
+                };
+                console.log(shipStateDatum);
+                return shipStateDatum;
+                // ) // TODO: How to access inline datum when it is an object?
+                // if (!shipStateUtxo) {
+                //     throw new Error("Ship state UTXO not found");
+                // query spacetime validator address for shipState UTXOs 
+                // filter them for the specific shipState UTXO based on datum having the same pilot token name
             }
-            const pilotTokenName: string = pilotAsset[0]?.assetName ?? "";
-            console.log(pilotTokenName);
-            const shipStateUtxos = await maestroProvider.fetchAddressUTxOs(spacetimeValidatorAddress);
-            console.log(shipStateUtxos.length);
-            return shipStateUtxos;
-            // const shipStateUtxo = shipStateUtxos.filter(
-            //     (utxo) => utxo.output.plutusData?.pilot_token_name === pilotTokenName
-            // ) // TODO: How to access inline datum when it is an object?
-            // if (!shipStateUtxo) {
-            //     throw new Error("Ship state UTXO not found");
-            // query spacetime validator address for shipState UTXOs 
-            // filter them for the specific shipState UTXO based on datum having the same pilot token name
+            
         })
 })
 
