@@ -1,9 +1,28 @@
 import { createTRPCRouter, publicProcedure } from "../../trpc";
 import { z } from "zod";
 import { maestroProvider } from "~/server/provider/maestroProvider";
-import { spacetimeValidatorAddress } from "config";
-import { shipYardPolicy, fuelTokenPolicy, fuelTokenName } from "config";
-import { UTxO, TxOutRef, TxIn, AssetExtended, stringToHex, hexToString, deserializeDatum} from "@meshsdk/core";
+import { shipYardPolicy, 
+        fuelTokenPolicy, 
+        fuelTokenName, 
+        pelletRefHash,  
+        spacetimeRefHash, 
+        spacetimeValidatorAddress,
+        adminTokenPolicy,
+        adminTokenName,
+        fuel_per_step, } from "config";
+import { UTxO, 
+        TxOutRef, 
+        TxIn, 
+        AssetExtended, 
+        stringToHex, 
+        hexToString, 
+        deserializeDatum, 
+        MeshTxBuilder,
+        conStr0,
+        integer,
+        Asset,
+        posixTime as createPosixTime,
+        } from "@meshsdk/core";
 
 
 export const moveShipRouter = createTRPCRouter({
@@ -100,20 +119,77 @@ export const moveShipRouter = createTRPCRouter({
             }))
             .mutation(async ({ input }) => {
                 const { newPosX, newPosY, shipStateDatum, changeAddress, utxos } = input;
-                console.log("newPosX: ", newPosX);
-                console.log("newPosY: ", newPosY);
-                console.log("shipStateDatum: ", shipStateDatum);
-                console.log("changeAddress: ", changeAddress);
                 const { fuel, coordinateX, coordinateY, shipName, pilotName, posixTime } = shipStateDatum;
                 console.log(fuel, coordinateX, coordinateY, shipName, pilotName, posixTime);
-                const { txId, txIndex } = utxos[0];
-                console.log("txId: ", txId);
-                console.log("txIndex: ", txIndex);
-                // const txBuilder = new MeshTxBuilder({
-                //     fetcher: maestroProvider,
-                //     submitter: maestroProvider,
-                //     verbose: true
-                // });
+                const shipStateUtxos_array = await maestroProvider.fetchAddressUTxOs(spacetimeValidatorAddress);
+                const shipStateUtxo = shipStateUtxos_array.filter(
+                    (utxo) => utxo.output.amount.some(
+                        (asset) => asset.unit === `${shipYardPolicy}${stringToHex(shipName)}`
+                    )
+                )[0];
+                console.log("shipStateUtxo: ", shipStateUtxo);
+                if (!shipStateUtxo) {
+                    throw new Error(`No UTXOs found containing ship token: ${shipName}`);
+                }
+                const shipStateTxHash = shipStateUtxo.input.txHash;
+                const shipStateTxIndex = shipStateUtxo.input.outputIndex;
+
+                // Calculate deltaX and deltaY
+                const deltaX = Math.abs(newPosX - coordinateX);
+                const deltaY = Math.abs(newPosY - coordinateY);
+                console.log("deltaX: ", deltaX);
+                console.log("deltaY: ", deltaY);
+                // Build the spend redeemer
+                const moveShipRedeemer = conStr0([
+                    integer(deltaX),
+                    integer(deltaY)
+                ]);
+                // Calculate the fuel tokens in new ship utxo
+                const newShipFuel = fuel - ((deltaX + deltaY) * Number(fuel_per_step));
+                console.log("newShipFuel: ", newShipFuel);
+                // Construct asset to spacetime validator address
+                const assetsToSpacetime: Asset[] = [{
+                    unit: shipYardPolicy + stringToHex(shipName),
+                    quantity: "1"
+                },{
+                    unit: `${fuelTokenPolicy.bytes}${fuelTokenName.bytes}`,
+                    quantity: newShipFuel.toString()
+                }];
+                console.log("assetsToSpacetime: ", assetsToSpacetime);
+
+                // Calculate the new posix time
+                const new_posix_time = Date.now() + 60 * 1000;
+
+                // Construct the new datum for the new shipState UTXO
+                const newShipDatum = conStr0([
+                    integer(newPosX),
+                    integer(newPosY),
+                    shipName,
+                    pilotName,
+                    createPosixTime(new_posix_time)
+                ]);
+
+                // Build the Tx using TxBuilder
+                const txBuilder = new MeshTxBuilder({
+                    fetcher: maestroProvider,
+                    submitter: maestroProvider,
+                    verbose: true
+                });
+
+                txBuilder
+                    .setNetwork("preprod")
+                    .spendingPlutusScriptV3()
+                    .txIn(
+                        shipStateTxHash,
+                        shipStateTxIndex,
+                    )
+                    .txInRedeemerValue(moveShipRedeemer,"JSON")
+                    .spendingTxInReference(spacetimeRefHash.fields[0].fields[0].bytes, Number(spacetimeRefHash.fields[1].int))
+                    .txInInlineDatumPresent()
+                    .txOut(spacetimeValidatorAddress,assetsToSpacetime)
+                    .txOutInlineDatumValue(newShipDatum,"JSON")
+
+
             })
 })
 
