@@ -33,11 +33,23 @@ export function useMoveShip() {
 
     const handleMoveShip = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const unsignedTx = await moveShip.mutateAsync(newPosX, newPosY, shipStateDatum); // Build the input here
-        const signedTx = await wallet.signTx(unsignedTx, true);
-        const txHash = await wallet.submitTx(unsignedTx);
-        console.log("Transaction Hash:", txHash);
-        alert("Moved Successfully! TxHash: " + txHash);
+        const collateral = (await wallet.getCollateral())[0]!;
+        const changeAddress = await wallet.getChangeAddress();
+        const utxos = await wallet.getUtxos();
+        const input_to_move = {
+            newPosX: newPosX,
+            newPosY: newPosY,
+            shipStateDatum: shipStateDatum,
+            changeAddress: changeAddress,
+            utxos: utxos,
+            collateral: collateral,
+        }  
+
+        const unsignedTx = await moveShip.mutateAsync(input_to_move); // Build the input here
+        // const signedTx = await wallet.signTx(unsignedTx, true);
+        // const txHash = await wallet.submitTx(unsignedTx);
+        // console.log("Transaction Hash:", txHash);
+        // alert("Moved Successfully! TxHash: " + txHash);
     }
 
     return {

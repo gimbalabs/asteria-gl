@@ -35,7 +35,10 @@ export default function MoveShipComponent() {
         </div>
         <div>
           <form
-            onSubmit={handleMoveShip}
+            onSubmit={(e) => {
+                e.preventDefault(); // Prevent default form submission
+                handleMoveShip(e);
+              }}
             className="flex flex-col items-center gap-2 text-black"
           >
             <h2>

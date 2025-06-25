@@ -100,8 +100,20 @@ export const moveShipRouter = createTRPCRouter({
             }))
             .mutation(async ({ input }) => {
                 const { newPosX, newPosY, shipStateDatum, changeAddress, utxos } = input;
+                console.log("newPosX: ", newPosX);
+                console.log("newPosY: ", newPosY);
+                console.log("shipStateDatum: ", shipStateDatum);
+                console.log("changeAddress: ", changeAddress);
                 const { fuel, coordinateX, coordinateY, shipName, pilotName, posixTime } = shipStateDatum;
+                console.log(fuel, coordinateX, coordinateY, shipName, pilotName, posixTime);
                 const { txId, txIndex } = utxos[0];
+                console.log("txId: ", txId);
+                console.log("txIndex: ", txIndex);
+                // const txBuilder = new MeshTxBuilder({
+                //     fetcher: maestroProvider,
+                //     submitter: maestroProvider,
+                //     verbose: true
+                // });
             })
 })
 
