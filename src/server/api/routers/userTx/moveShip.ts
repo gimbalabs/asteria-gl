@@ -49,7 +49,7 @@ export const moveShipRouter = createTRPCRouter({
                 if (shipStateUtxo_array.length === 0) {
                     throw new Error(`No UTXOs found containing ship token: ${shipTokenName}`);
                 }
-                const fuelTokens = shipStateUtxo_array[0]?.output.amount.filter((asset) => asset.unit === `${fuelTokenPolicy}${fuelTokenName}`)??[];
+                const fuelTokens = shipStateUtxo_array[0]?.output.amount.filter((asset) => asset.unit === `${fuelTokenPolicy.bytes}${fuelTokenName.bytes}`)??[];
                 const fuel = fuelTokens[0]?.quantity ?? 0;
                 console.log("Fuel: ", fuel);
                 const shipStateDatum_plutusData = shipStateUtxo_array[0]?.output.plutusData;
