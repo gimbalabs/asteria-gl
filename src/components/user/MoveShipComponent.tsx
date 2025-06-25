@@ -1,10 +1,11 @@
 import { useMoveShip } from "~/hooks/useMoveShip";
+import { useElapsedSeconds } from "~/hooks/useElapsedSeconds";
 
 
 
 export default function MoveShipComponent() {
     const { shipState, shipStateDatum } = useMoveShip();
-
+    const {secs, possibleSteps} = useElapsedSeconds(shipStateDatum?.posixTime, shipStateDatum?.fuel);
 
     return (
         <div>
@@ -16,7 +17,7 @@ export default function MoveShipComponent() {
                                         border: 'none',
                                         borderRadius: '4px',
                                         cursor: 'pointer'
-                                    }}>Possible Moves</button>
+                                    }}>Get Ship Details</button>
             <div>
                 <p>Create a table with the following data:</p>
                 <p>1. Fuel: {shipStateDatum?.fuel}</p>
@@ -24,7 +25,8 @@ export default function MoveShipComponent() {
                 <p>3. Coordinate Y: {shipStateDatum?.coordinateY}</p>
                 <p>4. Ship Name: {shipStateDatum?.shipName}</p>
                 <p>5. Pilot Name: {shipStateDatum?.pilotName}</p>
-                <p>6. Time Elapsed: {shipStateDatum?.timeElapsed}</p>
+                <p>6. Time Elapsed: {secs}</p>
+                <p>7. Possible Steps: {possibleSteps}</p>
             </div>
         </div>
     );
