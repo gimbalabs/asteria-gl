@@ -62,7 +62,7 @@ export const spacetimeValidatorAddress = 'addr_test1wrk8neks4kuhq66l95vqpgnmfdye
 
 
 export const ship_mint_lovelace_fee: Integer = integer(3000000);
-export const max_asteria_mining: Integer = integer(50);
+export const max_asteria_mining: Integer = integer(200);
 
 // const max_speed = {
 //   distance: integer(1),
@@ -73,9 +73,9 @@ export const max_speed = (
   integer(1),
   integer(30000));  //mesh json format
 
-export const max_ship_fuel: Integer = integer (50);
-export const fuel_per_step: Integer = integer(1);
+export const max_ship_fuel: Integer = integer (100);
+export const fuel_per_step: Integer = integer(10);
 export const initial_fuel: Integer = integer(20);
-export const min_asteria_distance: Integer = integer(40);
+export const min_asteria_distance: Integer = integer(30);
 
 export const createAsteriaRefHash = "459b67a583f2c9a06d9dc1fc9ac7ea077a77fb82170feb2c9351dbb4622cbfea"

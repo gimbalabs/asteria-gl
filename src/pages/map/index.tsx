@@ -2,6 +2,7 @@ import Mapbutton from "~/components/Mapbutton";
 import React, { useState } from "react";
 import CreateShipComponent from "~/components/user/CreateShipComponent";
 import GatherFuel from "~/components/user/GatherFuelComponent";
+import MoveShipComponent from "~/components/user/moveShipCompoment";
 
 const GRID_SIZE = 100;
 
@@ -47,12 +48,16 @@ export default function MapPage() {
 
     return (
         <>
-        <div>
-            <CreateShipComponent />
-        </div>
-        <div>
-            <GatherFuel />
-        </div>
+            <div>
+                <CreateShipComponent />
+            </div>
+            <div>
+                <GatherFuel />
+            </div>
+            <div>
+                <MoveShipComponent />
+            </div>
+
         <div>
         
         <Mapbutton/>
