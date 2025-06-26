@@ -46,10 +46,10 @@ export function useMoveShip() {
         }  
 
         const unsignedTx = await moveShip.mutateAsync(input_to_move); // Build the input here
-        // const signedTx = await wallet.signTx(unsignedTx, true);
-        // const txHash = await wallet.submitTx(unsignedTx);
-        // console.log("Transaction Hash:", txHash);
-        // alert("Moved Successfully! TxHash: " + txHash);
+        const signedTx = await wallet.signTx(unsignedTx);
+        const txHash = await wallet.submitTx(signedTx);
+        console.log("Transaction Hash:", txHash);
+        alert("Moved Successfully! TxHash: " + txHash);
     }
 
     return {

@@ -118,7 +118,7 @@ export const moveShipRouter = createTRPCRouter({
                 }),
             }))
             .mutation(async ({ input }) => {
-                const { newPosX, newPosY, shipStateDatum, changeAddress, utxos } = input;
+                const { newPosX, newPosY, shipStateDatum, changeAddress, utxos, collateral } = input;
                 const { fuel, coordinateX, coordinateY, shipName, pilotName, posixTime } = shipStateDatum;
                 console.log(fuel, coordinateX, coordinateY, shipName, pilotName, posixTime);
                 const shipStateUtxos_array = await maestroProvider.fetchAddressUTxOs(spacetimeValidatorAddress);
@@ -128,25 +128,27 @@ export const moveShipRouter = createTRPCRouter({
                     )
                 )[0];
                 console.log("shipStateUtxo: ", shipStateUtxo);
-                if (!shipStateUtxo) {
-                    throw new Error(`No UTXOs found containing ship token: ${shipName}`);
-                }
-                const shipStateTxHash = shipStateUtxo.input.txHash;
-                const shipStateTxIndex = shipStateUtxo.input.outputIndex;
+                console.log("txHash:", shipStateUtxo?.input.txHash);
+                console.log("outputIndex:", shipStateUtxo?.input.outputIndex);
+                const shipStateTxHash = shipStateUtxo?.input.txHash;
+                const shipStateTxIndex = shipStateUtxo?.input.outputIndex;
 
                 // Calculate deltaX and deltaY
                 const deltaX = Math.abs(newPosX - coordinateX);
                 const deltaY = Math.abs(newPosY - coordinateY);
-                console.log("deltaX: ", deltaX);
-                console.log("deltaY: ", deltaY);
+                console.log("deltaX:", deltaX, "type:", typeof deltaX);
+                console.log("deltaY:", deltaY, "type:", typeof deltaY);
                 // Build the spend redeemer
                 const moveShipRedeemer = conStr0([
                     integer(deltaX),
                     integer(deltaY)
                 ]);
+                // Build the burn fuel redeemer
+                const burnfuelRedeemer = conStr0([]);
                 // Calculate the fuel tokens in new ship utxo
-                const newShipFuel = fuel - ((deltaX + deltaY) * Number(fuel_per_step));
-                console.log("newShipFuel: ", newShipFuel);
+                const spentFuel = (deltaX + deltaY) * Number(fuel_per_step.int);
+                console.log("spentFuel: ", spentFuel);
+                const newShipFuel = fuel - spentFuel;
                 // Construct asset to spacetime validator address
                 const assetsToSpacetime: Asset[] = [{
                     unit: shipYardPolicy + stringToHex(shipName),
@@ -157,8 +159,12 @@ export const moveShipRouter = createTRPCRouter({
                 }];
                 console.log("assetsToSpacetime: ", assetsToSpacetime);
 
+                // Setting up the lower and upper bound time for the tx
+                const SAFETY_MS = 40_000;
+                const tx_earliest_posix_time = Math.max(posixTime, Date.now() + SAFETY_MS);
+                const tx_latest_posix_time = tx_earliest_posix_time + 4 * 60 * 1000;
                 // Calculate the new posix time
-                const new_posix_time = Date.now() + 60 * 1000;
+                const new_posix_time = tx_latest_posix_time;
 
                 // Construct the new datum for the new shipState UTXO
                 const newShipDatum = conStr0([
@@ -168,6 +174,13 @@ export const moveShipRouter = createTRPCRouter({
                     pilotName,
                     createPosixTime(new_posix_time)
                 ]);
+
+                // Construct the pilot token asset
+                const pilotTokenAsset: Asset[] = [{
+                    unit: shipYardPolicy + stringToHex(shipName),
+                    quantity: "1"
+                }];
+
 
                 // Build the Tx using TxBuilder
                 const txBuilder = new MeshTxBuilder({
@@ -189,26 +202,22 @@ export const moveShipRouter = createTRPCRouter({
                     .txOut(spacetimeValidatorAddress,assetsToSpacetime)
                     .txOutInlineDatumValue(newShipDatum,"JSON")
 
+                    .mintPlutusScriptV3()
+                    .mint((-spentFuel).toString(), fuelTokenPolicy.bytes, fuelTokenName.bytes)
+                    .mintTxInReference(pelletRefHash.fields[0].fields[0].bytes, Number(pelletRefHash.fields[1].int))
+                    .mintRedeemerValue(burnfuelRedeemer,"JSON")
 
+                    .txOut(changeAddress, pilotTokenAsset)
+                    .invalidBefore(tx_earliest_posix_time)
+                    .invalidHereafter(tx_latest_posix_time)
+                    .txInCollateral(
+                        collateral.input.txHash,
+                        collateral.input.outputIndex,
+                    )
+                    .changeAddress(changeAddress)
+                    .selectUtxosFrom(utxos)
+                const unsignedTx = await txBuilder.complete();
+                return unsignedTx;
             })
 })
 
-
-
-// Receive UTXOs,collateral, coordinates to move the ship from the user/frontend
-// Note: The frontend checks if the coordinates are in range based on fuel available
-// Filter/check for the UTXO with pilot token
-// If not available, return error/message
-// If available move to next steps below:
-// Query/Index the corresponding shipState UTXO from the spacetime validator address
-// In the shipState UTXO, we need TXId, TxIndex, datum, and tokens
-// Calculate deltax and delta y
-// Construct the redeemer w/ change in x and y (deltax and delta y)
-// Construct the new datum for the new shipState UTXO
-// Calculate the upper and lower bounds of the new tx_latest_posix_time based on deltax and delta y
-// If the new tx_latest_posix_time is out of bounds, return error/message
-// If the new tx_latest_posix_time is within bounds, move to next step:
-// Build the Tx using TxBuilder
-// Send the unsignedTx to the frontend to sign and submit
-
-// Note: Think some more about the latest_posix_time and the bounds
