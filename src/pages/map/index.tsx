@@ -106,8 +106,7 @@ export default function MapPage() {
                 ))}
             </div>
         </div>
-    </div>
+    </>
   );
 };
 
-export default GalaxyMap;
