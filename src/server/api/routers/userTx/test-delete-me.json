@@ -1,0 +1,149 @@
+{
+    "inputs": [
+      {
+        "type": "Script",
+        "txIn": {
+          "txHash": "026fb2378b9e053aee47109e98cb0032b6f57792e6b47a64641c2870940de96e",
+          "txIndex": 1,
+          "amount": [
+            {
+              "unit": "lovelace",
+              "quantity": "1357650"
+            },
+            {
+              "unit": "734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c24655454c",
+              "quantity": "20"
+            },
+            {
+              "unit": "b5b0569387404d97341bcdd7b54916bde5976e2503fb1c7d9f7093aa534849503134",
+              "quantity": "1"
+            }
+          ],
+          "address": "addr_test1wz6mq45nsaqym9e5r0xa0d2fz677t9mwy5plk8ranacf82sjxy58f"
+        },
+        "scriptTxIn": {
+          "redeemer": {
+            "data": {
+              "type": "JSON",
+              "content": "{\"constructor\":0,\"fields\":[{\"int\":1},{\"int\":4}]}"
+            },
+            "exUnits": {
+              "mem": 7000000,
+              "steps": 3000000000
+            }
+          },
+          "scriptSource": {
+            "type": "Inline",
+            "txHash": "f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde",
+            "txIndex": 0,
+            "version": "V3"
+          },
+          "datumSource": {
+            "type": "Inline",
+            "txHash": "026fb2378b9e053aee47109e98cb0032b6f57792e6b47a64641c2870940de96e",
+            "txIndex": 1
+          }
+        }
+      },
+      {
+        "type": "PubKey",
+        "txIn": {
+          "txHash": "026fb2378b9e053aee47109e98cb0032b6f57792e6b47a64641c2870940de96e",
+          "txIndex": 2,
+          "amount": [
+            {
+              "unit": "b5b0569387404d97341bcdd7b54916bde5976e2503fb1c7d9f7093aa534849503134",
+              "quantity": "1"
+            }
+          ],
+          "address": "addr_test1qqqun390qxrl93g23z0waxsj478y4f2nr7d2yxsep7k066eveq5mn6raa2q0ka6f2tz84ly3cv2lfqj64aamah7p02vsasdmyx"
+        }
+      }
+    ],
+    "outputs": [
+      {
+        "address": "addr_test1wz6mq45nsaqym9e5r0xa0d2fz677t9mwy5plk8ranacf82sjxy58f",
+        "amount": [
+          {
+            "unit": "b5b0569387404d97341bcdd7b54916bde5976e2503fb1c7d9f7093aa534849503134",
+            "quantity": "1"
+          },
+          {
+            "unit": "734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c24655454c",
+            "quantity": "15"
+          }
+        ],
+        "datum": {
+          "type": "Inline",
+          "data": {
+            "type": "JSON",
+            "content": "{\"constructor\":0,\"fields\":[{\"int\":21},{\"int\":21},\"SHIP14\",\"PILOT14\",{\"int\":1751035025427}]}"
+          }
+        }
+      },
+      {
+        "address": "addr_test1qqqun390qxrl93g23z0waxsj478y4f2nr7d2yxsep7k066eveq5mn6raa2q0ka6f2tz84ly3cv2lfqj64aamah7p02vsasdmyx",
+        "amount": [
+          {
+            "unit": "b5b0569387404d97341bcdd7b54916bde5976e2503fb1c7d9f7093aa534849503134",
+            "quantity": "1"
+          }
+        ]
+      }
+    ],
+    "fee": "0",
+    "collaterals": [
+      {
+        "type": "PubKey",
+        "txIn": {
+          "txHash": "abb67e42cf44d1df4c6aaa72465d4f4e2a12b32c6dddcfc81b10a5bc82a02005",
+          "txIndex": 0
+        }
+      }
+    ],
+    "requiredSignatures": [],
+    "referenceInputs": [],
+    "mints": [
+      {
+        "type": "Plutus",
+        "policyId": "734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2",
+        "scriptSource": {
+          "type": "Inline",
+          "txHash": "40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3",
+          "txIndex": 0,
+          "version": "V3"
+        },
+        "redeemer": {
+          "data": {
+            "type": "JSON",
+            "content": "{\"constructor\":0,\"fields\":[]}"
+          },
+          "exUnits": {
+            "mem": 7000000,
+            "steps": 3000000000
+          }
+        },
+        "mintValue": [
+          {
+            "assetName": "4655454c",
+            "amount": "-5"
+          }
+        ]
+      }
+    ],
+    "changeAddress": "addr_test1qqqun390qxrl93g23z0waxsj478y4f2nr7d2yxsep7k066eveq5mn6raa2q0ka6f2tz84ly3cv2lfqj64aamah7p02vsasdmyx",
+    "metadata": {},
+    "validityRange": {
+      "invalidBefore": 1751034785427,
+      "invalidHereafter": 1751035025427
+    },
+    "certificates": [],
+    "withdrawals": [],
+    "votes": [],
+    "signingKey": [],
+    "chainedTxs": [],
+    "inputsForEvaluation": {},
+    "network": "preprod",
+    "expectedNumberKeyWitnesses": 0,
+    "expectedByronAddressWitnesses": []
+  }

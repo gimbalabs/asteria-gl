@@ -19,9 +19,11 @@ import { UTxO,
         deserializeDatum, 
         MeshTxBuilder,
         conStr0,
+        conStr1,
         integer,
         Asset,
         posixTime as createPosixTime,
+        byteString
         } from "@meshsdk/core";
 
 
@@ -128,10 +130,13 @@ export const moveShipRouter = createTRPCRouter({
                     )
                 )[0];
                 console.log("shipStateUtxo: ", shipStateUtxo);
-                console.log("txHash:", shipStateUtxo?.input.txHash);
-                console.log("outputIndex:", shipStateUtxo?.input.outputIndex);
                 const shipStateTxHash = shipStateUtxo?.input.txHash;
                 const shipStateTxIndex = shipStateUtxo?.input.outputIndex;
+                if (!shipStateTxHash || !shipStateTxIndex) {
+                    throw new Error("Ship state UTxO not found or missing required transaction information");
+                }
+                console.log("shipStateTxHash: ", shipStateTxHash);
+                console.log("shipStateTxIndex: ", shipStateTxIndex);
 
                 // Calculate deltaX and deltaY
                 const deltaX = Math.abs(newPosX - coordinateX);
@@ -144,7 +149,7 @@ export const moveShipRouter = createTRPCRouter({
                     integer(deltaY)
                 ]);
                 // Build the burn fuel redeemer
-                const burnfuelRedeemer = conStr0([]);
+                const burnfuelRedeemer = conStr1([]);
                 // Calculate the fuel tokens in new ship utxo
                 const spentFuel = (deltaX + deltaY) * Number(fuel_per_step.int);
                 console.log("spentFuel: ", spentFuel);
@@ -165,21 +170,40 @@ export const moveShipRouter = createTRPCRouter({
                 const tx_latest_posix_time = tx_earliest_posix_time + 4 * 60 * 1000;
                 // Calculate the new posix time
                 const new_posix_time = tx_latest_posix_time;
+                console.log("new_posix_time: ", new_posix_time);
+                console.log("tx_earliest_posix_time: ", tx_earliest_posix_time);
+                console.log("tx_latest_posix_time: ", tx_latest_posix_time);
 
                 // Construct the new datum for the new shipState UTXO
                 const newShipDatum = conStr0([
                     integer(newPosX),
                     integer(newPosY),
-                    shipName,
-                    pilotName,
+                    byteString(stringToHex(shipName)),
+                    byteString(stringToHex(pilotName)),
                     createPosixTime(new_posix_time)
                 ]);
+                console.log("newShipDatum: ", newShipDatum);
 
                 // Construct the pilot token asset
                 const pilotTokenAsset: Asset[] = [{
-                    unit: shipYardPolicy + stringToHex(shipName),
+                    unit: shipYardPolicy + stringToHex(pilotName),
                     quantity: "1"
                 }];
+                console.log("pilotTokenAsset: ", pilotTokenAsset);
+                // Get pilot token utxo from user wallet to send as txIn
+                const pilotTokenUtxo = utxos.find(
+                    (utxo) => utxo.output.amount.some(
+                        (asset: { unit: string }) => asset.unit === `${shipYardPolicy}${stringToHex(pilotName)}`
+                    )
+                );
+                console.log("pilotTokenUtxo: ", pilotTokenUtxo);
+                if (!pilotTokenUtxo) {
+                    throw new Error("Pilot token UTxO not found");
+                }
+                const pilotTokenTxHash = pilotTokenUtxo.input.txHash;
+                const pilotTokenTxIndex = pilotTokenUtxo.input.outputIndex;
+                console.log("pilotTokenTxHash: ", pilotTokenTxHash);
+                console.log("pilotTokenTxIndex: ", pilotTokenTxIndex);
 
 
                 // Build the Tx using TxBuilder
@@ -191,6 +215,7 @@ export const moveShipRouter = createTRPCRouter({
 
                 txBuilder
                     .setNetwork("preprod")
+
                     .spendingPlutusScriptV3()
                     .txIn(
                         shipStateTxHash,
@@ -199,8 +224,13 @@ export const moveShipRouter = createTRPCRouter({
                     .txInRedeemerValue(moveShipRedeemer,"JSON")
                     .spendingTxInReference(spacetimeRefHash.fields[0].fields[0].bytes, Number(spacetimeRefHash.fields[1].int))
                     .txInInlineDatumPresent()
-                    .txOut(spacetimeValidatorAddress,assetsToSpacetime)
+                    .txOut(spacetimeValidatorAddress, assetsToSpacetime)
                     .txOutInlineDatumValue(newShipDatum,"JSON")
+
+                    .txIn(
+                        pilotTokenTxHash,
+                        pilotTokenTxIndex,
+                    )
 
                     .mintPlutusScriptV3()
                     .mint((-spentFuel).toString(), fuelTokenPolicy.bytes, fuelTokenName.bytes)
