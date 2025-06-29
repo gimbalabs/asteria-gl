@@ -23,7 +23,8 @@ import { UTxO,
         integer,
         Asset,
         posixTime as createPosixTime,
-        byteString
+        byteString,
+        resolveSlotNo
         } from "@meshsdk/core";
 
 
@@ -165,14 +166,25 @@ export const moveShipRouter = createTRPCRouter({
                 console.log("assetsToSpacetime: ", assetsToSpacetime);
 
                 // Setting up the lower and upper bound time for the tx
-                const SAFETY_MS = 40_000;
-                const tx_earliest_posix_time = Math.max(posixTime, Date.now() + SAFETY_MS);
-                const tx_latest_posix_time = tx_earliest_posix_time + 4 * 60 * 1000;
-                // Calculate the new posix time
-                const new_posix_time = tx_latest_posix_time;
+                const response = await fetch('https://preprod.gomaestro-api.org/v1/chain-tip', {
+                    method: 'GET',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'api-key': process.env.MAESTRO_PREPROD_KEY || ''  // Assuming MAESTRO_API_KEY is in your .env
+                    }
+                  });
+                const curret_blockchain_time_json = await response.json();
+                console.log("curret_blockchain_time_json: ", curret_blockchain_time_json);
+                const current_blockchain_time_slot = curret_blockchain_time_json.data.slot;
+                console.log("current_blockchain_time_slot: ", current_blockchain_time_slot);
+                // What we need for the tx
+                const tx_earliest_slot = current_blockchain_time_slot;
+                const tx_latest_slot = tx_earliest_slot + 4 * 60;
+                // // Calculate the new posix time for datum
+                const new_posix_time = tx_latest_slot * 1000 + 1654041600000;
                 console.log("new_posix_time: ", new_posix_time);
-                console.log("tx_earliest_posix_time: ", tx_earliest_posix_time);
-                console.log("tx_latest_posix_time: ", tx_latest_posix_time);
+                console.log("tx_earliest_slot: ", tx_earliest_slot);
+                console.log("tx_latest_slot: ", tx_latest_slot);
 
                 // Construct the new datum for the new shipState UTXO
                 const newShipDatum = conStr0([
@@ -238,8 +250,8 @@ export const moveShipRouter = createTRPCRouter({
                     .mintRedeemerValue(burnfuelRedeemer,"JSON")
 
                     .txOut(changeAddress, pilotTokenAsset)
-                    .invalidBefore(tx_earliest_posix_time)
-                    .invalidHereafter(tx_latest_posix_time)
+                    .invalidBefore(tx_earliest_slot)
+                    .invalidHereafter(tx_latest_slot)
                     .txInCollateral(
                         collateral.input.txHash,
                         collateral.input.outputIndex,
