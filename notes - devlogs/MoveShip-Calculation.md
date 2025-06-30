@@ -11,8 +11,8 @@ Check 2
 ```bash
 last_move_latest_time = 1750740562818  (posix time)
 tx_earliest_time_in_slots = 95604237 (in slot numbers)
-tx_earliest_time_in_posix = 1666656000000 + (95604237*1000)
-tx_earliest_time_in_posix - last_move_latest_time = 1.15196742*10^{10} (CHECK PASSED -> must_respect_latest_time)
+tx_earliest_time_in_posix = 1654041600000 + (95604237*1000)
+tx_earliest_time_in_posix - last_move_latest_time = 1.74955023*10^{12} (CHECK PASSED -> must_respect_latest_time)
 ```
 
 Check 3
@@ -20,8 +20,8 @@ Check 3
 ``` bash
 last_move_latest_time (for new datum) = 1749646077000 (posix time)
 tx_latest_time_in_slots = 95604477
-tx_latest_time_in_posix = 1666656000000 + (95604477*1000)
-last_move_latest_time (new datum) - tx_latest_time_in_posix = -1.26144*10^{10} (CHECK PASSED -> must_have_correct_datum)
+tx_latest_time_in_posix = 1654041600000 + (95604477*1000)
+last_move_latest_time (new datum) - tx_latest_time_in_posix = 0 (CHECK PASSED -> must_have_correct_datum)
 ```
 
 Check 4
