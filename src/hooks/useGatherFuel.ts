@@ -16,7 +16,7 @@ import { MaestroProvider } from "@meshsdk/core";
 export function useGatherFuelTx(){
 
     const clientMaestroProvider = new MaestroProvider({
-        apiKey: process.env.NEXT_PUBLIC_MAESTRO_PREPROD_KEY,
+        apiKey: process.env.NEXT_PUBLIC_MAESTRO_PREPROD_KEY || "",
         network: "Preprod",
     })
 
@@ -135,11 +135,11 @@ export function useGatherFuelTx(){
 
 
             console.log("received unsigned tx")
-
+            if(unsignedTx){
             const signedTx = await wallet.signTx(unsignedTx, true);
             const txHash = await wallet.submitTx(signedTx);
             setTxHash(txHash)
-        
+            }
         }
             
            
