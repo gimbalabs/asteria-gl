@@ -7,13 +7,8 @@ import { shipYardPolicy,
         pelletRefHash,  
         spacetimeRefHash, 
         spacetimeValidatorAddress,
-        adminTokenPolicy,
-        adminTokenName,
         fuel_per_step, } from "config";
-import { UTxO, 
-        TxOutRef, 
-        TxIn, 
-        AssetExtended, 
+import {  
         stringToHex, 
         hexToString, 
         deserializeDatum, 
@@ -140,19 +135,19 @@ export const moveShipRouter = createTRPCRouter({
                 console.log("shipStateTxIndex: ", shipStateTxIndex);
 
                 // Calculate deltaX and deltaY
-                const deltaX = Math.abs(newPosX - coordinateX);
-                const deltaY = Math.abs(newPosY - coordinateY);
+                const deltaX = newPosX - coordinateX;
+                const deltaY = newPosY - coordinateY;
                 console.log("deltaX:", deltaX, "type:", typeof deltaX);
                 console.log("deltaY:", deltaY, "type:", typeof deltaY);
                 // Build the spend redeemer
                 const moveShipRedeemer = conStr0([
                     integer(deltaX),
-                    integer(deltaY)
+                    integer(deltaY),
                 ]);
                 // Build the burn fuel redeemer
                 const burnfuelRedeemer = conStr1([]);
                 // Calculate the fuel tokens in new ship utxo
-                const spentFuel = (deltaX + deltaY) * Number(fuel_per_step.int);
+                const spentFuel = (Math.abs(deltaX) + Math.abs(deltaY)) * Number(fuel_per_step.int);
                 console.log("spentFuel: ", spentFuel);
                 const newShipFuel = fuel - spentFuel;
                 // Construct asset to spacetime validator address
@@ -179,9 +174,16 @@ export const moveShipRouter = createTRPCRouter({
                 console.log("current_blockchain_time_slot: ", current_blockchain_time_slot);
                 // What we need for the tx
                 const tx_earliest_slot = current_blockchain_time_slot;
-                const tx_latest_slot = tx_earliest_slot + 4 * 60;
-                // // Calculate the new posix time for datum
-                const new_posix_time = tx_latest_slot * 1000 + 1654041600000;
+                const tx_latest_slot = resolveSlotNo("preprod", Date.now() + 4 * 60 * 1000);
+                // testing resolveSlotNo for the posix time when my ship was created
+                const slot_when_ship_was_created = resolveSlotNo("preprod", 1750740562818);
+                console.log("slot_when_ship_was_created: ", slot_when_ship_was_created);
+                // // Calculate the new posix time for datum; 86_400 is the zer time slot
+                const new_posix_time = (Number(tx_latest_slot) - 86_400) * 1_000 + 1_655_769_600_000;
+                // Just check what new_posix_time resoves to in slots
+                const new_posix_time_slot = resolveSlotNo("preprod", new_posix_time);
+                console.log("new_posix_time_slot: ", new_posix_time_slot);
+                console.log("new_posix_time_slot - slot_when_ship_was_created: ", Number(new_posix_time_slot) - Number(slot_when_ship_was_created));
                 console.log("new_posix_time: ", new_posix_time);
                 console.log("tx_earliest_slot: ", tx_earliest_slot);
                 console.log("tx_latest_slot: ", tx_latest_slot);
@@ -250,8 +252,8 @@ export const moveShipRouter = createTRPCRouter({
                     .mintRedeemerValue(burnfuelRedeemer,"JSON")
 
                     .txOut(changeAddress, pilotTokenAsset)
-                    .invalidBefore(tx_earliest_slot)
-                    .invalidHereafter(tx_latest_slot)
+                    .invalidBefore(Number(tx_earliest_slot))
+                    .invalidHereafter(Number(tx_latest_slot))
                     .txInCollateral(
                         collateral.input.txHash,
                         collateral.input.outputIndex,
