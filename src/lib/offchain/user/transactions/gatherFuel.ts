@@ -2,6 +2,7 @@ import {
     UTxO, 
     PlutusScript,
     serializePlutusScript,
+    deserializeAddress,
     stringToHex,
     deserializeDatum,
     conStr,
@@ -15,7 +16,7 @@ import {
     Asset,
     ConStr
 } from "@meshsdk/core";
-import { fromScriptRef} from "@meshsdk/core-cst";
+import {  fromScriptRef} from "@meshsdk/core-cst";
 import { MeshTxBuilder } from "@meshsdk/core";
 import { hexToString } from "@meshsdk/core";
 
@@ -58,7 +59,9 @@ const fuelPolicyId = pelletRefUtxo[0]?.output.scriptHash!;
 const pelletScriptRef = fromScriptRef(pelletRefUtxo[0]?.output.scriptRef!);
 const pelletPlutusScript = pelletScriptRef as PlutusScript
 const pelletAddress = serializePlutusScript(pelletPlutusScript).address
+console.log("pellet address", pelletAddress)
 
+console.log("spacetimeAddress", spacetimeAddress)
 
 
 const ship = shipUtxo;
@@ -69,7 +72,10 @@ const pellet = pelletUtxo;
      if (!pellet.output.plutusData){
         throw Error("Pellet Datum is Empty")
     };
-
+const des = deserializeAddress(ship.output.address)
+console.log("Ship Policy Id:" , shipyardPolicyId)   
+console.log("fuel policy id:" , fuelPolicyId) 
+console.log("Ship Payment Credential? :", des.scriptHash )
 const shipInputAda = ship.output.amount.find((asset =>
     asset.unit === "lovelace"
 ));
@@ -169,7 +175,9 @@ const pelletOutputAssets : Asset[] = [{
 ];
 
 console.log("Pellet output", pelletOutputAssets)
+console.log("Pellet Input", pelletInputDatum)
 console.log("Ship Output", spacetimeOutputAssets)
+
 
 const pilottokenAsset: Asset[] = [{
     unit: shipyardPolicyId + pilotTokenName,
@@ -205,9 +213,9 @@ const unsignedTx = await txBuilder
     pellet.output.address
 )
 .txInInlineDatumPresent()
-//.txInRedeemerValue(pelletRedemer, "JSON")
+.txInRedeemerValue(pelletRedemer, "JSON")
 //.spendingReferenceTxInRedeemerValue(pelletRedemer,"Mesh",{mem: 2592000, steps:2500000000 })
-.spendingReferenceTxInRedeemerValue(pelletRedemer, "JSON")
+//.spendingReferenceTxInRedeemerValue(pelletRedemer, "JSON")
 .spendingTxInReference(pelletRefHash,0)
 .spendingPlutusScriptV3()
 
@@ -218,9 +226,9 @@ const unsignedTx = await txBuilder
     ship.output.address
 )
 .txInInlineDatumPresent()
-//.txInRedeemerValue(shipRedeemer, "JSON")
+.txInRedeemerValue(shipRedeemer, "JSON")
 //.spendingReferenceTxInRedeemerValue(shipRedeemer, "Mesh",{mem: 2592000, steps:2500000000 })
-.spendingReferenceTxInRedeemerValue(shipRedeemer, "JSON")
+//.spendingReferenceTxInRedeemerValue(shipRedeemer, "JSON")
 .spendingTxInReference(spaceTimeRefHash,0)
 .txOut(changeAddress, pilottokenAsset) 
 .txOut(pelletAddress,pelletOutputAssets)

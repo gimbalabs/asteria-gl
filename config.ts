@@ -12,8 +12,12 @@ import { integer, Integer,
 
 
 
-export const adminTokenName: AssetName = assetName('41737465726961746f6b656e')
-export const adminTokenPolicy: PolicyId = policyId('fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293') //bytestring
+export const adminTokenName: string = '41737465726961746f6b656e'
+export const adminTokenPolicy: string = 'fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293' //bytestring
+
+
+//export const adminTokenName: string = '57696c6c6974576f726b'
+//export const adminTokenPolicy: string = '52ad7c6e234fdad76f3461ab57d349fa51c5d51f36c83a231b9eefcf' //bytestring
 
 
 
@@ -27,7 +31,8 @@ export const fuelTokenPolicy: PolicyId = policyId('734c3d33d223890dcf389a493e9ec
 export const shipYardPolicy = 'ec79e6d0adb9706b5f2d1800a27b4b4990ee00ee8295158dd4d599ba'
 //export const shipYardName =
 
-export const refHash: string = 'eda5d68d7f41c014c920d03d096a9e0e6f4d07e9491720675fa08f6584ebfacf' //Might be the old one
+// export const refHash: string = 'eda5d68d7f41c014c920d03d096a9e0e6f4d07e9491720675fa08f6584ebfacf' //Might be the old one
+export const refHash: string = '3d47a597e2d716b81d6fc975736efb890c25b5fc2aeaa9d1efc93810c9f1e2e3' //Might be the old one
 
 //pellet validator ref hash 
 export const pelletRefHash: TxOutRef = txOutRef('40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3', 0)
@@ -35,11 +40,13 @@ export const pelletRefHashWOUtil = '40f99536163547b034a62fbcff2c88e963af1c5dd161
   
 //asteria validator ref hash
 export const asteriaRefHash: TxOutRef = txOutRef('d20d15965e6bcfe0541938e7caf8a37b74852ece9cfed3314f1d9048b66cf8a5', 0)
+export const asteriaRefHashWO: string = 'd20d15965e6bcfe0541938e7caf8a37b74852ece9cfed3314f1d9048b66cf8a5'
 //deploy validator ref hash
 
 //spacetime validator ref Hash 
 export const spacetimeRefHash: TxOutRef = txOutRef('f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde', 0) 
-export const spacetimeRefHashWOUtil = 'f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde'    
+export const spacetimeRefHashWOUtil = 'f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde'
+   
 
   //pellet validator address 
 export const pelletValidatorAddress = 'addr_test1wqq62t863eh8z3wmv2qs3fc075egfxr0kh0cp7kmgvynj8g9aj6tm'

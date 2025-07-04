@@ -5,9 +5,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 export default function GatherFuel(){
 
-    const {handleSubmit, test, pelletUtxoList, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel, txHash} = useGatherFuelTx()
+    const {handleSubmit, handleGridRefs, test, pelletUtxoList, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel, txHash , pelletCoOrds} = useGatherFuelTx()
     
-
+    
     return (
         <div>
             <form onSubmit={handleSubmit} className="flex flex-col">
@@ -18,23 +18,30 @@ export default function GatherFuel(){
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-white">
                        
-                        {pelletUtxoList?.map((utxo) => (
+                        {pelletUtxoList?.map((utxo, index) => (
 
-                            <DropdownMenuItem onClick={() => {setPelletUtxo(utxo); setAvailableFuel(Number(utxo.output.amount[1]?.quantity));}}>{utxo.input.txHash}</DropdownMenuItem>
+                            <DropdownMenuItem key={index} onClick={() => {setPelletUtxo(utxo); setAvailableFuel(Number(utxo.output.amount[1]?.quantity))}}>{utxo.input.txHash}</DropdownMenuItem>
 
                         ))}
                     </DropdownMenuContent>
 
                 </DropdownMenu>
                 
-                 {pelletUtxo ? 
+                 {pelletUtxo &&  
                     <div className="flex flex-col">
                         <p>Selected utxo : {pelletUtxo.input.txHash}</p> 
                         <p>Available Fuel: {availableFuel} </p>
+                       
+                        <div>
+                            <button onClick={handleGridRefs}>Get Grid Refs</button>
+                            {pelletCoOrds && <p>X: {pelletCoOrds.x}</p>}
+                        </div>
+                        
+                       
                     </div>
                     
                 
-                : null}
+                }
 
                 <input className="text-black" value={fuel} placeholder="Choose fuel to take" onChange={(e) => setFuel(Number(e.target.value))}></input>
                 

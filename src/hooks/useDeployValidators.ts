@@ -8,9 +8,12 @@ import { adminTokenName } from "config";
 
 
 
+
 export function useDeployAsteriaValidators(){
 
-  const prepareTransaction = api.deployAsteriaValidators.prepareTransaction.useMutation();
+  const preparePelletTransaction = api.deployAsteriaValidators.preparePelletTransaction.useMutation();
+  const prepareAsteriaTransaction = api.deployAsteriaValidators.prepareAsteriaValidator.useMutation();
+  const prepareSpaceTimeTransaction = api.deployAsteriaValidators.prepareSpaceTimeValidator.useMutation();
 
     const [adminToken,  setAdminToken]  = useState("");
     const [assetName, setAssetName] = useState("");
@@ -21,6 +24,9 @@ export function useDeployAsteriaValidators(){
     const [fuelPerStep, setFuelPerStep] = useState("");
     const [maxShipFuel, setMaxShipFuel] = useState("");
 
+    const [pelletHash, setPelletHash] = useState("")
+    const [asteriaHash, setAsteriaHash] = useState("")
+
 
     const [distance, setDistance] = useState("");
     const [time, setTime] = useState("");
@@ -28,7 +34,7 @@ export function useDeployAsteriaValidators(){
     const { wallet, connected } = useWallet(); 
 
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmitPellet = async (e: React.FormEvent) => {
       e.preventDefault();
 
 
@@ -54,9 +60,8 @@ export function useDeployAsteriaValidators(){
           changeAddress,
         }
         
-  
         
-        const {unsignedTx, asteriaScriptAddress, pelletScriptAddress, spaceTimeAddress} = await prepareTransaction.mutateAsync(payload);
+        const {unsignedTx} = await preparePelletTransaction.mutateAsync(payload);
 
         console.log(changeAddress)
 
@@ -64,13 +69,64 @@ export function useDeployAsteriaValidators(){
 
         const signedTx = await wallet.signTx(unsignedTx);
         const txHash = await wallet.submitTx(signedTx);
+        setPelletHash(txHash)
+        
+
+        console.log("Pellet Transaction Hash:", txHash);
+        alert("Deployed Pellet Successfully! TxHash: " + txHash);
+       
 
 
-        console.log("Transaction Hash:", txHash);
-        alert("Deployed Successfully! TxHash: " + txHash);
-        let content = `Asteria refScriptHash: ${txHash}#0 Address: ${asteriaScriptAddress} , Pellet refScriptHash: ${txHash}#1 Address: ${pelletScriptAddress} , SpaceTime refScriptHash: ${txHash}#2 Address: ${spaceTimeAddress}` 
+        } catch (error) {
+            console.error(error);
+            alert("Tranasction Failed");
+        }
+        
+    }  
+    
+     const handleSubmitAsteria = async (e: React.FormEvent) => {
+      e.preventDefault();
 
-        console.log(content)
+      
+
+      try {
+
+         if (!connected || !wallet) {
+          throw new Error("Wallet not connected");
+        }
+      
+        const utxos = await wallet.getUtxos();
+        const changeAddress = await wallet.getChangeAddress()   
+
+        const payload = { 
+          utxos,
+          adminToken: adminToken,
+          adminTokenName: assetName,
+          fuelPerStep: Number(fuelPerStep),
+          initialFuel: Number(initialFuel),
+          minAsteriaDistance: Number(minDistance),
+          shipMintLovelaceFee: Number(shipMintLovelaceFee),
+          maxAsteriaMining: Number(maxAsteriaMining),
+          maxSpeed: {distance: Number(distance), time: Number(time)},
+          maxShipFuel: Number(maxShipFuel),
+          changeAddress,
+          pelletHash,
+        }
+        
+        
+        const {unsignedTx} = await prepareAsteriaTransaction.mutateAsync(payload);
+
+        console.log("received asteria unsigned tx")
+
+        const signedTx = await wallet.signTx(unsignedTx);
+        const txHash = await wallet.submitTx(signedTx);
+        setAsteriaHash(txHash)
+        
+
+        console.log("Asteria Transaction Hash:", txHash);
+        alert("Deployed Asteria Successfully! TxHash: " + txHash);
+       
+
 
         } catch (error) {
             console.error(error);
@@ -79,8 +135,59 @@ export function useDeployAsteriaValidators(){
         
     }   
 
-    return {handleSubmit, adminToken, setAdminToken, shipMintLovelaceFee, setShipMintLovelaceFee,
+    const handleSubmitSpacetime = async (e: React.FormEvent) => {
+      e.preventDefault()
+
+      try {
+    
+
+        const utxos = await wallet.getUtxos();
+        const changeAddress = await wallet.getChangeAddress()   
+
+        const payload = { 
+          utxos,
+          adminToken: adminToken,
+          adminTokenName: assetName,
+          fuelPerStep: Number(fuelPerStep),
+          initialFuel: Number(initialFuel),
+          minAsteriaDistance: Number(minDistance),
+          shipMintLovelaceFee: Number(shipMintLovelaceFee),
+          maxAsteriaMining: Number(maxAsteriaMining),
+          maxSpeed: {distance: Number(distance), time: Number(time)},
+          maxShipFuel: Number(maxShipFuel),
+          changeAddress,
+          pelletHash,
+          asteriaHash
+        }
+        
+        const {unsignedTx} = await prepareSpaceTimeTransaction.mutateAsync(payload)
+        
+        console.log("received spacetime unsigned tx")
+
+        const signedTx = await wallet.signTx(unsignedTx);
+        const txHash = await wallet.submitTx(signedTx);
+
+        console.log("Spacetime Transaction Hash:", txHash);
+        alert("Deployed Spacetime Successfully! TxHash: " + txHash);
+
+        /*const write = await writeFile(
+          "./scriptref-hash/deploy-scripts.json",
+          JSON.stringify({ spacetime: txHash, asteria: asteriaHash, pellet: pelletHash })
+         );*/
+
+
+
+      } catch(error){
+        alert("tx failed: " + error)
+        console.log(error)
+      }
+
+    }
+
+
+
+    return {handleSubmitPellet, handleSubmitAsteria, handleSubmitSpacetime, adminToken, setAdminToken, shipMintLovelaceFee, setShipMintLovelaceFee,
       maxAsteriaMining, setMaxAsteriaMining, initialFuel, setInitialFuel, minDistance, setMinDistance,
-      fuelPerStep, setFuelPerStep, distance, time, setDistance, setTime, maxShipFuel, setMaxShipFuel, assetName, setAssetName
+      fuelPerStep, setFuelPerStep, distance, time, setDistance, setTime, maxShipFuel, setMaxShipFuel, assetName, setAssetName, pelletHash, asteriaHash, setPelletHash, setAsteriaHash
      }
 }

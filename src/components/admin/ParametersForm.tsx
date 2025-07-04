@@ -18,11 +18,11 @@ export default function ParametersForm(){
     const walletItems = useAssets();
 
  
-    const setParameters = api.setParameters.setParameters.useMutation();
+    //const setParameters = api.setParameters.setParameters.useMutation();
 
-    const {handleSubmit, adminToken, setAdminToken, shipMintLovelaceFee, setShipMintLovelaceFee, maxAsteriaMining, setMaxAsteriaMining,
+    const {handleSubmitPellet, handleSubmitAsteria, handleSubmitSpacetime, adminToken, setAdminToken, shipMintLovelaceFee, setShipMintLovelaceFee, maxAsteriaMining, setMaxAsteriaMining,
         initialFuel, setInitialFuel, minDistance, setMinDistance, fuelPerStep, setFuelPerStep, maxShipFuel, setMaxShipFuel, 
-        distance, setDistance, time, setTime, assetName, setAssetName
+        distance, setDistance, time, setTime, assetName, setAssetName, pelletHash, asteriaHash, setPelletHash, setAsteriaHash
     } = useDeployAsteriaValidators();
 
     const [assetNameReadable, setAssetNameReadable] = useState("")
@@ -34,16 +34,16 @@ export default function ParametersForm(){
         return { adminToken, assetName, assetNameReadable };
       }
      
-    async function submit(e: React.FormEvent){
+  /* async function submit(e: React.FormEvent){
         e.preventDefault();
 
-      /*  if (parameters) {
+        if (parameters) {
             const ok = window.confirm(
               "Changing the parameters would require re-deploying the contracts. Would you like to proceed?"
             );
             if (!ok) return;
           }
-*/
+
         setParameters.mutateAsync({
             adminToken: adminToken,
             adminTokenName: assetName,       
@@ -56,32 +56,17 @@ export default function ParametersForm(){
             minAsteriaDistance:  Number(minDistance),
           });
     }
+      */
+    //nothing to show until wallet’s connected
+   
 
-    //  nothing to show until wallet’s connected
-    if (!connected) {
-        return (
-        <h2 className="font-bold">
-            Please connect your wallet before applying parameters
-        </h2>
-        );
-    }
-
-
-    // 3. dynamic button classes
-    /*const buttonClasses = parameters
-        ? "bg-green-600 hover:bg-green-700 focus:ring-green-500"
-        : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500";
-*/
-           
 
             return (
                 <div className="flex flex-col gap-2 items-center">
                     <h2>Specify Parameters for the Game</h2>
-                    // show a loading state
-                
+                   
 
-
-                    <form onSubmit={handleSubmit}  className="form text-galaxy-info font-bold">
+                    <form onSubmit={handleSubmitPellet}  className="form text-galaxy-info font-bold">
                         <h3>Start by selecting an admin token from your wallet</h3>
                         <p>PolicyID: {adminToken}</p>
                         <p>AssetName: {assetNameReadable}</p>
@@ -118,7 +103,7 @@ export default function ParametersForm(){
 
 
                     <p>Admin Token PolicyId (auto fills)</p> 
-                    {/* readOnly inputs with dynamic placeholders */}
+
                     <input
                     readOnly
                     value={adminToken}
@@ -236,15 +221,65 @@ export default function ParametersForm(){
                         className="p-1 mb-4"
                         />
                     </div>
-                </div>    
+                </div>
 
+                <h2> Let's deploy the validators in 3 stages, firstly ...</h2>    
+
+                {!pelletHash && 
                 <button
                 type="submit"
                 className={`inline-block px-6 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2`}
                 >
-                Deploy
-                </button>
+                Deploy Pellet Validator
+                </button>}
+                
+                {!pelletHash && <input type="text" placeholder="Enter Pellet Hash" value={pelletHash} onChange={(e) => setPelletHash(e.target.value)}/>}
+
+                {
+                  pelletHash && !asteriaHash &&
+                  <form className="form text-galaxy-info font-bold"> 
+                    <div className="flex flex-col align-center">
+                        <h2>Pellet validator has been deployed, now for Asteria validator</h2>
+                        <p> Pellet reference script hash...</p>
+                        <input
+                            type="text"
+                            value={pelletHash}
+                            className="p-1 "
+                            required
+                        />
+                        <button onClick={handleSubmitAsteria} className={`inline-block px-6 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2`}>
+                            Deploy Asteria Validator 
+                        </button>
+                    </div>
+                    
+
+                  </form>  
+                }
+
+                   {!asteriaHash && <input type="text" placeholder="Enter Asteria Hash" value={asteriaHash} onChange={(e) => setAsteriaHash(e.target.value)}/>}
+
+                {
+                  pelletHash && asteriaHash && 
+                  <form className="form text-galaxy-info font-bold"> 
+                    <div className="flex flex-col align-center">
+                        <h2>Asteria validator has been deployed, now for Spacetime validator</h2>
+                        <p> Asteria reference script hash...</p>
+                        <input
+                            type="text"
+                            value={asteriaHash}
+                            className="p-1 "
+                        />
+                        <button onClick={handleSubmitSpacetime}
+                            className={`inline-block px-6 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2`}>
+                        Deploy Spacetime Validator
+                        </button>
+                    </div>
+
+                  </form>  
+                }
             </form>
+
+
            
             
 

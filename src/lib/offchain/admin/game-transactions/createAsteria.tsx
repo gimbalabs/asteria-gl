@@ -5,7 +5,7 @@ import { useAssets, useWallet } from "@meshsdk/react";
 import { fromScriptRef,resolvePlutusScriptAddress} from "@meshsdk/core-cst";
 import { CardanoWallet } from "@meshsdk/react";
 
-import { adminTokenPolicy, adminTokenName, refHash } from "config";
+import { adminTokenPolicy, adminTokenName, asteriaRefHashWO, spacetimeRefHashWOUtil } from "config";
 import checkAdminToken from "~/hooks/checkAdminToken";
 // scriptAddress = "addr_test1vrqd62jeu7jt67zt3ajl8agyfnsa0ltjksqahcsqlax3kvq8qhe3x" asteria 
 const maestroApiKey = process.env.NEXT_PUBLIC_MAESTRO_PREPROD_KEY
@@ -35,8 +35,10 @@ export default function CreateAsteria(){
     useEffect(() => {
 
             async function findDeployUtxos(){
-            const deployUtxos: UTxO[] = await blockchainProvider.fetchUTxOs(refHash) 
+            const deployUtxos: UTxO[] = await blockchainProvider.fetchUTxOs(asteriaRefHashWO,0) 
             setRefHashUtxo(deployUtxos)
+
+            const spaceTimeUtxo: UTxO[] = await blockchainProvider.fetchUTxOs(spacetimeRefHashWOUtil, 0)
     
             console.log(deployUtxos)    
 
@@ -46,9 +48,11 @@ export default function CreateAsteria(){
                 const asteriaPlutusScript = asteriaScriptRef as PlutusScript
                 const asteriaValidatorAddress = resolvePlutusScriptAddress(asteriaPlutusScript) // gets the address of the validator from the script Hash
                 setAsteriaValidatorAddress(asteriaValidatorAddress)
+                
                 console.log(asteriaValidatorAddress)
-                const shipyardPolicyId = deployUtxos[2].output.scriptHash
-
+                const shipyardPolicyId = spaceTimeUtxo[0].output.scriptHash
+                
+                console.log("Shipyard policy:" , shipyardPolicyId)
                 const asteriaDatum = conStr0([
                   integer(0), //ship counter
                   policyId(shipyardPolicyId) // policyId of spacetime validator
@@ -70,7 +74,7 @@ export default function CreateAsteria(){
         const utxoWithAdminToken = utxos.map((utxo) => {
     
                const assets = utxo.output.amount
-               const asset = assets.find((asset) => asset.unit.startsWith(adminTokenPolicy.bytes) )
+               const asset = assets.find((asset) => asset.unit.startsWith(adminTokenPolicy) )
                if(asset){
                 setAdminToken(asset)
                }
@@ -81,13 +85,21 @@ export default function CreateAsteria(){
             fetcher: blockchainProvider,
             verbose: true,
           });
-
+        
+        const totalRewardsAsset : Asset[] = [{
+        unit: "lovelace",
+        quantity:  "2000000",
+    },
+    {
+        unit: adminTokenPolicy+ adminTokenName,
+        quantity: "1"
+    }];
 
         const changeAddress = await wallet.getChangeAddress()
         
 
         const unsignedTx = await txBuilder
-        .txOut(asteriaValidatorAddress, [{unit: adminTokenPolicy.bytes+adminTokenName.bytes , quantity: "1" } ])
+        .txOut(asteriaValidatorAddress, totalRewardsAsset)
         .txOutInlineDatumValue(asteriaDatum, "JSON")
         .changeAddress(changeAddress)
         .selectUtxosFrom(utxos)

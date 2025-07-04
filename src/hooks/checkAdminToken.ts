@@ -21,7 +21,7 @@ export default function checkAdminToken() {
             const walletAssets = await wallet.getAssets()
             walletAssets.forEach((a) => {
                 
-                if (a.unit.startsWith(adminTokenPolicy.bytes)) {
+                if (a.unit.startsWith(adminTokenPolicy)) {
 
                     setConnectedAdminToken(a.unit)
                 }

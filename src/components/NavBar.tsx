@@ -11,7 +11,7 @@ export default function NavBar() {
         <ul className="flex gap-4 items-center text-sm font-medium">
           <li className="flex items-center"><Link href="/about">About</Link></li>
           <li className="flex items-center"><Link href="/admin">AdminPage</Link></li>
-          <li className="flex items-center"><CardanoWallet isDark={true} /></li>
+          <li className="flex items-center"><CardanoWallet isDark={true} persist={true}/></li>
         </ul>
       </div>
     </nav>

@@ -19,7 +19,8 @@ function spacetimeScriptAppliedParam (
    fuel_per_step: number,
 
 ){
-
+    console.log(pelletScriptAddress, asteriaScriptAddress, admin_token, adminTokenName, max_speed.distance, max_speed.time, max_ship_fuel, fuel_per_step)
+    
     const AdminTokenData =  conStr0([
         policyId(admin_token), 
         assetName(stringToHex(adminTokenName))                              
@@ -32,13 +33,13 @@ function spacetimeScriptAppliedParam (
 
 
     const appliedSpacetimeParam = applyParamsToScript(
-        SPACETIME_SCRIPT!,
+        SPACETIME_SCRIPT,
         [   scriptHash(pelletScriptAddress),
             scriptHash(asteriaScriptAddress),
             AdminTokenData,
             maxSpeed,
-            integer(fuel_per_step),
             integer(max_ship_fuel),
+            integer(fuel_per_step)
         ],
         "JSON"
         );
