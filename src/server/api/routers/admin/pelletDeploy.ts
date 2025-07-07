@@ -15,6 +15,7 @@ import {
     stringToHex,
     UTxO,
     Transaction,
+    policyId
   } from "@meshsdk/core";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { maestroProvider } from "~/server/provider/maestroProvider";
@@ -100,8 +101,10 @@ export const pelletDeployRouter = createTRPCRouter({
         const pelletDatum = conStr0([
           integer(pellet.pos_x),
           integer(pellet.pos_y),
-          scriptHash(pellet.shipyard_policy),
+          // scriptHash(pellet.shipyard_policy),
+          policyId(pellet.shipyard_policy),
         ]);
+        console.log("pelletDatum: ", pelletDatum);
 
         const fuelAndAdminAsset: Asset[] = [
           {
@@ -193,8 +196,10 @@ export const pelletDeployRouter = createTRPCRouter({
             const pelletDatum = conStr0([
                 integer(pellet.pos_x),
                 integer(pellet.pos_y),
-                scriptHash(pellet.shipyard_policy),
+                // scriptHash(pellet.shipyard_policy),
+                policyId(pellet.shipyard_policy),
             ]);
+            console.log("pelletDatum: ", pelletDatum);
 
             const fuelAndAdminAsset: Asset[] = [
             {
