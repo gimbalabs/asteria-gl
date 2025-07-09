@@ -19,8 +19,16 @@ import {
         Asset,
         posixTime as createPosixTime,
         byteString,
-        resolveSlotNo
+        resolveSlotNo,
+        SLOT_CONFIG_NETWORK,
+        unixTimeToEnclosingSlot,
+        PlutusScript,
+        serializePlutusScript,
+        deserializeAddress
         } from "@meshsdk/core";
+import {
+        fromScriptRef,
+        } from "@meshsdk/core-cst";
 
 
 export const moveShipRouter = createTRPCRouter({
@@ -116,7 +124,31 @@ export const moveShipRouter = createTRPCRouter({
                 }),
             }))
             .mutation(async ({ input }) => {
+                // TESTING FOR CONFIG INFO
+                // const pelletsScriptUTxo = await maestroProvider.fetchUTxOs("40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3");
+                // console.log("pelletsScriptUTxo: ", pelletsScriptUTxo);
+                // const pelletsFromScriptRef = fromScriptRef(pelletsScriptUTxo[0]!.output.scriptRef!);
+                // const pelletsPlutusScript = pelletsFromScriptRef as PlutusScript;
+                // const pelletAddress = serializePlutusScript(pelletsPlutusScript).address;
+                // console.log("pelletAddress: ", pelletAddress);
+                // const pelletPolicyId = deserializeAddress(pelletAddress).scriptHash;
+                // console.log("pelletPolicyId: ", pelletPolicyId);
+
+                // const spaceTimeScriptUTxo = await maestroProvider.fetchUTxOs('f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde', 0);
+                // console.log("spaceTimeScriptUTxo: ", spaceTimeScriptUTxo);
+                // const spaceTimeScriptRef = fromScriptRef(spaceTimeScriptUTxo[0]!.output.scriptRef!);
+                // console.log("spaceTimeScriptRef: ", spaceTimeScriptRef);
+                // const spaceTimePlutusScript = spaceTimeScriptRef as PlutusScript;
+                // const spaceTimeAddress = serializePlutusScript(spaceTimePlutusScript).address;
+                // console.log("spaceTimeAddress: ", spaceTimeAddress);
+                // const spaceTimePolicyId = deserializeAddress(spaceTimeAddress).scriptHash;
+                // console.log("spaceTimePolicyId: ", spaceTimePolicyId);
+
+                // END TESTING FOR CONFIG INFO
                 const { newPosX, newPosY, shipStateDatum, changeAddress, utxos, collateral } = input;
+                console.log("newPosX: ", newPosX);
+                console.log("newPosY: ", newPosY);
+                console.log("collateral: ", collateral);
                 const { fuel, coordinateX, coordinateY, shipName, pilotName, posixTime } = shipStateDatum;
                 console.log(fuel, coordinateX, coordinateY, shipName, pilotName, posixTime);
                 const shipStateUtxos_array = await maestroProvider.fetchAddressUTxOs(spacetimeValidatorAddress);
@@ -144,8 +176,10 @@ export const moveShipRouter = createTRPCRouter({
                     integer(deltaX),
                     integer(deltaY),
                 ]);
+                console.log("moveShipRedeemer: ", moveShipRedeemer);
                 // Build the burn fuel redeemer
                 const burnfuelRedeemer = conStr1([]);
+                console.log("burnfuelRedeemer: ", burnfuelRedeemer);
                 // Calculate the fuel tokens in new ship utxo
                 const spentFuel = (Math.abs(deltaX) + Math.abs(deltaY)) * Number(fuel_per_step.int);
                 console.log("spentFuel: ", spentFuel);
@@ -174,10 +208,20 @@ export const moveShipRouter = createTRPCRouter({
                 console.log("current_blockchain_time_slot: ", current_blockchain_time_slot);
                 // What we need for the tx
                 const tx_earliest_slot = current_blockchain_time_slot;
-                const tx_latest_slot = resolveSlotNo("preprod", Date.now() + 4 * 60 * 1000);
+
+                // const tx_latest_slot = resolveSlotNo("preprod", Date.now() + 4 * 60 * 1000);  // Commented out for testing for unixTimeToEnclosingSlot
                 // testing resolveSlotNo for the posix time when my ship was created
-                const slot_when_ship_was_created = resolveSlotNo("preprod", 1750740562818);
+
+                // TESTING FOR unixTimeToEnclosingSlot
+
+                const slot_when_ship_was_created = unixTimeToEnclosingSlot(1750740562818, SLOT_CONFIG_NETWORK.preprod);
                 console.log("slot_when_ship_was_created: ", slot_when_ship_was_created);
+
+                const tx_latest_slot = unixTimeToEnclosingSlot((Date.now() + 4 * 60 * 1000), SLOT_CONFIG_NETWORK.preprod);
+                console.log("tx_latest_slot: ", tx_latest_slot);
+
+                // END TESTING FOR unixTimeToEnclosingSlot
+
                 // // Calculate the new posix time for datum; 86_400 is the zer time slot
                 const new_posix_time = (Number(tx_latest_slot) - 86_400) * 1_000 + 1_655_769_600_000;
                 // Just check what new_posix_time resoves to in slots
@@ -188,13 +232,14 @@ export const moveShipRouter = createTRPCRouter({
                 console.log("tx_earliest_slot: ", tx_earliest_slot);
                 console.log("tx_latest_slot: ", tx_latest_slot);
 
+
                 // Construct the new datum for the new shipState UTXO
                 const newShipDatum = conStr0([
                     integer(newPosX),
                     integer(newPosY),
                     byteString(stringToHex(shipName)),
                     byteString(stringToHex(pilotName)),
-                    createPosixTime(new_posix_time)
+                    createPosixTime(new_posix_time)  
                 ]);
                 console.log("newShipDatum: ", newShipDatum);
 
@@ -219,12 +264,17 @@ export const moveShipRouter = createTRPCRouter({
                 console.log("pilotTokenTxHash: ", pilotTokenTxHash);
                 console.log("pilotTokenTxIndex: ", pilotTokenTxIndex);
 
-
+                // Checking what pellet reference hash and idex + space time ref hash and idex show up as when using '.bytes'
+                console.log("pelletRefHash.fields[0].fields[0].bytes: ", pelletRefHash.fields[0].fields[0].bytes);
+                console.log("pelletRefHash.fields[1].int: ", Number(pelletRefHash.fields[1].int));
+                console.log("spacetimeRefHash.fields[0].fields[0].bytes: ", spacetimeRefHash.fields[0].fields[0].bytes);
+                console.log("spacetimeRefHash.fields[1].int: ", Number(spacetimeRefHash.fields[1].int));
                 // Build the Tx using TxBuilder
                 const txBuilder = new MeshTxBuilder({
                     fetcher: maestroProvider,
                     submitter: maestroProvider,
-                    verbose: true
+                    verbose: true,
+                    evaluator: maestroProvider,
                 });
 
                 txBuilder
@@ -238,8 +288,6 @@ export const moveShipRouter = createTRPCRouter({
                     .txInRedeemerValue(moveShipRedeemer,"JSON")
                     .spendingTxInReference(spacetimeRefHash.fields[0].fields[0].bytes, Number(spacetimeRefHash.fields[1].int))
                     .txInInlineDatumPresent()
-                    .txOut(spacetimeValidatorAddress, assetsToSpacetime)
-                    .txOutInlineDatumValue(newShipDatum,"JSON")
 
                     .txIn(
                         pilotTokenTxHash,
@@ -250,6 +298,9 @@ export const moveShipRouter = createTRPCRouter({
                     .mint((-spentFuel).toString(), fuelTokenPolicy.bytes, fuelTokenName.bytes)
                     .mintTxInReference(pelletRefHash.fields[0].fields[0].bytes, Number(pelletRefHash.fields[1].int))
                     .mintRedeemerValue(burnfuelRedeemer,"JSON")
+
+                    .txOut(spacetimeValidatorAddress, assetsToSpacetime)
+                    .txOutInlineDatumValue(newShipDatum,"JSON")
 
                     .txOut(changeAddress, pilotTokenAsset)
                     .invalidBefore(Number(tx_earliest_slot))

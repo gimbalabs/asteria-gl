@@ -17,38 +17,38 @@ export const adminTokenPolicy: PolicyId = policyId('fbeafbfb456a440b174001793c54
 
 
 
-export const fuelTokenName: AssetName = assetName('4655454c') /// different ?
-export const fuelTokenPolicy: PolicyId = policyId('734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2') /// different ?
+export const fuelTokenName: AssetName = assetName('4655454c') // Upto date and correct
+export const fuelTokenPolicy: PolicyId = policyId('734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2') /// Upto date and correct
 
 
 //export const prizeTokenName = 
 //export const prizeTokenPolicy = 
 
-// export const shipYardPolicy = 'ec79e6d0adb9706b5f2d1800a27b4b4990ee00ee8295158dd4d599ba' // Is this correct? It does not match the policy for the pilot token.
-export const shipYardPolicy = 'b5b0569387404d97341bcdd7b54916bde5976e2503fb1c7d9f7093aa' // new one
+
+export const shipYardPolicy = 'b5b0569387404d97341bcdd7b54916bde5976e2503fb1c7d9f7093aa' // Upto date and correct
 //export const shipYardName =
 
-export const refHash: string = 'eda5d68d7f41c014c920d03d096a9e0e6f4d07e9491720675fa08f6584ebfacf' //Might be the old one
+export const refHash: string = 'eda5d68d7f41c014c920d03d096a9e0e6f4d07e9491720675fa08f6584ebfacf' //Might be the old one because we have different ref hashes for all scripts
 
 //pellet validator ref hash 
-export const pelletRefHash: TxOutRef = txOutRef('40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3', 0)
+export const pelletRefHash: TxOutRef = txOutRef('40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3', 0) // Upto date and correct
   
 //asteria validator ref hash
 export const asteriaRefHash: TxOutRef = txOutRef('d20d15965e6bcfe0541938e7caf8a37b74852ece9cfed3314f1d9048b66cf8a5', 0)
 //deploy validator ref hash
 
 //spacetime validator ref Hash 
-export const spacetimeRefHash: TxOutRef = txOutRef('f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde', 0) 
+export const spacetimeRefHash: TxOutRef = txOutRef('f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde', 0)  // Upto date and correct
        
 
   //pellet validator address 
-export const pelletValidatorAddress = 'addr_test1wqq62t863eh8z3wmv2qs3fc075egfxr0kh0cp7kmgvynj8g9aj6tm'
-     //Above script address needs to be verified for the proper types as per Mesh
+// export const pelletValidatorAddress = 'addr_test1wqq62t863eh8z3wmv2qs3fc075egfxr0kh0cp7kmgvynj8g9aj6tm'
+export const pelletValidatorAddress = 'addr_test1wpe5c0fn6g3cjrw08zdyj057crfn7g5lf9lxla7me43dtss5hrdmk'
+
   //asteria validator address
 export const asteriaValidatorAddress =  'addr_test1wqnjq6f6xtmqvy998g5dfvfjzlc2jysqxzf9hlnc2f4qmksq37dur'
   //spacetime validator address
-// export const spacetimeValidatorAddress = 'addr_test1wrk8neks4kuhq66l95vqpgnmfdyepmsqa6pf29vd6n2enwsjnrl6x'   // old one
-export const spacetimeValidatorAddress = 'addr_test1wz6mq45nsaqym9e5r0xa0d2fz677t9mwy5plk8ranacf82sjxy58f'
+export const spacetimeValidatorAddress = 'addr_test1wz6mq45nsaqym9e5r0xa0d2fz677t9mwy5plk8ranacf82sjxy58f'  // Upto date and correct
 
 //Game Parameters
 

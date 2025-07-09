@@ -23,6 +23,7 @@
   "dependencies": {
     "@meshsdk/core": "^1.9.0-beta.59",
     "@meshsdk/core-csl": "^1.9.0-beta.43",
+    "@meshsdk/core-cst": "^1.9.0-beta-40",
     "@meshsdk/react": "^1.9.0-beta-40",
     "@prisma/client": "^5.14.0",
     "@radix-ui/react-dropdown-menu": "^2.1.12",
