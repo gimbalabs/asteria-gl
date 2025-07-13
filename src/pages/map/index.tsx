@@ -1,9 +1,11 @@
 import Mapbutton from "~/components/Mapbutton";
 import React, { useState } from "react";
 import GameActionsModal from "~/components/user/GameActionsModal";
+import { RocketIcon } from "lucide-react";
 
 
 import getShipPositions from "~/hooks/getShipPositions";
+import { add } from "lodash";
 
 const GRID_SIZE = 100;
 
@@ -12,7 +14,7 @@ function generateGrid() {
     for (let y = -GRID_SIZE / 2; y < GRID_SIZE / 2; y++) {
         const row = [];
         for (let x = -GRID_SIZE / 2; x < GRID_SIZE / 2; x++) {
-            row.push({ x, y, content: null as string | null });
+            row.push({ x, y, content: null as string | null, alt: null as string | null  });
         }
         grid.push(row);
     }
@@ -20,7 +22,7 @@ function generateGrid() {
 }
 
 export default function MapPage() {
-    const [grid, setGrid] = useState<{ x: number; y: number; content: string | null }[][]>(generateGrid());
+    const [grid, setGrid] = useState<{ x: number; y: number; content: string | null, alt: string| null }[][]>(generateGrid());
     const [inputValue, setInputValue] = useState("");
     const [selectedCell, setSelectedCell] = useState<{ x: number; y: number } | null>(null);
    const [zoom, setZoom] = useState(1); // State to manage zoom level
@@ -38,7 +40,7 @@ export default function MapPage() {
                 return prevGrid.map((row) =>
                     row.map((cell) =>
                         cell.x === selectedCell?.x && cell.y === selectedCell?.y
-                            ? { ...cell, content: inputValue }
+                            ? { ...cell, content: inputValue , alt: ""}
                             : cell
                     )
                 );
@@ -47,6 +49,28 @@ export default function MapPage() {
             setSelectedCell(null);
         }
     };
+
+    function addShips(posX, posY, shipName){
+
+        setGrid((prevGrid) => {
+                return prevGrid.map((row) =>
+                    row.map((cell) =>
+                        cell.x === posX && cell.y === posY
+                            ? { ...cell, content: <RocketIcon />, alt: shipName}
+                            : cell
+                    )
+                );
+            });
+
+    }
+
+    function handleAddShips(){
+        shipState?.map(ship => {
+            addShips(Number(ship.posX), Number(ship.posY), ship.name)
+
+        })
+    }
+
 
     return (
         <>
@@ -62,9 +86,10 @@ export default function MapPage() {
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder="Enter content"
                 />
-                <button onClick={handleAddContent} disabled={!selectedCell}>
+                <button onClick={handleAddContent} className="mr-3" disabled={!selectedCell}>
                     Add to Grid
                 </button>
+                {shipState? <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-200" onClick={handleAddShips}>Populate ships</button>: null}
             </div>
             <div
                 className="grid"
@@ -102,7 +127,7 @@ export default function MapPage() {
                                 }}
                                 onClick={() => handleCellClick(cell.x, cell.y)}
                             >
-                                {cell.content}
+                               {cell.content}
                             </div>
                         ))}
                     </div>
