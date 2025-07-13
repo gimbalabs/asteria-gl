@@ -2,6 +2,8 @@ import Mapbutton from "~/components/Mapbutton";
 import React, { useState } from "react";
 import CreateShipComponent from "~/components/user/CreateShipComponent";
 
+import getShipPositions from "~/hooks/getShipPositions";
+
 const GRID_SIZE = 100;
 
 function generateGrid() {
@@ -22,7 +24,8 @@ export default function MapPage() {
     const [selectedCell, setSelectedCell] = useState<{ x: number; y: number } | null>(null);
    const [zoom, setZoom] = useState(1); // State to manage zoom level
 
-
+    const {shipState} = getShipPositions()
+    console.log(shipState)
 
     const handleCellClick = (x: number, y: number) => {
         setSelectedCell({ x, y });
