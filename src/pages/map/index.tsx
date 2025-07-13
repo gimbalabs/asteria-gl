@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import GameActionsModal from "~/components/user/GameActionsModal";
 
 
+import getShipPositions from "~/hooks/getShipPositions";
+
 const GRID_SIZE = 100;
 
 function generateGrid() {
@@ -23,7 +25,8 @@ export default function MapPage() {
     const [selectedCell, setSelectedCell] = useState<{ x: number; y: number } | null>(null);
    const [zoom, setZoom] = useState(1); // State to manage zoom level
 
-
+    const {shipState} = getShipPositions()
+    console.log(shipState)
 
     const handleCellClick = (x: number, y: number) => {
         setSelectedCell({ x, y });
