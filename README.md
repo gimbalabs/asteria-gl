@@ -1,5 +1,5 @@
 # Asteria-GL (Asteria Gimbalabs)
-Asteria front-end project Spring 2025
+Asteria front-end project Spring 2025... make that summer 2025 :)
 
 ## Introduction
 This is the Asteria-GL project. This is a three month long learning project conducted by four Gimbalabs contributors in order to learn the T3 tech stack and Mesh and collaboration in Web3 development.The real world project is the Astoria game by TX pipe, which is a project catalyst funded eUTXO learning game.
