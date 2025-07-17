@@ -12,12 +12,12 @@ import { integer, Integer,
 
 
 
-//export const adminTokenName: string = "41737465726961746f6b656e"
-//export const adminTokenPolicy: string = "fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293" //bytestring
+export const adminTokenName: string = "41737465726961746f6b656e"
+export const adminTokenPolicy: string = "fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293" //bytestring
 
 
-export const adminTokenName: string = '57696c6c6974576f726b'
-export const adminTokenPolicy: string = '52ad7c6e234fdad76f3461ab57d349fa51c5d51f36c83a231b9eefcf' //bytestring
+//export const adminTokenName: string = '57696c6c6974576f726b' // nd test tokens
+//export const adminTokenPolicy: string = '52ad7c6e234fdad76f3461ab57d349fa51c5d51f36c83a231b9eefcf' //nd test tokens
 
 
 
