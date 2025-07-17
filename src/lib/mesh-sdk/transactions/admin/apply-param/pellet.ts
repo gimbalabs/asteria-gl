@@ -15,10 +15,13 @@ const PELLET_SCRIPT = pelletValidator!.compiledCode;
 
 function  pelletScriptApliedParam(admin_token: string, adminTokenName: string){
 
+
   const AdminTokenData =  conStr0([
     policyId(admin_token), 
     assetName(stringToHex(adminTokenName))                              
   ]);
+
+  console.log(AdminTokenData)
   
   const appliedPelletParam   = applyParamsToScript(
     PELLET_SCRIPT,

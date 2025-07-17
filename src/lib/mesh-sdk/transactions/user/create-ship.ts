@@ -1,7 +1,9 @@
 import { 
     Asset,
     assetName,
+    conStr,
     conStr0,
+    conStr1,
     mConStr0,
     deserializeDatum,
     integer,
@@ -12,10 +14,11 @@ import {
     serializePlutusScript, 
     stringToHex, 
     UTxO,
+    resolveSlotNo
 } from "@meshsdk/core";
 
-
-import { admintoken, pelletRefHash, asteriaRefHash, spacetimeRefHash } from "../../config-dont-use.js";
+import {adminTokenName, adminTokenPolicy, refHash, asteriaRefHashWO, pelletRefHashWOUtil, spacetimeRefHashWOUtil} from '../../../../../config.js'
+//import { admintoken, pelletRefHash, asteriaRefHash, spacetimeRefHash } from "../../config-dont-use.js";
 //import { blockchainProvider, myWallet, slot} from "../../utils.js";
 import { fromScriptRef} from "@meshsdk/core-cst";
 import { maestroProvider, blockfrostProvider } from "../../utils.js";
@@ -43,8 +46,8 @@ async function createShip(
 
     const txBuilder = new MeshTxBuilder({
         // submitter: blockfrostProvider,
-         fetcher: blockfrostProvider,
-         evaluator: blockfrostProvider,
+         fetcher: maestroProvider,
+         evaluator: maestroProvider,
          verbose: true
      });
 
@@ -68,24 +71,25 @@ if(!pelletDeployScript.txHash){
 */
 
 
-const asteriaRefUtxo = await maestroProvider.fetchUTxOs(asteriaRefHash, 0);
-const spacetimeRefUtxo = await maestroProvider.fetchUTxOs(spacetimeRefHash, 0)
-const pelletRefUtxo = await maestroProvider.fetchUTxOs(pelletRefHash, 0)
+const asteriaRefUtxo = await maestroProvider.fetchUTxOs(asteriaRefHashWO, 0);
+const spacetimeRefUtxo = await maestroProvider.fetchUTxOs(spacetimeRefHashWOUtil, 0)
+const pelletRefUtxo = await maestroProvider.fetchUTxOs(pelletRefHashWOUtil, 0)
 
 const asteriaScriptRef = fromScriptRef(asteriaRefUtxo[0].output.scriptRef!);
 
 
 const asteriaPlutusScript = asteriaScriptRef as PlutusScript;
 const asteriaScriptAddress  = serializePlutusScript(asteriaPlutusScript).address;
-
+console.log("Asteria address", asteriaScriptAddress)
 //const spacetimeScriptRefUtxos = await blockchainProvider.fetchUTxOs(spacetimeDeployScript.txHash);
 const shipyardPolicyid =   spacetimeRefUtxo[0].output.scriptHash;
 const spacetimeScriptRef = fromScriptRef(spacetimeRefUtxo[0].output.scriptRef!);
 const spacetimePlutusScript = spacetimeScriptRef as PlutusScript;
 const spacetimeAddress =   serializePlutusScript(spacetimePlutusScript).address;
-
+console.log("asteriaScriptAddess ",asteriaScriptAddress)
 //const pelletScriptRefUtxos = await blockchainProvider.fetchUTxOs(pelletDeployScript.txHash);
 const fuelPolicyId  = pelletRefUtxo[0].output.scriptHash;
+console.log("Fuel policy Id : ", fuelPolicyId)
 
 //console.log(" spacetimeAddress: ", spacetimeAddress);
 //console.log("fuel policyId : ", fuelPolicyId);
@@ -93,7 +97,7 @@ const fuelPolicyId  = pelletRefUtxo[0].output.scriptHash;
 //console.log("fuel policyId : ", fuelPolicyId);
 
 
-const asteriaInputUtxos = await maestroProvider.fetchAddressUTxOs(asteriaScriptAddress,admintoken.policyid+admintoken.name);
+const asteriaInputUtxos = await maestroProvider.fetchAddressUTxOs(asteriaScriptAddress, adminTokenPolicy+adminTokenName);
 
 
 const asteria = asteriaInputUtxos[0];
@@ -101,12 +105,12 @@ const asteriaInputAda = asteria.output.amount.find((Asset) =>
     Asset.unit === "lovelace"
 );
 
-console.log(asteria)
+console.log("Asteria Output: ", asteria.output.amount[0], asteria.output.amount[1])
 const asteriaInputData = asteria.output.plutusData;
 const asteriaInputDatum = deserializeDatum(asteriaInputData!).fields;
 
 
-console.log("asteria Input datum",asteriaInputDatum);
+console.log("asteria Input datum",deserializeDatum(asteriaInputData));
 //datum properties
 const asteriaInputShipcounter = asteriaInputDatum[0].int;
 const asteriaInputShipYardPolicyId = asteriaInputDatum[1].bytes;
@@ -117,7 +121,7 @@ const asteriaOutputDatum =  conStr0([
     policyId(asteriaInputShipYardPolicyId)
 ]);
 
-console.log(asteriaOutputDatum)
+console.log("asteria output datum", asteriaOutputDatum)
 
 const fuelTokenName = stringToHex("FUEL");
 const shipTokenName = stringToHex("SHIP" + Number(asteriaInputShipcounter).toString()); //ship counter from Datum
@@ -127,12 +131,23 @@ console.log(shipTokenName)
 
 const blockTime = await blockfrostProvider.fetchLatestBlock()
 const time = blockTime.time;
-const slot = blockTime.slot;
-const tx_earliest_slot = Number(slot) - 60;
-const tx_earliest_posix_time = time - 60 * 1000; 
-const tx_latest_slot = Number(slot) + 600
+console.log("BlockTime: ", time)
+const blockFrostSlot = blockTime.slot
 
-const ttl = Date.now() + 10 * 60 * 1000;
+const tx_latest_move = time + 1600
+
+let nowDateTime = new Date();
+let dateTimeAdd5Min = new Date(nowDateTime.getTime() + 5 *60000);
+let dateTimeAdd10Min = new Date(nowDateTime.getTime() + 10 *60000);
+const slot = resolveSlotNo('preprod', dateTimeAdd5Min.getTime());
+console.log("Mesh Resolved Slot + 5 mins:" , slot)
+
+const slotTen = resolveSlotNo('preprod' , dateTimeAdd10Min.getTime());
+
+console.log("Latest move time: ", tx_latest_move)
+console.log(" Latest move posix: ", posixTime(tx_latest_move) )
+
+const ttl = Date.now() + 15 * 60 * 1000;
 const now = Date.now() * 1000
 //const ttl1 = time + 10 * 60 * 1000;
 const shipDatum = conStr0([
@@ -155,9 +170,10 @@ const assetToSpacetimeAddress: Asset[] = [{
 {
     unit: fuelPolicyId! + fuelTokenName,
     quantity: initial_fuel
-}];
+},
+];
 const totalRewardsAsset : Asset[] = [{
-    unit: admintoken.policyid + admintoken.name,
+    unit: adminTokenPolicy + adminTokenName,
     quantity: "1"
 },
 {
@@ -169,9 +185,9 @@ const pilotTokenAsset: Asset [] = [{
     quantity: "1"
 }];
 
-const mintShipRedeemer   = mConStr0([]);
-const addNewshipRedeemer = mConStr0([]);
-const mintFuelRedeemer   = mConStr0([]);
+const mintShipRedeemer   = conStr(0, []);
+const addNewshipRedeemer = conStr(0, []);
+const mintFuelRedeemer   = conStr(0, []);
 
 console.log(mintShipRedeemer)
 
@@ -179,6 +195,7 @@ console.log(mintShipRedeemer)
 //console.log(asteriaInputAda,"\n");
 //console.log("Asteria input Assets",asteriaInputUtxos[0].output.amount);
 console.log("asteria output datum: ",asteriaOutputDatum);
+console.log("Reward Assets:",  totalRewardsAsset)
 //onsole.log(" Ship Datum", shipDatum);
 //console.log("latest slot time", tx_latest_slot)
 //console.log("slot", slot)
@@ -193,33 +210,38 @@ console.log("asteria output datum: ",asteriaOutputDatum);
         asteria.input.txHash,
         asteria.input.outputIndex,
     )
-    .spendingReferenceTxInRedeemerValue(addNewshipRedeemer,"Mesh",{mem: 2000000, steps:2500000000 })
-    .spendingTxInReference(asteriaRefHash,0) //
-
+    .txInRedeemerValue(addNewshipRedeemer,"JSON")
+    .spendingTxInReference(asteriaRefHashWO,0) //
     .txInInlineDatumPresent()
-    .txOut(asteriaScriptAddress,totalRewardsAsset)
-    .txOutInlineDatumValue(asteriaOutputDatum,"JSON")
+
     .mintPlutusScriptV3()
     .mint("1",shipyardPolicyid!,shipTokenName)
-    .mintTxInReference(spacetimeRefHash,0)
-    .mintRedeemerValue(mintShipRedeemer,"Mesh",{mem: 2000000, steps:2500000000 })
+    .mintTxInReference(spacetimeRefHashWOUtil,0)
+    .mintRedeemerValue(mintShipRedeemer,"JSON")
+
     .mintPlutusScriptV3()
     .mint("1",shipyardPolicyid!,pilotTokenName)
-    .mintTxInReference(spacetimeRefHash,0)
-    .mintRedeemerValue(mintShipRedeemer,"Mesh",{mem: 2000000, steps:2500000000 })
+    .mintTxInReference(spacetimeRefHashWOUtil,0)
+    .mintRedeemerValue(mintShipRedeemer,"JSON")
+    
     .mintPlutusScriptV3()
     .mint(initial_fuel, fuelPolicyId!, fuelTokenName)
-    .mintTxInReference(pelletRefHash, 0)
-    .mintRedeemerValue(mintFuelRedeemer,"Mesh",{mem: 2000000, steps:2500000000 })
+    .mintTxInReference(pelletRefHashWOUtil, 0)
+    .mintRedeemerValue(mintFuelRedeemer,"JSON")
+
+    .txOut(asteriaScriptAddress,totalRewardsAsset)
+    .txOutInlineDatumValue(asteriaOutputDatum,"JSON")
+
+ 
     .txOut(spacetimeAddress,assetToSpacetimeAddress)
     .txOutInlineDatumValue(shipDatum,"JSON")
+
     .txOut(changeAddress,pilotTokenAsset)
     .txInCollateral(
         collateral.input.txHash,
         collateral.input.outputIndex
      )
-     .setFee("2000000")
-     .invalidHereafter(tx_latest_slot)
+    .invalidHereafter(Number(slot))
     .selectUtxosFrom(utxos)
     .changeAddress(changeAddress)
     .setNetwork("preprod")

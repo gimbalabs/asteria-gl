@@ -10,7 +10,7 @@ const asteriaValidator = plutusBlueprint.validators.find(
 const ASTERIA_SCRIPT = asteriaValidator!.compiledCode;
 
 function asteriaScriptAppliedParam(
-  pellet_address: string,
+  pelletScriptHash: string,
   admin_token: string,
   adminTokenName: string,
   ship_mint_lovelace_fee: number,
@@ -20,19 +20,19 @@ function asteriaScriptAppliedParam(
 
   ){
 
-    
+  console.log(pelletScriptHash, admin_token, adminTokenName, ship_mint_lovelace_fee, max_asteria_mining, min_asteria_distance, initial_fuel)
 
   const AdminTokenData =  conStr0([
       policyId(admin_token), 
       assetName(stringToHex(adminTokenName))                              
     ]);
 
-  const pelletAddress = deserializeAddress(pellet_address)
+  //const pelletAddress = deserializeAddress(pellet_address)
 
   const appliedAsteriaParam   = applyParamsToScript(
      ASTERIA_SCRIPT,
       [
-        scriptHash(pelletAddress.scriptHash),
+        scriptHash(pelletScriptHash),
         AdminTokenData,
         integer(ship_mint_lovelace_fee),
         integer(max_asteria_mining),

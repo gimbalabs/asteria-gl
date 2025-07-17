@@ -17,40 +17,52 @@ interface DeployParameters {
     maxShipFuel: number,
     fuelPerStep: number, 
     initialFuel: number, 
-    minAsteriaDistance: number
+    minAsteriaDistance: number,
+    pelletScriptHash?: string
+    asteriaScriptHash?: string 
 }
 
 
-export async function deployAsteriaValidators({adminToken, adminTokenName, shipMintLovelaceFee, maxAsteriaMining,  maxSpeed, fuelPerStep, initialFuel, maxShipFuel, minAsteriaDistance}: DeployParameters){
+export async function deployAsteriaValidators({adminToken, adminTokenName, shipMintLovelaceFee, maxAsteriaMining,  maxSpeed, fuelPerStep, initialFuel, maxShipFuel, minAsteriaDistance, pelletScriptHash, asteriaScriptHash}: DeployParameters){
 
-    const pelletWithParams = pelletScriptApliedParam(adminToken, adminTokenName)
+    const deployWithParams = await deployScriptAppliedParam(adminToken, adminTokenName)
+    const deployScriptAddress = resolvePlutusScriptAddress(deployWithParams.deployPlutusScript, 0)
+   
+    const pelletWithParams = await pelletScriptApliedParam(adminToken, adminTokenName)
  
     
-    const pelletScriptAddress =  resolvePlutusScriptAddress(pelletWithParams.pelletPlutusScript, 0)
+    /*const pelletScriptAddress =  pelletScriptAdd!
     const scriptHash = resolvePlutusScriptHash(pelletScriptAddress)
     console.log("script hash:" ,scriptHash)
  
     const pelletScriptHash = deserializeBech32Address(pelletScriptAddress)
-    console.log("script hash 2nd:", pelletScriptHash)
+    console.log("script hash 2nd:", pelletScriptHash)*/
 
     
-    const asteriaWithParams = await asteriaScriptAppliedParam(pelletScriptAddress, adminToken, adminTokenName, shipMintLovelaceFee, maxAsteriaMining, minAsteriaDistance, initialFuel )
+    let asteriaWithParams 
 
-    const deployWithParams = await deployScriptAppliedParam(adminToken, adminTokenName)
+    if(pelletScriptHash){
+        asteriaWithParams = asteriaScriptAppliedParam(pelletScriptHash!, adminToken, adminTokenName, shipMintLovelaceFee, maxAsteriaMining, minAsteriaDistance, initialFuel )
+    }
   
 
-    const asteriaScriptAddress = resolvePlutusScriptAddress(asteriaWithParams.asteriaPlutusScript, 0)
-    const asteriaScriptHash = deserializeBech32Address(asteriaScriptAddress)
+    //const asteriaScriptAddress = resolvePlutusScriptAddress(asteriaWithParams.asteriaPlutusScript, 0)
+    //const asteriaScriptHash = deserializeBech32Address(asteriaScriptAddress)
     
-    const spaceTimeWithParams = spacetimeScriptAppliedParam(pelletScriptHash.scriptHash, asteriaScriptHash.scriptHash, adminToken, adminTokenName, maxSpeed, maxShipFuel, fuelPerStep)
-    const spaceTimeAddress = resolvePlutusScriptAddress(spaceTimeWithParams.spacetimePlutusScript, 0)
-    const spaceTimeScriptHash = deserializeBech32Address(spaceTimeAddress)
+    let spaceTimeWithParams 
+    if(pelletScriptHash && asteriaScriptHash){
+        spaceTimeWithParams = spacetimeScriptAppliedParam(pelletScriptHash!, asteriaScriptHash!, adminToken, adminTokenName, maxSpeed, maxShipFuel, fuelPerStep)
 
-    console.log(spaceTimeAddress)
+    }
+   
+    // const spaceTimeAddress = resolvePlutusScriptAddress(spaceTimeWithParams.spacetimePlutusScript, 0)
+    //const spaceTimeScriptHash = deserializeBech32Address(spaceTimeAddress)
 
-    const deployScriptAddress = resolvePlutusScriptAddress(deployWithParams.deployPlutusScript, 0)
+ 
 
-    return {deployScriptAddress, deployWithParams, asteriaWithParams, pelletWithParams, spaceTimeWithParams, asteriaScriptAddress, pelletScriptAddress, spaceTimeAddress, asteriaScriptHash, pelletScriptHash, spaceTimeScriptHash }
+    
+
+    return {deployScriptAddress, deployWithParams, asteriaWithParams, pelletWithParams, spaceTimeWithParams }
 
 
 

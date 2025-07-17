@@ -20,7 +20,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <meta name="description" content="Asteria built with T3 App + Mesh" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <MeshProvider>
+      <MeshProvider >
         <Layout> {/* ⬅️ Wrap all page content inside Layout */}
           <Component {...pageProps} />
         </Layout>

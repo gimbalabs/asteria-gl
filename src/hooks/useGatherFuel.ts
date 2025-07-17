@@ -2,7 +2,7 @@ import { api } from "~/utils/api";
 import { useWallet } from "@meshsdk/react";
 
 import { useState, useEffect } from "react";
-import { Asset, stringToHex, TxOutput, UTxO, serializePlutusScript, PlutusScript, policyId} from "@meshsdk/core";
+import { Asset, stringToHex, TxOutput, UTxO, serializePlutusScript, PlutusScript, policyId, deserializeDatum} from "@meshsdk/core";
 import { fromScriptRef} from "@meshsdk/core-cst";
 import { hexToString } from "~/utils/hextoString";
 import { adminTokenPolicy, adminTokenName } from "config";
@@ -28,6 +28,7 @@ export function useGatherFuelTx(){
     const [pilotToken, setPilotToken] = useState<string>("")
     const [pelletUtxoList, setPelletUtxoList] = useState<UTxO[]>()
     const [pelletUtxo, setPelletUtxo] = useState<UTxO>()
+    const [pelletCoOrds, setPelletCoOrds] = useState()
 
     const [availableFuel, setAvailableFuel] = useState<number|undefined>()
     const [fuel, setFuel] = useState<number|undefined>()
@@ -51,9 +52,20 @@ export function useGatherFuelTx(){
         }
 
         getPelletData()
-        .catch(console.error)
+       
+        
 
     }, [])
+
+    const handleGridRefs = () => {
+
+            const deserialized = deserializeDatum(pelletUtxo.output.plutusData)
+            setPelletCoOrds({x: deserialized.fields[0].int, y: deserialized.fields[1].int })
+            console.log(pelletCoOrds)
+               
+        
+    }
+
 
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -122,7 +134,7 @@ export function useGatherFuelTx(){
                 pelletUtxo,
                 spacetimeRefHash: spacetimeRefHashWOUtil,
                 pelletRefHash: pelletRefHashWOUtil,
-                adminToken: {policyId: adminTokenPolicy.bytes.toString(), name: adminTokenName.bytes.toString() }
+                adminToken: {policyId: adminTokenPolicy, name: adminTokenName }
             }
 
 
@@ -151,6 +163,6 @@ export function useGatherFuelTx(){
         }
     }
 
-    return {handleSubmit, test, pelletUtxoList, setPelletUtxo, pelletUtxo, setAvailableFuel, availableFuel, fuel, setFuel, txHash}
+    return {handleSubmit, test, pelletUtxoList, setPelletUtxo, pelletUtxo, setAvailableFuel, availableFuel, fuel, setFuel, txHash, pelletCoOrds, handleGridRefs}
 
 }
