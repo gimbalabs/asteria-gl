@@ -116,8 +116,6 @@ export function useDeployAsteriaValidators(){
         
         const {unsignedTx} = await prepareAsteriaTransaction.mutateAsync(payload);
 
-        console.log("received asteria unsigned tx")
-
         const signedTx = await wallet.signTx(unsignedTx);
         const txHash = await wallet.submitTx(signedTx);
         setAsteriaHash(txHash)

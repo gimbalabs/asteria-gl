@@ -85,7 +85,7 @@ export default function ParametersForm(){
                                     key={i.unit}
                                     onSelect={() => {         
                                         setAdminToken(adminToken);           // hex policy ID
-                                        setAssetName(assetName);         // UTF‑8 asset name
+                                        setAssetName(hexToString(assetName));         // UTF‑8 asset name
                                         setAssetNameReadable(assetNameReadable)
                                     }}
                                     

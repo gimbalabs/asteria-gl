@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { deployAsteriaValidators } from "~/lib/offchain/admin/deploy/deployValidators";
 import { adminTokenName } from "config";
+import { hexToString } from "~/utils/hextoString";
 
 
 
@@ -27,7 +28,7 @@ export const deployAsteriaValidatorsRouter = createTRPCRouter({
      
         const {adminToken, adminTokenName, shipMintLovelaceFee, maxAsteriaMining, fuelPerStep, maxSpeed, initialFuel, maxShipFuel, minAsteriaDistance, changeAddress, utxos} = input 
 
-
+  
         
         const txBuilder = new MeshTxBuilder({
             fetcher: maestroProvider,
@@ -91,6 +92,8 @@ export const deployAsteriaValidatorsRouter = createTRPCRouter({
             asteriaWithParams,  
           } = await deployAsteriaValidators({adminToken, adminTokenName, shipMintLovelaceFee, maxAsteriaMining, maxSpeed, fuelPerStep, initialFuel, maxShipFuel, minAsteriaDistance, pelletScriptHash})
         
+        
+
           const unsignedTx = await txBuilder
             .txOut(deployScriptAddress, [])
             .txOutInlineDatumValue(conStr0([]),"JSON")

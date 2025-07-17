@@ -54,8 +54,6 @@ export function useGatherFuelTx(){
         getPelletData()
        
         
-        
-
 
     }, [])
 
@@ -68,10 +66,6 @@ export function useGatherFuelTx(){
         
     }
 
- 
-   
-
-    
 
 
     const handleSubmit = async (e: React.FormEvent) => {

@@ -50,7 +50,7 @@ export default function CreateAsteria(){
                 setAsteriaValidatorAddress(asteriaValidatorAddress)
                 
                 console.log(asteriaValidatorAddress)
-                const shipyardPolicyId = spaceTimeUtxo[0].output.scriptHash
+                const shipyardPolicyId = await spaceTimeUtxo[0].output.scriptHash
                 
                 console.log("Shipyard policy:" , shipyardPolicyId)
                 const asteriaDatum = conStr0([
@@ -58,7 +58,8 @@ export default function CreateAsteria(){
                   policyId(shipyardPolicyId) // policyId of spacetime validator
                 ])
                 setDatum(asteriaDatum)
-                }  
+                }
+            
               
             }
               void findDeployUtxos()
@@ -88,7 +89,7 @@ export default function CreateAsteria(){
         
         const totalRewardsAsset : Asset[] = [{
         unit: "lovelace",
-        quantity:  "2000000",
+        quantity:  "3000000",
     },
     {
         unit: adminTokenPolicy+ adminTokenName,
@@ -97,6 +98,7 @@ export default function CreateAsteria(){
 
         const changeAddress = await wallet.getChangeAddress()
         
+        console.log("asteria datum  ", asteriaDatum)
 
         const unsignedTx = await txBuilder
         .txOut(asteriaValidatorAddress, totalRewardsAsset)

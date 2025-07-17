@@ -3,6 +3,7 @@ import {
     assetName,
     conStr,
     conStr0,
+    conStr1,
     mConStr0,
     deserializeDatum,
     integer,
@@ -79,7 +80,7 @@ const asteriaScriptRef = fromScriptRef(asteriaRefUtxo[0].output.scriptRef!);
 
 const asteriaPlutusScript = asteriaScriptRef as PlutusScript;
 const asteriaScriptAddress  = serializePlutusScript(asteriaPlutusScript).address;
-
+console.log("Asteria address", asteriaScriptAddress)
 //const spacetimeScriptRefUtxos = await blockchainProvider.fetchUTxOs(spacetimeDeployScript.txHash);
 const shipyardPolicyid =   spacetimeRefUtxo[0].output.scriptHash;
 const spacetimeScriptRef = fromScriptRef(spacetimeRefUtxo[0].output.scriptRef!);
@@ -109,7 +110,7 @@ const asteriaInputData = asteria.output.plutusData;
 const asteriaInputDatum = deserializeDatum(asteriaInputData!).fields;
 
 
-console.log("asteria Input datum",asteriaInputDatum);
+console.log("asteria Input datum",deserializeDatum(asteriaInputData));
 //datum properties
 const asteriaInputShipcounter = asteriaInputDatum[0].int;
 const asteriaInputShipYardPolicyId = asteriaInputDatum[1].bytes;
@@ -137,14 +138,16 @@ const tx_latest_move = time + 1600
 
 let nowDateTime = new Date();
 let dateTimeAdd5Min = new Date(nowDateTime.getTime() + 5 *60000);
+let dateTimeAdd10Min = new Date(nowDateTime.getTime() + 10 *60000);
 const slot = resolveSlotNo('preprod', dateTimeAdd5Min.getTime());
 console.log("Mesh Resolved Slot + 5 mins:" , slot)
 
+const slotTen = resolveSlotNo('preprod' , dateTimeAdd10Min.getTime());
 
 console.log("Latest move time: ", tx_latest_move)
 console.log(" Latest move posix: ", posixTime(tx_latest_move) )
 
-const ttl = Date.now() + 10 * 60 * 1000;
+const ttl = Date.now() + 15 * 60 * 1000;
 const now = Date.now() * 1000
 //const ttl1 = time + 10 * 60 * 1000;
 const shipDatum = conStr0([
@@ -182,9 +185,9 @@ const pilotTokenAsset: Asset [] = [{
     quantity: "1"
 }];
 
-const mintShipRedeemer   = mConStr0([]);
-const addNewshipRedeemer = conStr0([]);
-const mintFuelRedeemer   = mConStr0([]);
+const mintShipRedeemer   = conStr(0, []);
+const addNewshipRedeemer = conStr(0, []);
+const mintFuelRedeemer   = conStr(0, []);
 
 console.log(mintShipRedeemer)
 
@@ -207,27 +210,28 @@ console.log("Reward Assets:",  totalRewardsAsset)
         asteria.input.txHash,
         asteria.input.outputIndex,
     )
-    .spendingReferenceTxInRedeemerValue(addNewshipRedeemer,"JSON")
+    .txInRedeemerValue(addNewshipRedeemer,"JSON")
     .spendingTxInReference(asteriaRefHashWO,0) //
     .txInInlineDatumPresent()
-
-    .txOut(asteriaScriptAddress,totalRewardsAsset)
-    .txOutInlineDatumValue(asteriaOutputDatum,"JSON")
 
     .mintPlutusScriptV3()
     .mint("1",shipyardPolicyid!,shipTokenName)
     .mintTxInReference(spacetimeRefHashWOUtil,0)
-    .mintRedeemerValue(mintShipRedeemer,"Mesh",{mem: 2000000, steps:2500000000 })
+    .mintRedeemerValue(mintShipRedeemer,"JSON")
 
     .mintPlutusScriptV3()
     .mint("1",shipyardPolicyid!,pilotTokenName)
     .mintTxInReference(spacetimeRefHashWOUtil,0)
-    .mintRedeemerValue(mintShipRedeemer,"Mesh",{mem: 2000000, steps:2500000000 })
+    .mintRedeemerValue(mintShipRedeemer,"JSON")
     
     .mintPlutusScriptV3()
     .mint(initial_fuel, fuelPolicyId!, fuelTokenName)
     .mintTxInReference(pelletRefHashWOUtil, 0)
-    .mintRedeemerValue(mintFuelRedeemer,"Mesh",{mem: 2000000, steps:2500000000 })
+    .mintRedeemerValue(mintFuelRedeemer,"JSON")
+
+    .txOut(asteriaScriptAddress,totalRewardsAsset)
+    .txOutInlineDatumValue(asteriaOutputDatum,"JSON")
+
  
     .txOut(spacetimeAddress,assetToSpacetimeAddress)
     .txOutInlineDatumValue(shipDatum,"JSON")
@@ -237,7 +241,6 @@ console.log("Reward Assets:",  totalRewardsAsset)
         collateral.input.txHash,
         collateral.input.outputIndex
      )
-    .setFee("1000000")
     .invalidHereafter(Number(slot))
     .selectUtxosFrom(utxos)
     .changeAddress(changeAddress)
