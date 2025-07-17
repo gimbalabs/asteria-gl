@@ -56,7 +56,7 @@ export function getRingAreaSample(
     min_fuel: number,
     max_fuel: number,
     density: number,
-    shipyard_policy: string = "ec79e6d0adb9706b5f2d1800a27b4b4990ee00ee8295158dd4d599ba"
+    shipyard_policy: string
   ): PelletParams {
     const coordinates = getRingAreaCoordinates(inner_r, outer_r);
     const densityBasedSize = Math.floor(coordinates.length * density);

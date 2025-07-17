@@ -1,10 +1,9 @@
 import { z } from "zod";
 import { adminTokenPolicy, 
         adminTokenName, 
-        fuelTokenPolicy, 
         fuelTokenName,
-        pelletRefHash,
-        pelletValidatorAddress } from "config";
+        pelletRefHashWOUtil,
+         } from "config";
 import {
     Asset,
     conStr0,
@@ -12,10 +11,9 @@ import {
     MeshTxBuilder,
     PlutusScript,
     scriptHash,
-    stringToHex,
-    UTxO,
-    Transaction,
+    serializePlutusScript
   } from "@meshsdk/core";
+  import { fromScriptRef} from "@meshsdk/core-cst";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { maestroProvider } from "~/server/provider/maestroProvider";
 import { randomUUID } from "crypto";
@@ -75,6 +73,12 @@ export const pelletDeployRouter = createTRPCRouter({
         next: 0,
       });
 
+      const pelletRefUtxo = await maestroProvider.fetchUTxOs(pelletRefHashWOUtil, 0)
+      const fuelPolicyId  = pelletRefUtxo[0]!.output.scriptHash;
+
+      const pelletScriptRef = await fromScriptRef(pelletRefUtxo[0]?.output.scriptRef!)
+      const pelletPlutusScript = pelletScriptRef as PlutusScript
+      const pelletAddress = await serializePlutusScript(pelletPlutusScript).address
 
       // Calculate toatlFuel in the first chunk/batch (for minting all fuel tokens at once)
       // Get the first batch (at index 0)
@@ -91,8 +95,8 @@ export const pelletDeployRouter = createTRPCRouter({
     txBuilder
         .setNetwork("preprod")
         .mintPlutusScriptV3()
-        .mint(totalFuel.toString(), '734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2', fuelTokenName.bytes)
-        .mintTxInReference(pelletRefHash.fields[0].fields[0].bytes, Number(pelletRefHash.fields[1].int)) 
+        .mint(totalFuel.toString(), fuelPolicyId!, fuelTokenName.bytes)
+        .mintTxInReference(pelletRefHashWOUtil, 0) 
         .mintRedeemerValue(fuelReedemer, "JSON");
 
       // Add outputs for each pellet in the batch
@@ -105,17 +109,17 @@ export const pelletDeployRouter = createTRPCRouter({
 
         const fuelAndAdminAsset: Asset[] = [
           {
-            unit: '734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2' + fuelTokenName.bytes,
+            unit: fuelPolicyId! + fuelTokenName.bytes,
             quantity: pellet.fuel.toString(),
           },
           {
-            unit: adminTokenPolicy.bytes + adminTokenName.bytes,
+            unit: adminTokenPolicy + adminTokenName,
             quantity: "1",
           },
         ];
 
         txBuilder
-          .txOut(pelletValidatorAddress, fuelAndAdminAsset)
+          .txOut(pelletAddress, fuelAndAdminAsset)
           .txOutInlineDatumValue(pelletDatum, "JSON")
       });
 
@@ -181,11 +185,20 @@ export const pelletDeployRouter = createTRPCRouter({
             verbose: true
         });
 
+
+      const pelletRefUtxo = await maestroProvider.fetchUTxOs(pelletRefHashWOUtil, 0)
+      const fuelPolicyId  = pelletRefUtxo[0]!.output.scriptHash;
+
+      const pelletScriptRef = await fromScriptRef(pelletRefUtxo[0]?.output.scriptRef!)
+      const pelletPlutusScript = pelletScriptRef as PlutusScript
+      const pelletAddress = await serializePlutusScript(pelletPlutusScript).address
+
+
         txBuilder
             .setNetwork("preprod")
             .mintPlutusScriptV3()
-            .mint(totalFuel.toString(), '734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2', fuelTokenName.bytes)
-            .mintTxInReference(pelletRefHash.fields[0].fields[0].bytes, Number(pelletRefHash.fields[1].int))
+            .mint(totalFuel.toString(), fuelPolicyId!, fuelTokenName.bytes)
+            .mintTxInReference(pelletRefHashWOUtil, 0)
             .mintRedeemerValue(fuelReedemer, "JSON");
 
         // Add outputs for each pellet in the batch
@@ -198,17 +211,17 @@ export const pelletDeployRouter = createTRPCRouter({
 
             const fuelAndAdminAsset: Asset[] = [
             {
-                unit: '734c3d33d223890dcf389a493e9ec0d33f229f497e6ff7dbcd62d5c2' + fuelTokenName.bytes,
+                unit: fuelPolicyId + fuelTokenName.bytes,
                 quantity: pellet.fuel.toString(),
             },
             {
-                unit: adminTokenPolicy.bytes + adminTokenName.bytes,
+                unit: adminTokenPolicy + adminTokenName,
                 quantity: "1",
             },
             ];
 
             txBuilder
-            .txOut(pelletValidatorAddress, fuelAndAdminAsset)
+            .txOut(pelletAddress, fuelAndAdminAsset)
             .txOutInlineDatumValue(pelletDatum, "JSON")
         });
 

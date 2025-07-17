@@ -1,10 +1,14 @@
 import { PelletParams, getRingAreaSample, pelletsToCSV} from "~/utils/pelletUtils";
 import { useState } from "react";
+import { shipYardPolicy } from "config";
+import { useDeployPellets } from "~/hooks/useDeployPellets";
+import { LoaderPinwheel } from "lucide-react";
 
 
 // 2. generate pellets + CSV file
 export default function GetPelletsAndCsv({setPellets}: {setPellets: (pellets: PelletParams) => void}) {
 
+    const {fuelPolicy, shipyardPolicy, pelletAddress} = useDeployPellets()
 
     const [innerRadius, setInnerRadius] = useState<number | null>(null);
     const [outerRadius, setOuterRadius] = useState<number | null>(null);
@@ -54,7 +58,8 @@ export default function GetPelletsAndCsv({setPellets}: {setPellets: (pellets: Pe
                 outerRadius ?? 30, 
                 minFuel ?? 5, 
                 maxFuel ?? 30, 
-                density ?? 0.5
+                density ?? 0.5,
+                shipyardPolicy!
             );
             setPellets(newPellets);
             
@@ -151,8 +156,8 @@ export default function GetPelletsAndCsv({setPellets}: {setPellets: (pellets: Pe
                         {errors.density && <p className="text-red-500 text-sm mt-1">Density must be between 0 and 1</p>}
                     </div>
                 </div>
-                <button onClick={downloadCSV}
-                className={`inline-block 
+                {fuelPolicy && shipYardPolicy && pelletAddress ? <button onClick={downloadCSV} 
+                 className={`inline-block 
                             px-6 
                             py-3 
                             text-white 
@@ -165,6 +170,8 @@ export default function GetPelletsAndCsv({setPellets}: {setPellets: (pellets: Pe
                             mt-6
                             mb-10`}
                 >Download CSV</button>
+                :  <p>Awaiting Script Data from Blockchain... <LoaderPinwheel/></p>}
+              
             </form>
         </div>
     );

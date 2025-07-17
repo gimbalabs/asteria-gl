@@ -110,7 +110,7 @@ const asteriaInputData = asteria.output.plutusData;
 const asteriaInputDatum = deserializeDatum(asteriaInputData!).fields;
 
 
-console.log("asteria Input datum",deserializeDatum(asteriaInputData));
+console.log("asteria Input datum",deserializeDatum(asteriaInputData!));
 //datum properties
 const asteriaInputShipcounter = asteriaInputDatum[0].int;
 const asteriaInputShipYardPolicyId = asteriaInputDatum[1].bytes;
