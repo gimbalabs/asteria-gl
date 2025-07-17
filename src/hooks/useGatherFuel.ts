@@ -11,6 +11,7 @@ import { adminTokenPolicy, adminTokenName } from "config";
 import { spacetimeRefHashWOUtil, pelletRefHashWOUtil } from "config";
 
 import { MaestroProvider } from "@meshsdk/core";
+import { LucideAlignHorizontalDistributeCenter } from "lucide-react";
 
 
 export function useGatherFuelTx(){
@@ -60,6 +61,7 @@ export function useGatherFuelTx(){
     const handleGridRefs = () => {
 
             const deserialized = deserializeDatum(pelletUtxo.output.plutusData)
+            console.log(deserialized)
             setPelletCoOrds({x: deserialized.fields[0].int, y: deserialized.fields[1].int })
             console.log(pelletCoOrds)
                

@@ -32,7 +32,7 @@ export default function Step3({pellets}: {pellets: PelletParams}) {
                 collateral
             });
 
-            const signedTx = await wallet.signTx(unsignedTx);
+            const signedTx = await wallet.signTx(unsignedTx, true);
             const firstTxHash = await wallet.submitTx(signedTx);
             setSubmittedBatches(prev => [...prev, { batchNum: 0, txHash: firstTxHash }]);
 

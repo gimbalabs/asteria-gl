@@ -20,7 +20,7 @@ export default function GatherFuel(){
                        
                         {pelletUtxoList?.map((utxo, index) => (
 
-                            <DropdownMenuItem key={index} onClick={() => {setPelletUtxo(utxo); setAvailableFuel(Number(utxo.output.amount[1]?.quantity))}}>{utxo.input.txHash}</DropdownMenuItem>
+                            <DropdownMenuItem key={index} onClick={() => {setPelletUtxo(utxo); setAvailableFuel(Number(utxo.output.amount[2]?.quantity))}}>{utxo.input.txHash}</DropdownMenuItem>
 
                         ))}
                     </DropdownMenuContent>
@@ -34,7 +34,7 @@ export default function GatherFuel(){
                        
                         <div>
                             <button onClick={handleGridRefs}>Get Grid Refs</button>
-                            {pelletCoOrds && <p>X: {pelletCoOrds.x}</p>}
+                            {pelletCoOrds && <p className="text-white">X: {pelletCoOrds.x}</p>}
                         </div>
                         
                        
