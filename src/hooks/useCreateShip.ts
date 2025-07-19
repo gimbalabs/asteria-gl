@@ -29,6 +29,7 @@ export function useCreateShipTx(){
         const changeAddress = await wallet.getChangeAddress()  
         const collateral = await wallet.getCollateral() 
 
+
         const payload = { 
           utxos,
           changeAddress,
