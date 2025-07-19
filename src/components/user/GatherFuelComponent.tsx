@@ -1,48 +1,66 @@
 import { useGatherFuelTx } from "~/hooks/useGatherFuel";
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel } from "../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+} from "../ui/dropdown-menu";
 
+export default function GatherFuel() {
+  const {
+    handleSubmit,
+    test,
+    pelletUtxoList,
+    setPelletUtxo,
+    pelletUtxo,
+    availableFuel,
+    setAvailableFuel,
+    fuel,
+    setFuel,
+    txHash,
+  } = useGatherFuelTx();
 
-export default function GatherFuel(){
+  return (
+    <div>
+      <form onSubmit={handleSubmit} className="flex flex-col">
+        <DropdownMenu>
+          <DropdownMenuTrigger className="bg-white text-black">
+            <p>Select from Pellet Utxos</p>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-white">
+            {pelletUtxoList?.map((utxo) => (
+              <DropdownMenuItem
+                onClick={() => {
+                  setPelletUtxo(utxo);
+                  setAvailableFuel(Number(utxo.output.amount[1]?.quantity));
+                }}
+              >
+                {utxo.input.txHash}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-    const {handleSubmit, test, pelletUtxoList, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel, txHash} = useGatherFuelTx()
-    
+        {pelletUtxo ? (
+          <div className="flex flex-col">
+            <p>Selected utxo : {pelletUtxo.input.txHash}</p>
+            <p>Available Fuel: {availableFuel} </p>
+          </div>
+        ) : null}
 
-    return (
-        <div>
-            <form onSubmit={handleSubmit} className="flex flex-col">
-                
-                <DropdownMenu>
-                    <DropdownMenuTrigger className="bg-white text-black">
-                       <p>Select from Pellet Utxos</p>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-white">
-                       
-                        {pelletUtxoList?.map((utxo) => (
+        <input
+          className="text-black"
+          value={fuel}
+          placeholder="Choose fuel to take"
+          onChange={(e) => setFuel(Number(e.target.value))}
+        ></input>
 
-                            <DropdownMenuItem onClick={() => {setPelletUtxo(utxo); setAvailableFuel(Number(utxo.output.amount[1]?.quantity));}}>{utxo.input.txHash}</DropdownMenuItem>
-
-                        ))}
-                    </DropdownMenuContent>
-
-                </DropdownMenu>
-                
-                 {pelletUtxo ? 
-                    <div className="flex flex-col">
-                        <p>Selected utxo : {pelletUtxo.input.txHash}</p> 
-                        <p>Available Fuel: {availableFuel} </p>
-                    </div>
-                    
-                
-                : null}
-
-                <input className="text-black" value={fuel} placeholder="Choose fuel to take" onChange={(e) => setFuel(Number(e.target.value))}></input>
-                
-                <button type="submit">Click to test</button>
-            </form>
-            <pre className="text-white">{JSON.stringify({test})}</pre>
-            {txHash && <p>Gather fuel has been submitted, hash...{txHash}  </p>}
-        </div>
-    )
-
+        <button type="submit">Click to test</button>
+      </form>
+      <pre className="text-white">{JSON.stringify({ test })}</pre>
+      {txHash && <p>Gather fuel has been submitted, hash...{txHash} </p>}
+    </div>
+  );
 }
