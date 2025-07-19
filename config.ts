@@ -12,12 +12,12 @@ import { integer, Integer,
 
 
 
-export const adminTokenName: string = "41737465726961746f6b656e"
-export const adminTokenPolicy: string = "fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293" //bytestring
+//export const adminTokenName: string = "41737465726961746f6b656e"
+//export const adminTokenPolicy: string = "fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293" //bytestring
 
 
-//export const adminTokenName: string = '57696c6c6974576f726b' // nd test tokens
-//export const adminTokenPolicy: string = '52ad7c6e234fdad76f3461ab57d349fa51c5d51f36c83a231b9eefcf' //nd test tokens
+export const adminTokenName: string = '57696c6c6974576f726b' // nd test tokens
+export const adminTokenPolicy: string = '52ad7c6e234fdad76f3461ab57d349fa51c5d51f36c83a231b9eefcf' //nd test tokens
 
 
 
@@ -36,19 +36,19 @@ export const refHash: string = '3d47a597e2d716b81d6fc975736efb890c25b5fc2aeaa9d1
 
 //pellet validator ref hash 
 export const pelletRefHash: TxOutRef = txOutRef('40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3', 0)
-//export const pelletRefHashWOUtil = "35bfe60450b7c1ea59bdd6c68bd239f7da27ac231d0c4e31ac6e307193571970"// Nd test validator
-export const pelletRefHashWOUtil = "40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3"
+export const pelletRefHashWOUtil = "35bfe60450b7c1ea59bdd6c68bd239f7da27ac231d0c4e31ac6e307193571970"// Nd test validator
+//export const pelletRefHashWOUtil = "40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3"
   
 //asteria validator ref hash
 export const asteriaRefHash: TxOutRef = txOutRef('d20d15965e6bcfe0541938e7caf8a37b74852ece9cfed3314f1d9048b66cf8a5', 0)
-//export const asteriaRefHashWO: string = "4caae3ff0aa1e24668f9ea1640ad4c425b0ba1e3e9660cadb5d6fac6d00b9f45"// Nd test validator
-export const asteriaRefHashWO: string = "d20d15965e6bcfe0541938e7caf8a37b74852ece9cfed3314f1d9048b66cf8a5"
+export const asteriaRefHashWO: string = "4caae3ff0aa1e24668f9ea1640ad4c425b0ba1e3e9660cadb5d6fac6d00b9f45"// Nd test validator
+//export const asteriaRefHashWO: string = "d20d15965e6bcfe0541938e7caf8a37b74852ece9cfed3314f1d9048b66cf8a5"
 //deploy validator ref hash
 
 //spacetime validator ref Hash 
 export const spacetimeRefHash: TxOutRef = txOutRef('f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde', 0) 
-//export const spacetimeRefHashWOUtil = "636c6d42ee57a952fd1bf4b7a0a38c363a84015d74b30c1982e1a07c0f270ed9" //ND Test Validator
-export const spacetimeRefHashWOUtil = "f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde"
+export const spacetimeRefHashWOUtil = "636c6d42ee57a952fd1bf4b7a0a38c363a84015d74b30c1982e1a07c0f270ed9" //ND Test Validator
+//export const spacetimeRefHashWOUtil = "f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde"
 
   //pellet validator address 
 export const pelletValidatorAddress = 'addr_test1wqq62t863eh8z3wmv2qs3fc075egfxr0kh0cp7kmgvynj8g9aj6tm'

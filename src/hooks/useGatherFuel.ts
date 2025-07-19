@@ -63,8 +63,7 @@ export function useGatherFuelTx(){
             const deserialized = deserializeDatum(pelletUtxo.output.plutusData)
             console.log(deserialized)
             setPelletCoOrds({x: deserialized.fields[0].int, y: deserialized.fields[1].int })
-            console.log(pelletCoOrds)
-               
+            
         
     }
 
@@ -78,8 +77,10 @@ export function useGatherFuelTx(){
 
             const utxos = await wallet.getUtxos();
             const changeAddress = await wallet.getChangeAddress()  
-            const collateral = await wallet.getCollateral() 
+            const collateral = await wallet.getCollateral()
             const assets = await wallet.getAssets()
+
+            console.log("colateral" , collateral)
 
             const pilot = await assets.find((asset) => {
                 const pilotToken = asset.unit.includes(stringToHex("PILOT"))

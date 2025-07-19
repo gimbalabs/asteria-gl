@@ -14,7 +14,8 @@ import {
     byteString,
     policyId,
     Asset,
-    ConStr
+    ConStr,
+    resolveSlotNo
 } from "@meshsdk/core";
 import {  fromScriptRef} from "@meshsdk/core-cst";
 import { MeshTxBuilder } from "@meshsdk/core";
@@ -100,8 +101,8 @@ console.log("Pellet : ", pellet.output.amount)
 //get shipInput Datum
 const shipInputData = ship.output.plutusData;
 const shipInputDatum = deserializeDatum(shipInputData).fields;
-console.log(shipInputDatum)
-//get shipDatum Properties
+console.log("ship input datum", shipInputDatum)
+//get shipDatum Properties  
 const ShipPosX:number = shipInputDatum[0].int;
 const shipPoxY: number = shipInputDatum[1].int;
 const shipTokenName: string = shipInputDatum[2].bytes;
@@ -109,14 +110,14 @@ const pilotTokenName: string= shipInputDatum[3].bytes;
 console.log(hexToString(pilotTokenName))
 const lastMoveLatestTime: number = shipInputDatum[4].int;
 
-const ttl = Date.now() + 30 * 60 * 1000;
+const ttl = Date.now() + 15 * 60 * 1000;
 
 const shipOutDatum = conStr0([
     integer(ShipPosX),
     integer(shipPoxY),
     byteString(shipTokenName),
     byteString(pilotTokenName),
-    integer(ttl),
+    integer(lastMoveLatestTime),
 ]);
 
 
@@ -146,32 +147,35 @@ const shipFuel = shipInputFuel?.quantity
 
 
 
-const spacetimeOutputAssets : Asset[] = [{
+const spacetimeOutputAssets : Asset[] = [
+{
+    unit: shipInputAda?.unit!,
+    quantity: (Number(shipInputAda?.quantity!) +5000).toString(),
+    
+},{
     unit: shipyardPolicyId + shipTokenName,
     quantity: "1"
 },{
     unit: pelletInputFuel?.unit!,
     quantity:(Number(shipFuel!) + gatherAmount).toString()
 },
-/*{
-    unit: shipInputAda?.unit!,
-    quantity: shipInputAda?.quantity!,
-    
-}*/
+
 ];
 
-const pelletOutputAssets : Asset[] = [{
+const pelletOutputAssets : Asset[] = [
+{
+     unit:     pelletInputAda?.unit!,
+     quantity: pelletInputAda?.quantity!
+   
+},
+{
     unit: adminToken.policyId + adminToken.name,
     quantity: "1"
 },{
     unit: pelletInputFuel?.unit!,
     quantity: (Number(pelletFuel!) - gatherAmount).toString()
 },
-/*{
-     unit:     pelletInputAda?.unit!,
-     quantity: pelletInputAda?.quantity!
-   
-}*/
+
 ];
 
 console.log("Pellet output", pelletOutputAssets)
@@ -195,6 +199,12 @@ const shipRedeemer = conStr(1, [{int: gatherAmount}])
 const pelletRedemer = conStr(0, [{int: gatherAmount}]);
 
 console.log("Ship redeemer", shipRedeemer)
+
+
+let nowDateTime = new Date();
+let dateTime = new Date(nowDateTime.getTime()- 5 *60000);
+const slot = resolveSlotNo('preprod', dateTime.getTime());
+console.log("Mesh Resolved Slot:" , slot)
 
 const txBuilder = new MeshTxBuilder({
     fetcher: maestroProvider,
@@ -230,6 +240,7 @@ const unsignedTx = await txBuilder
 //.spendingReferenceTxInRedeemerValue(shipRedeemer, "Mesh",{mem: 2592000, steps:2500000000 })
 //.spendingReferenceTxInRedeemerValue(shipRedeemer, "JSON")
 .spendingTxInReference(spaceTimeRefHash,0)
+
 .txOut(changeAddress, pilottokenAsset) 
 .txOut(pelletAddress,pelletOutputAssets)
 .txOutInlineDatumValue(pelletOuputDatum,"JSON")
@@ -240,6 +251,7 @@ const unsignedTx = await txBuilder
    collateralUtxo.input.outputIndex
 )
 .setFee("2000000")
+.invalidBefore(Number(slot))
 .selectUtxosFrom(utxos)
 .changeAddress(changeAddress)
 .setNetwork("preprod")
