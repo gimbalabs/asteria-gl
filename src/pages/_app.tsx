@@ -21,9 +21,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MeshProvider>
-        <Layout> {/* ⬅️ Wrap all page content inside Layout */}
           <Component {...pageProps} />
-        </Layout>
       </MeshProvider>
     </div>
   );
