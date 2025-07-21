@@ -2,12 +2,10 @@ import { useGatherFuelTx } from "~/hooks/useGatherFuel";
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel } from "../ui/dropdown-menu";
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel } from "../ui/dropdown-menu";
-
 
 export default function GatherFuel(){
 
-    const {handleSubmit, test, pelletUtxoList, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel} = useGatherFuelTx()
+    const {handleSubmit, test, pelletUtxoList, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel, txHash} = useGatherFuelTx()
     
 
     return (

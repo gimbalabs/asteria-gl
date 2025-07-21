@@ -38,7 +38,6 @@ export default async function gatherFuel(
  changeAddress: string,
  gatherAmount: number,
  pilotUtxo: UTxO,
- pilotUtxo: UTxO,
  shipUtxo: UTxO,
  pelletUtxo: UTxO,  
  spaceTimeRefHash: string,

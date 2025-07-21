@@ -7,8 +7,6 @@ import { fromScriptRef} from "@meshsdk/core-cst";
 import { hexToString } from "~/utils/hextoString";
 import { adminTokenPolicy, adminTokenName } from "config";
 
-
-import { spacetimeRefHashWOUtil, pelletRefHashWOUtil } from "config";
 import { spacetimeRefHashWOUtil, pelletRefHashWOUtil } from "config";
 
 import { MaestroProvider } from "@meshsdk/core";
@@ -76,7 +74,7 @@ export function useGatherFuelTx(){
             pilot ? setPilotToken(hexToString(pilot.assetName)) : alert("Please mint a ship to play the game")
    
 
-            const pilotNumber: string | undefined = hexToString(pilot.assetName).slice(5)
+            const pilotNumber: string | undefined = hexToString(pilot!.assetName).slice(5)
             console.log(pilotNumber)
 
             const findPilotUtxo = await utxos.find((utxo) => utxo.output.amount.find((asset: Asset) => {
