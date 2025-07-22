@@ -159,10 +159,7 @@ const spacetimeOutputAssets : Asset[] = [
     unit: pelletInputFuel?.unit!,
     quantity:(Number(shipFuel!) + gatherAmount).toString()
 },
-{
-    quantity: shipInputAda?.quantity!,
-    unit: shipInputAda?.unit!
-}
+
 ];
 
 const pelletOutputAssets : Asset[] = [
@@ -178,11 +175,13 @@ const pelletOutputAssets : Asset[] = [
     unit: pelletInputFuel?.unit!,
     quantity: (Number(pelletFuel!) - gatherAmount).toString()
 },
-{
-    quantity: pelletInputAda?.quantity!,
-    unit:     pelletInputAda?.unit!
-}
+
 ];
+
+console.log("Pellet output", pelletOutputAssets)
+console.log("Pellet Input", pelletInputDatum)
+console.log("Ship Output", spacetimeOutputAssets)
+
 
 const pilottokenAsset: Asset[] = [{
     unit: shipyardPolicyId + pilotTokenName,
@@ -224,8 +223,10 @@ const unsignedTx = await txBuilder
     pellet.output.address
 )
 .txInInlineDatumPresent()
-.txOut(spacetimeAddress,spacetimeOutputAssets)
-.txOutInlineDatumValue(shipOutDatum,"JSON")
+.txInRedeemerValue(pelletRedemer, "JSON")
+//.spendingReferenceTxInRedeemerValue(pelletRedemer,"Mesh",{mem: 2592000, steps:2500000000 })
+//.spendingReferenceTxInRedeemerValue(pelletRedemer, "JSON")
+.spendingTxInReference(pelletRefHash,0)
 .spendingPlutusScriptV3()
 
 .txIn(
@@ -243,8 +244,8 @@ const unsignedTx = await txBuilder
 .txOut(changeAddress, pilottokenAsset) 
 .txOut(pelletAddress,pelletOutputAssets)
 .txOutInlineDatumValue(pelletOuputDatum,"JSON")
-.txIn(pilotUtxo.input.txHash, pilotUtxo.input.outputIndex)
-.txOut(changeAddress, pilottokenAsset) 
+.txOut(spacetimeAddress,spacetimeOutputAssets)
+.txOutInlineDatumValue(shipOutDatum,"JSON")
 .txInCollateral(
    collateralUtxo.input.txHash,
    collateralUtxo.input.outputIndex

@@ -2,10 +2,11 @@ import { api } from "~/utils/api";
 import { useWallet } from "@meshsdk/react";
 
 import { useState, useEffect } from "react";
-import { Asset, stringToHex, TxOutput, UTxO, serializePlutusScript, PlutusScript} from "@meshsdk/core";
-import { fromScriptRef} from "@meshsdk/core-cst";
+import { Asset, stringToHex, TxOutput, UTxO, serializePlutusScript, PlutusScript, policyId, deserializeDatum} from "@meshsdk/core";
+import { Datum, fromScriptRef} from "@meshsdk/core-cst";
 import { hexToString } from "~/utils/hextoString";
 import { adminTokenPolicy, adminTokenName } from "config";
+
 
 import { spacetimeRefHashWOUtil, pelletRefHashWOUtil } from "config";
 
@@ -22,15 +23,17 @@ export function useGatherFuelTx(){
 
     const prepareTx = api.gatherFuel.prepareGatherFuelTx.useMutation()
 
-    const [test, setTest] = useState("Testing")
     const [pilotUtxo, setPilotUtxo] = useState<UTxO>()
     const [shipUtxo, setShipUtxo] = useState<UTxO>()
     const [pilotToken, setPilotToken] = useState<string>("")
     const [pelletUtxoList, setPelletUtxoList] = useState<UTxO[]>()
     const [pelletUtxo, setPelletUtxo] = useState<UTxO>()
+    const [pelletCoOrds, setPelletCoOrds] = useState<number[]>([])
 
     const [availableFuel, setAvailableFuel] = useState<number|undefined>()
     const [fuel, setFuel] = useState<number|undefined>()
+
+    const [txHash, setTxHash] = useState<string|undefined>()
 
     const { wallet, connected } = useWallet(); 
 
@@ -49,9 +52,11 @@ export function useGatherFuelTx(){
         }
 
         getPelletData()
-        .catch(console.error)
+       
+        
 
     }, [])
+
 
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -96,15 +101,52 @@ export function useGatherFuelTx(){
 
             }) )
             setShipUtxo(findShipUtxo)
-            setTest(shipUtxo?.input.txHash+"#"+shipUtxo?.input.outputIndex)
+            
 
             if(!pelletUtxo){
                 return alert('Please select a Pellet utxo first')
             }
 
-            if(availableFuel < fuel){
-                return alert('You can only select a maximum of'+{availableFuel})
+             if(!fuel){
+                return alert("Choose the fuel that you wish to claim for your ship")
             }
+
+            if(availableFuel && fuel){
+                if(availableFuel < fuel){
+                return alert("You cannot select more that the available fuel")
+            }
+           
+           
+            const payload = {
+                collateralUtxo: collateral[0],
+                utxos: utxos,
+                changeAddress,
+                gatherAmount: fuel,
+                pilotUtxo: findPilotUtxo,
+                shipUtxo: findShipUtxo,
+                pelletUtxo,
+                spacetimeRefHash: spacetimeRefHashWOUtil,
+                pelletRefHash: pelletRefHashWOUtil,
+                adminToken: {policyId: adminTokenPolicy, name: adminTokenName }
+            }
+
+
+            const {unsignedTx, error} = await prepareTx.mutateAsync(payload);
+
+            if(error){
+                console.log(error)
+                alert("Error from router" + error)
+            }
+
+
+            console.log("received unsigned tx")
+            if(unsignedTx){
+            const signedTx = await wallet.signTx(unsignedTx, true);
+            const txHash = await wallet.submitTx(signedTx);
+            setTxHash(txHash)
+            }
+        }
+            
            
 
         } 
@@ -114,6 +156,6 @@ export function useGatherFuelTx(){
         }
     }
 
-    return {handleSubmit, test, pelletUtxoList, setPelletUtxo, pelletUtxo, setAvailableFuel, availableFuel, fuel, setFuel}
+    return {handleSubmit, pelletUtxoList, setPelletUtxo, pelletUtxo, setAvailableFuel, availableFuel, fuel, setFuel, txHash, pelletCoOrds, setPelletCoOrds}
 
 }
