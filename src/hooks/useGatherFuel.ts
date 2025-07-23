@@ -37,6 +37,8 @@ export function useGatherFuelTx(){
 
     const { wallet, connected } = useWallet(); 
 
+    // need to implement timer , so users can't submit tx before move time limitations. Also need to implement fuel take limiter. User can not take the full amount of fuel in a pellet
+
     useEffect( () => {
 
 
@@ -112,8 +114,8 @@ export function useGatherFuelTx(){
             }
 
             if(availableFuel && fuel){
-                if(availableFuel < fuel){
-                return alert("You cannot select more that the available fuel")
+                if(availableFuel <= fuel){
+                return alert("You cannot only select less a qty of fuel which is less than the available fuel ")
             }
            
            

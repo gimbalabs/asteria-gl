@@ -246,7 +246,7 @@ const unsignedTx = await txBuilder
    collateralUtxo.input.txHash,
    collateralUtxo.input.outputIndex
 )
-.setFee("2000000")
+.setFee("3000000")
 .invalidBefore(Number(slot))
 .selectUtxosFrom(utxos)
 .changeAddress(changeAddress)

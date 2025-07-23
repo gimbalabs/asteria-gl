@@ -180,6 +180,7 @@ const totalRewardsAsset : Asset[] = [{
     unit: "lovelace",
     quantity:  (Number(asteriaInputAda?.quantity) + ship_mint_lovelace_fee).toString()
 }];
+
 const pilotTokenAsset: Asset [] = [{
     unit: shipyardPolicyid + pilotTokenName,
     quantity: "1"
