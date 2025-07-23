@@ -28,9 +28,7 @@ import { asteriaRefHashWO, pelletRefHashWOUtil, spacetimeRefHashWOUtil } from "c
 
 
 
-export async function mineAsteria({shipUtxo, pilotUtxo, changeAddress, utxos}: {shipUtxo: UTxO, pilotUtxo:UTxO,  changeAddress: string, utxos: UTxO[]}){
-
-    let error = ""
+export async function mineAsteria({shipUtxo, collateralUtxo, pilotUtxo, changeAddress, utxos}: {shipUtxo: UTxO, collateralUtxo:UTxO, pilotUtxo:UTxO,  changeAddress: string, utxos: UTxO[]}){
 
     const asteriaRefUtxo = await maestroProvider.fetchUTxOs(asteriaRefHashWO, 0);
     const asteriaScriptRef = fromScriptRef(asteriaRefUtxo[0]!.output.scriptRef!);
@@ -42,7 +40,7 @@ export async function mineAsteria({shipUtxo, pilotUtxo, changeAddress, utxos}: {
     
     if(!asteriaInputUtxos){
         return {
-            error =  "No utxo found at Asteria script Address"
+            error:  "No utxo found at Asteria script Address"
         }
     }
     
@@ -128,6 +126,8 @@ export async function mineAsteria({shipUtxo, pilotUtxo, changeAddress, utxos}: {
 
     const unsignedTx = await txBuilder
 
+    .txIn(pilotUtxo.input.txHash, pilotUtxo.input.outputIndex)
+
     .spendingPlutusScriptV3()
     .txIn(asteria!.input.txHash, asteria!.input.outputIndex)
     .txInInlineDatumPresent()
@@ -150,9 +150,14 @@ export async function mineAsteria({shipUtxo, pilotUtxo, changeAddress, utxos}: {
     .txInRedeemerValue(mineAsteriaRedeemer)
     .spendingTxInReference(spacetimeRefHashWOUtil, 0)
 
-    .txOut(changeAddress, valuetoUser)
+    .txOut(changeAddress, valueToUser)
     .txOut(asteriaScriptAddress, valueToAsteria )
     .txOutInlineDatumValue(asteriaOutputDatum)
+
+    .txInCollateral(
+        collateralUtxo.input.txHash,
+        collateralUtxo.input.outputIndex
+    )
 
     .setFee("2000000")
     .selectUtxosFrom(utxos)
@@ -162,7 +167,7 @@ export async function mineAsteria({shipUtxo, pilotUtxo, changeAddress, utxos}: {
 
     
 
-    return {unsignedTx, error}
+    return {unsignedTx, error: error}
 
 
 }
