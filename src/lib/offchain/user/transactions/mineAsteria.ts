@@ -51,8 +51,8 @@ export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtx
 
     //calculate amount of lovelace to be mined
     const maxMining = Number(max_asteria_mining.int)
-    const asteriaMined = (1 - (maxMining/100)) * Number(asteriaInputAda?.quantity)
-    const remainingAsteriaLovelace = Number(asteriaInputAda?.quantity) - asteriaMined
+    const asteriaMined = (maxMining/100) * Number(asteriaInputAda?.quantity)
+    const remainingAsteriaLovelace = (1 - (maxMining/100)) * Number(asteriaInputAda?.quantity)
     
     console.log("Asteria Output: ", asteria!.output.amount[0], asteria!.output.amount[1])
     const asteriaInputData = asteria!.output.plutusData;
