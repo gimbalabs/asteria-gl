@@ -53,6 +53,6 @@ export function useMoveShip() {
     }
 
     return {
-        shipState, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY
+        shipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY
     }
 }

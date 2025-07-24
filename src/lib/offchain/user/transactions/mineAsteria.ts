@@ -169,7 +169,7 @@ export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtx
 
     
 
-    return {unsignedTx}
+    return {unsignedTx, asteriaMined}
 
 
 }

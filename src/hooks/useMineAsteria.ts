@@ -1,11 +1,14 @@
 import { AssetExtended, UTxO, stringToHex, Asset, hexToString } from "@meshsdk/core";
 import { useWallet } from "@meshsdk/react";
+import { set } from "lodash";
 import { useState, useEffect } from "react";
 import { mineAsteriaRouter } from "~/server/api/routers/userTx/mineAsteriaRouter";
 import { api } from "~/utils/api";
 
 export default function useMineAsteria(assets: AssetExtended[]){
 
+    const [txHash, setTxHash] = useState<string>("")
+    const [asteriaMined, setAsteriaMined] = useState<number>()
 
     const prepareMineAsteria = api.mineAsteria.prepareMineAsteriaTx.useMutation()
 
@@ -43,12 +46,12 @@ export default function useMineAsteria(assets: AssetExtended[]){
             const payload = {
                 changeAddress: changeAddress,
                 utxos: utxos,
-                pilotUtxo: findPilotUtxo,
                 pilotNumber: pilotNumber,
                 colateralUtxo: colateral[0],
+                pilotUtxo: findPilotUtxo,
             }
 
-            const {unsignedTx, error} = await prepareMineAsteria.mutateAsync(payload)
+            const {unsignedTx, error, asteriaMined} = await prepareMineAsteria.mutateAsync(payload)
 
             if(error){
                 alert("Error"+ error)
@@ -57,7 +60,11 @@ export default function useMineAsteria(assets: AssetExtended[]){
             if(unsignedTx){
             const signedTx = await wallet.signTx(unsignedTx, true);
             const txHash = await wallet.submitTx(signedTx);
-            }
+            setTxHash(txHash)
+        }
+
+           
+            setAsteriaMined(asteriaMined)
 
         }catch(error){
         
@@ -65,7 +72,7 @@ export default function useMineAsteria(assets: AssetExtended[]){
 
     }
 
-  
+  return {handleSubmitMineAsteria, txHash , asteriaMined}
 
 
 }
