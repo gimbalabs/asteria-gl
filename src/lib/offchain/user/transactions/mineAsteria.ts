@@ -28,7 +28,7 @@ import { asteriaRefHashWO, pelletRefHashWOUtil, spacetimeRefHashWOUtil } from "c
 
 
 
-export async function mineAsteria({shipUtxo, collateralUtxo, pilotUtxo, changeAddress, utxos}: {shipUtxo: UTxO, collateralUtxo:UTxO, pilotUtxo:UTxO,  changeAddress: string, utxos: UTxO[]}){
+export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtxo: UTxO, changeAddress: string, utxos: UTxO[]){
 
     const asteriaRefUtxo = await maestroProvider.fetchUTxOs(asteriaRefHashWO, 0);
     const asteriaScriptRef = fromScriptRef(asteriaRefUtxo[0]!.output.scriptRef!);
@@ -48,6 +48,8 @@ export async function mineAsteria({shipUtxo, collateralUtxo, pilotUtxo, changeAd
     const asteriaInputAda = asteria!.output.amount.find((Asset) => 
         Asset.unit === "lovelace"
     );
+
+    //calculate amount of lovelace to be mined
     const maxMining = Number(max_asteria_mining.int)
     const asteriaMined = (1 - (maxMining/100)) * Number(asteriaInputAda?.quantity)
     const remainingAsteriaLovelace = Number(asteriaInputAda?.quantity) - asteriaMined
@@ -167,7 +169,7 @@ export async function mineAsteria({shipUtxo, collateralUtxo, pilotUtxo, changeAd
 
     
 
-    return {unsignedTx, error: error}
+    return {unsignedTx}
 
 
 }

@@ -5,23 +5,15 @@ import { spacetimeRefHashWOUtil } from "config"
 import { hexToString, stringToHex } from "@meshsdk/core"
 import { maestroProvider } from "~/server/provider/maestroProvider"
 import { UTxO } from "@meshsdk/core"
+import { mineAsteria } from "~/lib/offchain/user/transactions/mineAsteria"
 
 
 export const mineAsteriaRouter = createTRPCRouter({
     prepareMineAsteriaTx: publicProcedure
     .input(z.object({
         collateralUtxo: z.any(),
-        pilotUtxo: z.object({          // Single UTxO object
-                    input: z.object({
-                        txHash: z.string(),
-                        outputIndex: z.number(),
-                    }),
-                    output: z.object({
-                        address: z.string(),
-                        amount: z.any(),
-                        datum: z.any().optional(),
-                    }),
-        }),
+        pilotUtxo: z.any(),
+        pilotNumber: z.string(),
         utxos: z.array(z.any()),
         changeAddress: z.string()
     }))
@@ -29,25 +21,27 @@ export const mineAsteriaRouter = createTRPCRouter({
 
         const {scriptAddress: spacetimeAddress, policyId: shipyardPolicy} = await deserializeRefHash(spacetimeRefHashWOUtil)
         
-        const pilotUtxo: UTxO = input.pilotUtxo
-
-         const pilotAsset= pilotUtxo.output.amount.filter(
-                (asset) => asset.unit.startsWith(shipyardPolicy!)  // easier to split string here
-            );
-
-        const pilotTokenName: string = hexToString(pilotAsset[0]?.assetName ?? "");
-        
-        console.log(pilotTokenName);
+        console.log(input.pilotNumber);
         /// Extract the number from pilot token: eg. PILOT13 (gets "13")
-        const pilotNumber = pilotTokenName.replace("PILOT", "");
+      
                 // Create ship token name by adding "SHIP" prefix (makes "SHIP13")
-        const shipTokenName = stringToHex(`SHIP${pilotNumber}`);
+        const shipTokenName = stringToHex(`SHIP${input.pilotNumber}`);
         const shipStateUtxos_array = await maestroProvider.fetchAddressUTxOs(spacetimeAddress);
-        const shipStateUtxo_array = shipStateUtxos_array.filter(
+        const shipStateUtxo: UTxO[] = shipStateUtxos_array.filter(
             (utxo) => utxo.output.amount.some(
                 (asset) => asset.unit === `${shipyardPolicy}${shipTokenName}`
             )
         );
+        console.log("shipState utxo:" , shipStateUtxo)
+
+        const {unsignedTx, error} = await mineAsteria(shipStateUtxo[0]!, input.collateralUtxo, input.pilotUtxo, input.changeAddress, input.utxos)
+
+        if (error){
+            return {error: error}
+        }
+
+        return {unsignedTx}
+
 
     })
 
