@@ -41,13 +41,13 @@ export default function useMineAsteria(assets: AssetExtended[]){
 
             }) )
 
-            
+            console.log("colateral in hook: ", colateral)
 
             const payload = {
                 changeAddress: changeAddress,
                 utxos: utxos,
                 pilotNumber: pilotNumber,
-                colateralUtxo: colateral[0],
+                colateralUtxo: colateral,
                 pilotUtxo: findPilotUtxo,
             }
 

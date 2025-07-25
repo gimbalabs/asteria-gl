@@ -18,7 +18,7 @@ export const mineAsteriaRouter = createTRPCRouter({
         changeAddress: z.string()
     }))
     .mutation( async ({input}) => {
-
+        console.log("colateral:", input.collateralUtxo)
         const {scriptAddress: spacetimeAddress, policyId: shipyardPolicy} = await deserializeRefHash(spacetimeRefHashWOUtil)
         
         console.log(input.pilotNumber);

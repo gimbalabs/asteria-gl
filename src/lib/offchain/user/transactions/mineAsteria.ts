@@ -29,7 +29,7 @@ import { asteriaRefHashWO, pelletRefHashWOUtil, spacetimeRefHashWOUtil } from "c
 
 
 export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtxo: UTxO, changeAddress: string, utxos: UTxO[]){
-
+    console.log("check utxo" ,collateralUtxo)
     const asteriaRefUtxo = await maestroProvider.fetchUTxOs(asteriaRefHashWO, 0);
     const asteriaScriptRef = fromScriptRef(asteriaRefUtxo[0]!.output.scriptRef!);
     const asteriaPlutusScript = asteriaScriptRef as PlutusScript;
@@ -76,7 +76,7 @@ export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtx
     const shipInputDatum = deserializeDatum(shipInputData!).fields;
     console.log("ship input datum", shipInputDatum)
     //get shipDatum Properties  
-
+// error after here
     const shipTokenName: string = shipInputDatum[2].bytes;
     const pilotTokenName: string= shipInputDatum[3].bytes;
 
@@ -85,23 +85,27 @@ export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtx
     ));
 
     const shipInputFuel = shipUtxo.output.amount.find((asset) => 
-        asset.unit === stringToHex("FUEL"))
+        asset.unit.startsWith(stringToHex("FUEL"), 56))
 
-    console.log("ship input fuel", shipInputFuel!.quantity)
+    const fuelToBurn = (Number(shipInputFuel?.quantity)* -1).toString()
+
+    console.log("type of", typeof fuelToBurn)
+    console.log("ship input fuel", fuelToBurn)
 
     const shipBurnRedeemer = conStr(1, [])
 
     const pelletRefUtxo = await maestroProvider.fetchUTxOs(pelletRefHashWOUtil, 0)
-    const fuelPolicyId = pelletRefUtxo[0]?.output.scriptHash!;
+    const fuelPolicyId = await pelletRefUtxo[0]?.output.scriptHash!;
+    console.log("fuel policy Id", fuelPolicyId)
 
     const valueToUser: Asset [] = [
     {
-    unit: shipyardPolicyId + stringToHex(pilotTokenName),
+    unit: shipyardPolicyId + pilotTokenName,
     quantity: "1"
     },
     {
     unit: "lovelace",
-    quantity: Number(asteriaMined + Number(shipInputAda?.quantity)).toString()
+    quantity: (Number(asteriaMined + Number(shipInputAda?.quantity))).toString()
     }
     ];
 
@@ -133,34 +137,35 @@ export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtx
 
     .spendingPlutusScriptV3()
     .txIn(asteria!.input.txHash, asteria!.input.outputIndex)
-    .txInInlineDatumPresent()
     .spendingTxInReference(asteriaRefHashWO, 0)
-    .txInRedeemerValue(asteriaRedeemer)
+    .txInRedeemerValue(asteriaRedeemer, "JSON")
+    .txInInlineDatumPresent()
     
     .mintPlutusScriptV3()
-    .mintRedeemerValue(shipBurnRedeemer)
-    .mint("-1", shipyardPolicyId!, stringToHex(shipTokenName))
+    .mint("-1", shipyardPolicyId!, shipTokenName)
+    .mintRedeemerValue(shipBurnRedeemer, "JSON")
     .mintTxInReference(spacetimeRefHashWOUtil, 0)
 
     .mintPlutusScriptV3()
-    .mintRedeemerValue(fuelBurnRedeemer)
-    .mint(shipInputFuel!.quantity, fuelPolicyId, stringToHex("FUEL"))
+    .mint(fuelToBurn, fuelPolicyId, stringToHex("FUEL"))
+    .mintRedeemerValue(fuelBurnRedeemer, "JSON")
     .mintTxInReference(pelletRefHashWOUtil, 0)
 
     .spendingPlutusScriptV3()
     .txIn(shipUtxo.input.txHash, shipUtxo.input.outputIndex)
-    .txInInlineDatumPresent()
-    .txInRedeemerValue(mineAsteriaRedeemer)
+    .txInRedeemerValue(mineAsteriaRedeemer, "JSON")
     .spendingTxInReference(spacetimeRefHashWOUtil, 0)
+    .txInInlineDatumPresent()
+
+    .txInCollateral(
+        "187341756f7245fae058dca7a9ddb92e7895efd809f70161e93094c1d8b436f2",
+        0
+    )
 
     .txOut(changeAddress, valueToUser)
     .txOut(asteriaScriptAddress, valueToAsteria )
-    .txOutInlineDatumValue(asteriaOutputDatum)
+    .txOutInlineDatumValue(asteriaOutputDatum, "JSON")
 
-    .txInCollateral(
-        collateralUtxo.input.txHash,
-        collateralUtxo.input.outputIndex
-    )
 
     .setFee("2000000")
     .selectUtxosFrom(utxos)
