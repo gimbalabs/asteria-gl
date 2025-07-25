@@ -62,7 +62,7 @@ export const moveShipRouter = createTRPCRouter({
             const pelletPlutusScript = pelletScriptRef as PlutusScript
             const pelletAddress = serializePlutusScript(pelletPlutusScript).address
 
-
+            // TODO: Have a dropdown for the user to select the pilot token for the ship they want to move
             const pilotAsset = input.filter(
                 (asset) => asset.policyId === shipyardPolicyId
             );
@@ -192,7 +192,7 @@ export const moveShipRouter = createTRPCRouter({
                 console.log("shipStateUtxo: ", shipStateUtxo);
                 const shipStateTxHash = shipStateUtxo?.input.txHash;
                 const shipStateTxIndex = shipStateUtxo?.input.outputIndex;
-                if (!shipStateTxHash || !shipStateTxIndex) {
+                if (shipStateTxHash === undefined || shipStateTxIndex === undefined) {
                     throw new Error("Ship state UTxO not found or missing required transaction information");
                 }
                 console.log("shipStateTxHash: ", shipStateTxHash);
