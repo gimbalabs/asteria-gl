@@ -4,7 +4,7 @@ import MineAsteria from "./MineAsteriaComponent";
 
 
 export default function MoveShipComponent() {
-    const { shipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY } = useMoveShip();
+    const { shipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY, currentX, currentY } = useMoveShip();
     //const {secs, possibleSteps} = useElapsedSeconds(shipStateDatum?.posixTime, shipStateDatum?.fuel);
 
     return (
@@ -69,7 +69,7 @@ export default function MoveShipComponent() {
           </form>
         </div>
         <div>
-          {assets && newPosX === 0 && newPosY=== 0  && <MineAsteria assets={assets} />}
+          {shipStateDatum&& assets && currentX === 0 && currentY=== 0  && <MineAsteria assets={assets} />}
         </div>
       </div>
     );

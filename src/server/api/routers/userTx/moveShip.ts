@@ -192,9 +192,9 @@ export const moveShipRouter = createTRPCRouter({
                 console.log("shipStateUtxo: ", shipStateUtxo);
                 const shipStateTxHash = shipStateUtxo?.input.txHash;
                 const shipStateTxIndex = shipStateUtxo?.input.outputIndex;
-                if (!shipStateTxHash || !shipStateTxIndex) {
+                /*if (!shipStateTxHash || !shipStateTxIndex) {
                     throw new Error("Ship state UTxO not found or missing required transaction information");
-                }
+                }*/
                 console.log("shipStateTxHash: ", shipStateTxHash);
                 console.log("shipStateTxIndex: ", shipStateTxIndex);
 

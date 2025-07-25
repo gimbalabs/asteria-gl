@@ -87,6 +87,7 @@ export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtx
     const shipInputFuel = shipUtxo.output.amount.find((asset) => 
         asset.unit === stringToHex("FUEL"))
 
+    console.log("ship input fuel", shipInputFuel!.quantity)
 
     const shipBurnRedeemer = conStr(1, [])
 

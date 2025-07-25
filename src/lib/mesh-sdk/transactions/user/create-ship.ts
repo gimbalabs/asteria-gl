@@ -129,25 +129,16 @@ const pilotTokenName = stringToHex("PILOT" + Number(asteriaInputShipcounter).toS
 
 console.log(shipTokenName)
 
-const blockTime = await blockfrostProvider.fetchLatestBlock()
-const time = blockTime.time;
-console.log("BlockTime: ", time)
-const blockFrostSlot = blockTime.slot
-
-const tx_latest_move = time + 1600
 
 let nowDateTime = new Date();
-let dateTimeAdd5Min = new Date(nowDateTime.getTime() + 5 *60000);
+let dateTimeAdd2Min = new Date(nowDateTime.getTime() + 2 *60000);
 let dateTimeAdd10Min = new Date(nowDateTime.getTime() + 10 *60000);
-const slot = resolveSlotNo('preprod', dateTimeAdd5Min.getTime());
+const slot = resolveSlotNo('preprod', dateTimeAdd2Min.getTime());
 console.log("Mesh Resolved Slot + 5 mins:" , slot)
 
 const slotTen = resolveSlotNo('preprod' , dateTimeAdd10Min.getTime());
 
-console.log("Latest move time: ", tx_latest_move)
-console.log(" Latest move posix: ", posixTime(tx_latest_move) )
-
-const ttl = Date.now() + 15 * 60 * 1000;
+const ttl = Date.now() + 3 * 60 * 1000;
 const now = Date.now() * 1000
 //const ttl1 = time + 10 * 60 * 1000;
 const shipDatum = conStr0([

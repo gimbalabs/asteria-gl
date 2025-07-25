@@ -11,6 +11,9 @@ export function useMoveShip() {
     const [shipStateDatum, setShipStateDatum] = useState<any>(null);
     const [newPosX, setNewPosX] = useState<number>(0);
     const [newPosY, setNewPosY] = useState<number>(0);
+    const [currentX, setCurrentX] = useState(null)
+    const [currentY, setCurrentY] = useState(null)
+
 
     useEffect(() => {
         const getAssets = async () => {
@@ -28,6 +31,8 @@ export function useMoveShip() {
     const shipState = async(e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const result = await ShipStateDatum.mutateAsync(assets);
+        setCurrentX(result.coordinateX)
+        setCurrentY(result.coordinateY)
         setShipStateDatum(result);
     }
 
@@ -53,6 +58,6 @@ export function useMoveShip() {
     }
 
     return {
-        shipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY
+        shipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY, setCurrentX, setCurrentY, currentX, currentY
     }
 }

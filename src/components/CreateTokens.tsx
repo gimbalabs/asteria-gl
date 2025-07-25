@@ -29,11 +29,13 @@ export default function CreateTokens() {
         <input
           type="text"
           placeholder="Token Name"
+             className="text-black"
           value={tokenName}
           onChange={(e) => setTokenName(e.target.value)}
         />
         <input
           type="text"
+             className="text-black"
           placeholder="Quantity"
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
@@ -53,12 +55,14 @@ export default function CreateTokens() {
 
         <input
           type="text"
+            className="text-black"
           placeholder="PolicyId(optional)"
           value={policyId}
           onChange={(e) => setPolicyId(e.target.value)}
         />
         <input
           type="text"
+          className="text-black"
           placeholder="Dummy Key Hash (mandatory if using Policy ID)"
           value={dummyKey}
           onChange={(e) => setDummyKey(e.target.value)}
