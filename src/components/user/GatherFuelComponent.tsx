@@ -8,7 +8,7 @@ export default function GatherFuel(){
 
     async function handleUtxo(utxo: UTxO){
         setPelletUtxo(utxo)
-        const deserialized = await deserializeDatum(utxo.output.plutusData)
+        const deserialized = await deserializeDatum(utxo.output.plutusData!)
         setPelletCoOrds([Number(deserialized.fields[0].int), Number(deserialized.fields[1].int) ])
         console.log(pelletCoOrds)
 
@@ -56,7 +56,7 @@ export default function GatherFuel(){
 
                 <input className="text-black" value={fuel} placeholder="Choose fuel to take" onChange={(e) => setFuel(Number(e.target.value))}></input>
                 
-                <button type="submit">Gather Fuel</button>
+                <button className={`inline-block px-6 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2`} type="submit">Gather Fuel</button>
             </form>
       
             {txHash && <p>Gather fuel has been submitted, hash...{txHash}  </p>}

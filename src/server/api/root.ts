@@ -7,6 +7,8 @@ import { createShipRouter } from "./routers/userTx/createShipRouter";
 import { moveShipRouter } from "./routers/userTx/moveShip";
 import { gatherFuelRouter } from "./routers/userTx/gatherFuelRouter";
 import { quitShipRouter } from "./routers/userTx/quit";
+import { mineAsteriaRouter } from "./routers/userTx/mineAsteriaRouter";
+
 
 
 /**
@@ -23,6 +25,8 @@ export const appRouter = createTRPCRouter({
   moveShip: moveShipRouter,
   gatherFuel: gatherFuelRouter,
   quitShip: quitShipRouter,
+  mineAsteria: mineAsteriaRouter,
+
   
 
 });

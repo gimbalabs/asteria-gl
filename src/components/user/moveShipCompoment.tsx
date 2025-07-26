@@ -1,14 +1,14 @@
 import { useMoveShip } from "~/hooks/useMoveShip";
 //import { useElapsedSeconds } from "~/hooks/useElapsedSeconds";
-
+import MineAsteria from "./MineAsteriaComponent";
 
 
 export default function MoveShipComponent() {
-    const { shipState, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY } = useMoveShip();
+    const { shipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY, currentX, currentY } = useMoveShip();
     //const {secs, possibleSteps} = useElapsedSeconds(shipStateDatum?.posixTime, shipStateDatum?.fuel);
 
     return (
-      <div>
+      <div className="flex flex-col">
         <h1>Move Ship</h1>
         <button
           onClick={shipState}
@@ -67,6 +67,9 @@ export default function MoveShipComponent() {
               Move ship
             </button>
           </form>
+        </div>
+        <div>
+          {shipStateDatum&& assets && currentX === 0 && currentY=== 0  && <MineAsteria assets={assets} />}
         </div>
       </div>
     );

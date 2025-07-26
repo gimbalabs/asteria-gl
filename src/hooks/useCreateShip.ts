@@ -9,7 +9,7 @@ export function useCreateShipTx(){
 
     const prepareTx = api.createShip.prepareCreateShipTx.useMutation();
 
-    const [shipFee,  setShipFee]  = useState(3000000);
+    const [shipFee,  setShipFee]  = useState(3000000); // look at this error, curently only accepting default value
     const [posX, setPosX] = useState(0);
     const [posY, setPosY] = useState(0);
     const [initialFuel, setInitialFuel] = useState("20");

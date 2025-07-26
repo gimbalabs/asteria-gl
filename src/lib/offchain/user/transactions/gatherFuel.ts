@@ -7,26 +7,22 @@ import {
     deserializeDatum,
     conStr,
     conStr0,
-    conStr1,
-    mConStr0,
-    mConStr1, 
     integer,
     byteString,
     policyId,
     Asset,
-    ConStr,
-    resolveSlotNo
+    resolveSlotNo,
+    hexToString,
+    MeshTxBuilder
 } from "@meshsdk/core";
 import {  fromScriptRef} from "@meshsdk/core-cst";
-import { MeshTxBuilder } from "@meshsdk/core";
-import { hexToString } from "@meshsdk/core";
 
 
 import { maestroProvider } from "~/server/provider/maestroProvider";
 import { error } from "console";
 
 
-interface AdminToken {
+export interface AdminToken {
     policyId: string
     name: string
 }
@@ -250,7 +246,7 @@ const unsignedTx = await txBuilder
    collateralUtxo.input.txHash,
    collateralUtxo.input.outputIndex
 )
-.setFee("2000000")
+.setFee("3000000")
 .invalidBefore(Number(slot))
 .selectUtxosFrom(utxos)
 .changeAddress(changeAddress)
