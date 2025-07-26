@@ -16,8 +16,8 @@ import { integer, Integer,
 //export const adminTokenPolicy: string = "fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293" //bytestring
 
 
-export const adminTokenName: string = '57696c6c6974576f726b' // nd test tokens
-export const adminTokenPolicy: string = '52ad7c6e234fdad76f3461ab57d349fa51c5d51f36c83a231b9eefcf' //nd test tokens
+export const adminTokenName: string = '415472657374' // nd test tokens
+export const adminTokenPolicy: string = '703e1124055f89d4d72d4b129b578949151adb886fccaf89dd6c8ed4' //nd test tokens
 
 
 
@@ -36,18 +36,18 @@ export const refHash: string = '3d47a597e2d716b81d6fc975736efb890c25b5fc2aeaa9d1
 
 //pellet validator ref hash 
 export const pelletRefHash: TxOutRef = txOutRef('40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3', 0)
-export const pelletRefHashWOUtil = "35bfe60450b7c1ea59bdd6c68bd239f7da27ac231d0c4e31ac6e307193571970"// Nd test validator
+export const pelletRefHashWOUtil = "e1d25b61b489672b63db36c3b4ce6884ad0aaa77ddaeef69a03948fcb40659a1"// Nd test validator
 //export const pelletRefHashWOUtil = "40f99536163547b034a62fbcff2c88e963af1c5dd16186728a87504c084cc1c3"
   
 //asteria validator ref hash
 export const asteriaRefHash: TxOutRef = txOutRef('d20d15965e6bcfe0541938e7caf8a37b74852ece9cfed3314f1d9048b66cf8a5', 0)
-export const asteriaRefHashWO: string = "4caae3ff0aa1e24668f9ea1640ad4c425b0ba1e3e9660cadb5d6fac6d00b9f45"// Nd test validator
+export const asteriaRefHashWO: string = "af8335a878b9d41222a26b6f465033ca45a367d6a29b05e991ca351f062accb4"// Nd test validator
 //export const asteriaRefHashWO: string = "d20d15965e6bcfe0541938e7caf8a37b74852ece9cfed3314f1d9048b66cf8a5"
 //deploy validator ref hash
 
 //spacetime validator ref Hash 
 export const spacetimeRefHash: TxOutRef = txOutRef('f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde', 0) 
-export const spacetimeRefHashWOUtil = "636c6d42ee57a952fd1bf4b7a0a38c363a84015d74b30c1982e1a07c0f270ed9" //ND Test Validator
+export const spacetimeRefHashWOUtil = "41a7e30b7cc9dcb9ac731396d398c852556990ae71af454219d2116297ca5537" //ND Test Validator
 //export const spacetimeRefHashWOUtil = "f1101ab594944f206d90bf16d784acff9f516ff0ba8943bbc0082d36a68a5fde"
 
   //pellet validator address 
@@ -62,7 +62,7 @@ export const spacetimeValidatorAddress = 'addr_test1wrk8neks4kuhq66l95vqpgnmfdye
 
 
 export const ship_mint_lovelace_fee: Integer = integer(3000000);
-export const max_asteria_mining: Integer = integer(200);
+export const max_asteria_mining: Integer = integer(20);
 
 // const max_speed = {
 //   distance: integer(1),
@@ -73,9 +73,9 @@ export const max_speed = (
   integer(1),
   integer(30000));  //mesh json format
 
-export const max_ship_fuel: Integer = integer (100);
-export const fuel_per_step: Integer = integer(10);
-export const initial_fuel: Integer = integer(20);
-export const min_asteria_distance: Integer = integer(30);
+export const max_ship_fuel: Integer = integer (50);
+export const fuel_per_step: Integer = integer(1);
+export const initial_fuel: Integer = integer(40);
+export const min_asteria_distance: Integer = integer(10);
 
 export const createAsteriaRefHash = "459b67a583f2c9a06d9dc1fc9ac7ea077a77fb82170feb2c9351dbb4622cbfea"
