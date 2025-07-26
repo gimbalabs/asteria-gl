@@ -29,12 +29,17 @@ import { asteriaRefHashWO, pelletRefHashWOUtil, spacetimeRefHashWOUtil } from "c
 
 
 export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtxo: UTxO, changeAddress: string, utxos: UTxO[]){
-    console.log("check utxo" ,collateralUtxo)
+    console.log("check utxo" ,pilotUtxo.output.amount[0],pilotUtxo.output.amount[1])
     const asteriaRefUtxo = await maestroProvider.fetchUTxOs(asteriaRefHashWO, 0);
     const asteriaScriptRef = fromScriptRef(asteriaRefUtxo[0]!.output.scriptRef!);
     const asteriaPlutusScript = asteriaScriptRef as PlutusScript;
     const asteriaScriptAddress  = serializePlutusScript(asteriaPlutusScript).address;
+    console.log("Asteria script address:", asteriaScriptAddress)
 
+    //obtain slot time 
+    let nowDateTime = new Date();
+    let dateTime = new Date(nowDateTime.getTime()- 5 *60000);
+    const slot = resolveSlotNo('preprod', dateTime.getTime());
 
     const asteriaInputUtxos = await maestroProvider.fetchAddressUTxOs(asteriaScriptAddress, adminTokenPolicy+adminTokenName);
     
@@ -54,7 +59,7 @@ export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtx
     const asteriaMined = (maxMining/100) * Number(asteriaInputAda?.quantity)
     const remainingAsteriaLovelace = (1 - (maxMining/100)) * Number(asteriaInputAda?.quantity)
     
-    console.log("Asteria Output: ", asteria!.output.amount[0], asteria!.output.amount[1])
+    console.log("Asteria Input rewards: ", asteria!.output.amount[0], asteria!.output.amount[1])
     const asteriaInputData = asteria!.output.plutusData;
     const asteriaInputDatum = deserializeDatum(asteriaInputData!).fields;
     const asteriaInputShipcounter = asteriaInputDatum[0].int;
@@ -111,13 +116,14 @@ export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtx
 
     console.log("User Assets: " , valueToUser)
 
-    const valueToAsteria: Asset[] = [{
-        unit: adminTokenPolicy + adminTokenName,
-        quantity: "1"
-    },
+    const valueToAsteria: Asset[] = [
     {
         unit: "lovelace",
         quantity:  remainingAsteriaLovelace.toString()
+    },
+    {
+        unit: adminTokenPolicy + adminTokenName,
+        quantity: "1"
     }]
 
     console.log("Asteria Assets", valueToAsteria)
@@ -140,6 +146,13 @@ export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtx
     .spendingTxInReference(asteriaRefHashWO, 0)
     .txInRedeemerValue(asteriaRedeemer, "JSON")
     .txInInlineDatumPresent()
+
+
+    .spendingPlutusScriptV3()
+    .txIn(shipUtxo.input.txHash, shipUtxo.input.outputIndex)
+    .txInRedeemerValue(mineAsteriaRedeemer, "JSON")
+    .spendingTxInReference(spacetimeRefHashWOUtil, 0)
+    .txInInlineDatumPresent()
     
     .mintPlutusScriptV3()
     .mint("-1", shipyardPolicyId!, shipTokenName)
@@ -151,22 +164,18 @@ export async function mineAsteria(shipUtxo: UTxO, collateralUtxo: UTxO, pilotUtx
     .mintRedeemerValue(fuelBurnRedeemer, "JSON")
     .mintTxInReference(pelletRefHashWOUtil, 0)
 
-    .spendingPlutusScriptV3()
-    .txIn(shipUtxo.input.txHash, shipUtxo.input.outputIndex)
-    .txInRedeemerValue(mineAsteriaRedeemer, "JSON")
-    .spendingTxInReference(spacetimeRefHashWOUtil, 0)
-    .txInInlineDatumPresent()
 
+   
     .txInCollateral(
-        "187341756f7245fae058dca7a9ddb92e7895efd809f70161e93094c1d8b436f2",
-        0
+       collateralUtxo.input.txHash,
+        collateralUtxo.input.outputIndex
     )
 
     .txOut(changeAddress, valueToUser)
     .txOut(asteriaScriptAddress, valueToAsteria )
     .txOutInlineDatumValue(asteriaOutputDatum, "JSON")
 
-
+    .invalidBefore(Number(slot))
     .setFee("2000000")
     .selectUtxosFrom(utxos)
     .changeAddress(changeAddress)

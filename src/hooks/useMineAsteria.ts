@@ -25,6 +25,7 @@ export default function useMineAsteria(assets: AssetExtended[]){
         try{
 
             const colateral: UTxO[] = await wallet.getCollateral()
+           
             const utxos =  await wallet.getUtxos()
             const changeAddress = await wallet.getChangeAddress()
 
@@ -47,7 +48,7 @@ export default function useMineAsteria(assets: AssetExtended[]){
                 changeAddress: changeAddress,
                 utxos: utxos,
                 pilotNumber: pilotNumber,
-                colateralUtxo: colateral,
+                colateralUtxo: colateral[0],
                 pilotUtxo: findPilotUtxo,
             }
 
