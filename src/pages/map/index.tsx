@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import CreateShipComponent from "~/components/user/CreateShipComponent";
 import GatherFuel from "~/components/user/GatherFuelComponent";
 import MoveShipComponent from "~/components/user/moveShipCompoment";
-
+import Quit from "~/components/user/Quit";
 const GRID_SIZE = 100;
 
 function generateGrid() {
@@ -56,6 +56,9 @@ export default function MapPage() {
             </div>
             <div>
                 <MoveShipComponent />
+            </div>
+            <div>
+                <Quit />
             </div>
 
         <div>
