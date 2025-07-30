@@ -1,4 +1,4 @@
-import {
+/*import {
   Asset,
   conStr0,
   integer,
@@ -99,3 +99,4 @@ export async function createPellet(
   const pelletTxhash = await myWallet.submitTx(signedTx);
   return pelletTxhash;
 };
+*/

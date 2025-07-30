@@ -1,9 +1,8 @@
-import { MeshTxBuilder } from "@meshsdk/core";
-import { maestroProvider } from "~/server/provider/maestroProvider";
+
 import { createTRPCRouter, publicProcedure } from "../../trpc";
 import { z } from "zod";
 
-import { createShip } from "~/lib/mesh-sdk/transactions/user/create-ship";
+import { createShip } from "~/lib/offchain/user/transactions/create-ship";
 
 
 export const createShipRouter = createTRPCRouter({
@@ -22,6 +21,7 @@ export const createShipRouter = createTRPCRouter({
         
         const {ship_mint_lovelace_fee, initial_fuel, posX, posY, tx_latest_posix_time, changeAddress, utxos, collateral} = input
 
+
         try{
             const {unsignedTx} = await createShip(
                         ship_mint_lovelace_fee,
@@ -33,13 +33,13 @@ export const createShipRouter = createTRPCRouter({
                         collateral,
                         utxos,
                     )
-            console.log("tx ready")
+     
          
             return {unsignedTx}
             
         } catch(error){
             console.log(error)
-            return {error}
+        
         }
 
         

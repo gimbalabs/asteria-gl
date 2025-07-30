@@ -14,7 +14,7 @@ function spacetimeScriptAppliedParam (
    asteriaScriptAddress: string,
    admin_token: string,
    adminTokenName: string,
-   max_speed: {distance: number, time: number},
+   max_speed: {distance?: number, time?: number},
    max_ship_fuel: number,
    fuel_per_step: number,
 
@@ -27,8 +27,8 @@ function spacetimeScriptAppliedParam (
       ]);
 
     const maxSpeed = conStr0([
-        integer(max_speed.distance),
-        integer(max_speed.time)
+        integer(max_speed.distance!),
+        integer(max_speed.time!)
     ])
 
 

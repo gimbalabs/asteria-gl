@@ -45,7 +45,7 @@ export const moveShipRouter = createTRPCRouter({
                 pilotName: z.string(),
                 posixTime: z.number(),
         }))
-        .mutation(async ({ input }) => {
+        .mutation(async ({ input}) => {
             // TODO: Implement logic to filter UTXO w/ pilot 
             
             //get spacetime script details
@@ -178,44 +178,44 @@ export const moveShipRouter = createTRPCRouter({
 
 
                 const { newPosX, newPosY, shipStateDatum, changeAddress, utxos, collateral } = input;
-                console.log("newPosX: ", newPosX);
-                console.log("newPosY: ", newPosY);
-                console.log("collateral: ", collateral);
+               // console.log("newPosX: ", newPosX);
+               // console.log("newPosY: ", newPosY);
+               // console.log("collateral: ", collateral);
                 const { fuel, coordinateX, coordinateY, shipName, pilotName, posixTime } = shipStateDatum;
-                console.log(fuel, coordinateX, coordinateY, shipName, pilotName, posixTime);
+                //console.log(fuel, coordinateX, coordinateY, shipName, pilotName, posixTime);
                 const shipStateUtxos_array = await maestroProvider.fetchAddressUTxOs(spacetimeAddress);
                 const shipStateUtxo = shipStateUtxos_array.filter(
                     (utxo) => utxo.output.amount.some(
                         (asset) => asset.unit === `${shipyardPolicyId}${stringToHex(shipName)}`
                     )
                 )[0];
-                console.log("shipStateUtxo: ", shipStateUtxo);
+                //console.log("shipStateUtxo: ", shipStateUtxo);
                 const shipStateTxHash = shipStateUtxo?.input.txHash;
                 const shipStateTxIndex = shipStateUtxo?.input.outputIndex;
 
                 /*if (!shipStateTxHash || !shipStateTxIndex) {
                     throw new Error("Ship state UTxO not found or missing required transaction information");
                 }*/
-                console.log("shipStateTxHash: ", shipStateTxHash);
-                console.log("shipStateTxIndex: ", shipStateTxIndex);
+                //console.log("shipStateTxHash: ", shipStateTxHash);
+                //console.log("shipStateTxIndex: ", shipStateTxIndex);
 
                 // Calculate deltaX and deltaY
                 const deltaX = newPosX - coordinateX;
                 const deltaY = newPosY - coordinateY;
-                console.log("deltaX:", deltaX, "type:", typeof deltaX);
-                console.log("deltaY:", deltaY, "type:", typeof deltaY);
+                //console.log("deltaX:", deltaX, "type:", typeof deltaX);
+                //console.log("deltaY:", deltaY, "type:", typeof deltaY);
                 // Build the spend redeemer
                 const moveShipRedeemer = conStr0([
                     integer(deltaX),
                     integer(deltaY),
                 ]);
-                console.log("moveShipRedeemer: ", moveShipRedeemer);
+                //console.log("moveShipRedeemer: ", moveShipRedeemer);
                 // Build the burn fuel redeemer
                 const burnfuelRedeemer = conStr1([]);
-                console.log("burnfuelRedeemer: ", burnfuelRedeemer);
+                //console.log("burnfuelRedeemer: ", burnfuelRedeemer);
                 // Calculate the fuel tokens in new ship utxo
                 const spentFuel = (Math.abs(deltaX) + Math.abs(deltaY)) * Number(fuel_per_step.int);
-                console.log("spentFuel: ", spentFuel);
+                //console.log("spentFuel: ", spentFuel);
                 const newShipFuel = fuel - spentFuel;
                 // Construct asset to spacetime validator address
                 const assetsToSpacetime: Asset[] = [{
@@ -225,7 +225,7 @@ export const moveShipRouter = createTRPCRouter({
                     unit: `${fuelPolicyId}${stringToHex("FUEL")}`,
                     quantity: newShipFuel.toString()
                 }];
-                console.log("assetsToSpacetime: ", assetsToSpacetime);
+                //console.log("assetsToSpacetime: ", assetsToSpacetime);
 
                 // Setting up the lower and upper bound time for the tx
                 const response = await fetch('https://preprod.gomaestro-api.org/v1/chain-tip', {
@@ -236,9 +236,9 @@ export const moveShipRouter = createTRPCRouter({
                     }
                   });
                 const curret_blockchain_time_json = await response.json();
-                console.log("curret_blockchain_time_json: ", curret_blockchain_time_json);
+                //console.log("curret_blockchain_time_json: ", curret_blockchain_time_json);
                 const current_blockchain_time_slot = curret_blockchain_time_json.data.slot;
-                console.log("current_blockchain_time_slot: ", current_blockchain_time_slot);
+                //console.log("current_blockchain_time_slot: ", current_blockchain_time_slot);
                 // What we need for the tx
                 const tx_earliest_slot = current_blockchain_time_slot;
 
@@ -248,10 +248,10 @@ export const moveShipRouter = createTRPCRouter({
                 // TESTING FOR unixTimeToEnclosingSlot
 
                 const slot_when_ship_was_created = unixTimeToEnclosingSlot(1750740562818, SLOT_CONFIG_NETWORK.preprod);
-                console.log("slot_when_ship_was_created: ", slot_when_ship_was_created);
+                //console.log("slot_when_ship_was_created: ", slot_when_ship_was_created);
 
                 const tx_latest_slot = unixTimeToEnclosingSlot((Date.now() + 4 * 60 * 1000), SLOT_CONFIG_NETWORK.preprod);
-                console.log("tx_latest_slot: ", tx_latest_slot);
+                //console.log("tx_latest_slot: ", tx_latest_slot);
 
                 // END TESTING FOR unixTimeToEnclosingSlot
 
@@ -259,11 +259,11 @@ export const moveShipRouter = createTRPCRouter({
                 const new_posix_time = (Number(tx_latest_slot) - 86_400) * 1_000 + 1_655_769_600_000;
                 // Just check what new_posix_time resoves to in slots
                 const new_posix_time_slot = resolveSlotNo("preprod", new_posix_time);
-                console.log("new_posix_time_slot: ", new_posix_time_slot);
-                console.log("new_posix_time_slot - slot_when_ship_was_created: ", Number(new_posix_time_slot) - Number(slot_when_ship_was_created));
-                console.log("new_posix_time: ", new_posix_time);
-                console.log("tx_earliest_slot: ", tx_earliest_slot);
-                console.log("tx_latest_slot: ", tx_latest_slot);
+                //console.log("new_posix_time_slot: ", new_posix_time_slot);
+                //console.log("new_posix_time_slot - slot_when_ship_was_created: ", Number(new_posix_time_slot) - Number(slot_when_ship_was_created));
+               // console.log("new_posix_time: ", new_posix_time);
+                //console.log("tx_earliest_slot: ", tx_earliest_slot);
+                //console.log("tx_latest_slot: ", tx_latest_slot);
 
 
                 // Construct the new datum for the new shipState UTXO
@@ -274,28 +274,27 @@ export const moveShipRouter = createTRPCRouter({
                     byteString(stringToHex(pilotName)),
                     createPosixTime(new_posix_time)  
                 ]);
-                console.log("newShipDatum: ", newShipDatum);
+                //console.log("newShipDatum: ", newShipDatum);
 
                 // Construct the pilot token asset
                 const pilotTokenAsset: Asset[] = [{
                     unit: shipyardPolicyId + stringToHex(pilotName),
                     quantity: "1"
                 }];
-                console.log("pilotTokenAsset: ", pilotTokenAsset);
+                //console.log("pilotTokenAsset: ", pilotTokenAsset);
                 // Get pilot token utxo from user wallet to send as txIn
                 const pilotTokenUtxo = utxos.find(
                     (utxo) => utxo.output.amount.some(
                         (asset: { unit: string }) => asset.unit === `${shipyardPolicyId}${stringToHex(pilotName)}`
                     )
                 );
-                console.log("pilotTokenUtxo: ", pilotTokenUtxo);
+       
                 if (!pilotTokenUtxo) {
                     throw new Error("Pilot token UTxO not found");
                 }
                 const pilotTokenTxHash = pilotTokenUtxo.input.txHash;
                 const pilotTokenTxIndex = pilotTokenUtxo.input.outputIndex;
-                console.log("pilotTokenTxHash: ", pilotTokenTxHash);
-                console.log("pilotTokenTxIndex: ", pilotTokenTxIndex);
+           
 
                 // Checking what pellet reference hash and idex + space time ref hash and idex show up as when using '.bytes'
                 //console.log("pelletRefHash.fields[0].fields[0].bytes: ", pelletRefHash.fields[0].fields[0].bytes);
@@ -315,8 +314,8 @@ export const moveShipRouter = createTRPCRouter({
 
                     .spendingPlutusScriptV3()
                     .txIn(
-                        shipStateTxHash,
-                        shipStateTxIndex,
+                        shipStateTxHash!,
+                        shipStateTxIndex!,
                     )
                     .txInRedeemerValue(moveShipRedeemer,"JSON")
                     .spendingTxInReference(spacetimeRefHashWOUtil, 0)

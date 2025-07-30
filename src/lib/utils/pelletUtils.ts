@@ -5,7 +5,7 @@ export type Coordinates = Array<{ pos_x: bigint; pos_y: bigint }>;
 export type PelletParams = Array<{ fuel: number; pos_x: bigint; pos_y: bigint; shipyard_policy: string }>;
 
 // Utility function to get a random subarray
-export function getRandomSubarray<T>(arr: Array<T>, size: number) {
+export function getRandomSubarray<T>(arr: Array<T | undefined>, size: number) {
   const shuffled = arr.slice(0);
   let i = arr.length,
     temp,
@@ -92,8 +92,8 @@ export function getDiamondAreaSample(
     fuel: Math.floor(
       Math.random() * Number(max_fuel - min_fuel) + Number(min_fuel)
     ),
-    pos_x: c.pos_x,
-    pos_y: c.pos_y,
+    pos_x: c!.pos_x,
+    pos_y: c!.pos_y,
     shipyard_policy
   }));
   return pellets;
@@ -145,8 +145,8 @@ export function getRingAreaSample(
     fuel: Math.floor(
       Math.random() * Number(max_fuel - min_fuel) + Number(min_fuel)
     ),
-    pos_x: c.pos_x,
-    pos_y: c.pos_y,
+    pos_x: c!.pos_x,
+    pos_y: c!.pos_y,
     shipyard_policy
   }));
   return pellets;

@@ -23,8 +23,8 @@ import { error } from "console";
 
 
 export interface AdminToken {
-    policyId: string
-    name: string
+    policyId?: string
+    name?: string
 }
  
 

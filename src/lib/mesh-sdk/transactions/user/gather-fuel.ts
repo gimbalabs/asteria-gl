@@ -1,4 +1,4 @@
-import { 
+/*import { 
     Asset, 
     byteString, 
     conStr0, 
@@ -205,4 +205,4 @@ const signedTx = await myWallet.signTx(unsignedTx);
 const gatherFuelHash = await myWallet.submitTx(signedTx);
 return gatherFuelHash;
 };
-export {gatherFuel};
+export {gatherFuel};*/

@@ -120,8 +120,6 @@ export function useDeployAsteriaValidators(){
         const txHash = await wallet.submitTx(signedTx);
         setAsteriaHash(txHash)
         
-
-        console.log("Asteria Transaction Hash:", txHash);
         alert("Deployed Asteria Successfully! TxHash: " + txHash);
        
 
@@ -160,7 +158,7 @@ export function useDeployAsteriaValidators(){
         
         const {unsignedTx} = await prepareSpaceTimeTransaction.mutateAsync(payload)
         
-        console.log("received spacetime unsigned tx")
+      
 
         const signedTx = await wallet.signTx(unsignedTx);
         const txHash = await wallet.submitTx(signedTx);

@@ -4,7 +4,7 @@ import { useCreateShipTx } from "~/hooks/useCreateShip"
 
 export default function createShipComponent(){
 
-    const {shipFee, setShipFee, posX, setPosX, posY, setPosY, initialFuel, setInitialFuel, handleSubmit} = useCreateShipTx()
+    const { posX, setPosX, posY, setPosY, handleSubmit} = useCreateShipTx()
     const {connected} = useWallet();
 
     if (!connected) {

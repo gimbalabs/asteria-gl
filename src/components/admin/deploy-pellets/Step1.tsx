@@ -1,6 +1,5 @@
 import { PelletParams, getRingAreaSample, pelletsToCSV} from "~/utils/pelletUtils";
 import { useState } from "react";
-import { shipYardPolicy } from "config";
 import { useDeployPellets } from "~/hooks/useDeployPellets";
 import { LoaderPinwheel } from "lucide-react";
 
@@ -156,7 +155,7 @@ export default function GetPelletsAndCsv({setPellets}: {setPellets: (pellets: Pe
                         {errors.density && <p className="text-red-500 text-sm mt-1">Density must be between 0 and 1</p>}
                     </div>
                 </div>
-                {fuelPolicy && shipYardPolicy && pelletAddress ? <button onClick={downloadCSV} 
+                {fuelPolicy && shipyardPolicy && pelletAddress ? <button onClick={downloadCSV} 
                  className={`inline-block 
                             px-6 
                             py-3 

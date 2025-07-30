@@ -35,12 +35,9 @@ export const mineAsteriaRouter = createTRPCRouter({
         );
         console.log("shipState utxo:" , shipStateUtxo)
 
-        const {unsignedTx, error, asteriaMined} = await mineAsteria(shipStateUtxo[0]!, input.collateralUtxo, input.pilotUtxo, input.changeAddress, input.utxos)
+        const {unsignedTx, asteriaMined} = await mineAsteria(shipStateUtxo[0]!, input.collateralUtxo, input.pilotUtxo, input.changeAddress, input.utxos)
 
-        if (error){
-            return {error: error}
-        }
-
+     
         return {unsignedTx, asteriaMined}
 
 

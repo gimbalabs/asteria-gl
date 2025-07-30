@@ -1,4 +1,4 @@
-import {
+/*import {
     admin_token, 
     max_asteria_mining, 
     ship_mint_lovelace_fee 
@@ -57,4 +57,4 @@ await writeFile(
   );
 };
 
-export {deployAsteria};
+export {deployAsteria};*/

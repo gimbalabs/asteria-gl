@@ -37,7 +37,7 @@ export default function Step3({pellets}: {pellets: PelletParams}) {
             setSubmittedBatches(prev => [...prev, { batchNum: 0, txHash: firstTxHash }]);
 
             // Handle subsequent batches
-            let batchResult: { done: boolean, unsignedTx?: string } = { done: false };
+            let batchResult: { done?: boolean, unsignedTx?: string } = { done: false };
             let lastTxHash = firstTxHash; // Track the most recent transaction hash
             
             while (!batchResult.done) {

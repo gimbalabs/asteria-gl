@@ -52,11 +52,9 @@ export default function useMineAsteria(assets: AssetExtended[]){
                 pilotUtxo: findPilotUtxo,
             }
 
-            const {unsignedTx, error, asteriaMined} = await prepareMineAsteria.mutateAsync(payload)
+            const {unsignedTx, asteriaMined} = await prepareMineAsteria.mutateAsync(payload)
 
-            if(error){
-                alert("Error"+ error)
-            }
+          
 
             if(unsignedTx){
             const signedTx = await wallet.signTx(unsignedTx, true);

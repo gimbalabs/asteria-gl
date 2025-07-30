@@ -13,7 +13,7 @@ interface DeployParameters {
     adminTokenName: string, 
     shipMintLovelaceFee: number, 
     maxAsteriaMining: number,  
-    maxSpeed: {distance: number, time: number},
+    maxSpeed: {distance?: number, time?: number},
     maxShipFuel: number,
     fuelPerStep: number, 
     initialFuel: number, 

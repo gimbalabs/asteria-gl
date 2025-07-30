@@ -43,26 +43,20 @@ export function useCreateShipTx(){
         
   
         
-        const {unsignedTx, error} = await prepareTx.mutateAsync(payload);
-        console.log("unstx" , unsignedTx)
-
-        if(error){
-            console.log(error)
-            alert("Error from router" + error)
-        }
+        const {unsignedTx} = await prepareTx.mutateAsync(payload);
+      
 
         console.log(changeAddress)
 
-        console.log("received unsigned tx")
+        if(unsignedTx){
+            const signedTx = await wallet.signTx(unsignedTx, true);
+            const txHash = await wallet.submitTx(signedTx);
 
-        const signedTx = await wallet.signTx(unsignedTx, true);
-        const txHash = await wallet.submitTx(signedTx);
-
-
-        console.log("Transaction Hash:", txHash);
-        alert("Deployed Successfully! TxHash: " + txHash);
-        
-
+            console.log("Transaction Hash:", txHash);
+            alert("Deployed Successfully! TxHash: " + txHash);
+        } else {
+          alert("Error,transaction has not built")
+        }
         
 
         } catch (error) {

@@ -1,4 +1,4 @@
-import { stringToHex, TxOutRef, txOutRef } from "@meshsdk/core";
+/*import { stringToHex, TxOutRef, txOutRef } from "@meshsdk/core";
 
 export const admintoken = {
   policyid: "fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293", 
@@ -37,4 +37,4 @@ export const max_asteria_mining: number = 50;
 export const max_ship_fuel: number = 100;
 export const initial_fuel: string = "30";
 export const min_asteria_distance: number = 10;
-export const fuel_per_step: number = 1;
+export const fuel_per_step: number = 1;*/

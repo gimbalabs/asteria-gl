@@ -1,4 +1,4 @@
-import {
+/*import {
     admin_token
 } from "../../../const.js";
 import { pelletScriptApliedParam } from "../apply-param/pellet.js";
@@ -52,4 +52,4 @@ await writeFile(
     );
 };
 
-export {deployPellet};
+export {deployPellet};*/
