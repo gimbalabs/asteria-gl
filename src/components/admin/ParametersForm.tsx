@@ -63,7 +63,7 @@ export default function ParametersForm(){
 
             return (
                 <div className="flex flex-col gap-2 items-center">
-                    <h2>Specify Parameters for the Game</h2>
+                    <h2>Specify Parameters for the Game, then Deploy validators </h2>
                    
 
                     <form onSubmit={handleSubmitPellet}  className="form text-galaxy-info font-bold">

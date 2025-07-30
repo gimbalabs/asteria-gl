@@ -4,8 +4,7 @@ import { createTRPCRouter, publicProcedure } from "../../trpc";
 import { z } from "zod";
 
 import { deployAsteriaValidators } from "~/lib/offchain/admin/deploy/deployValidators";
-import { adminTokenName } from "config";
-import { hexToString } from "~/utils/hextoString";
+
 
 
 

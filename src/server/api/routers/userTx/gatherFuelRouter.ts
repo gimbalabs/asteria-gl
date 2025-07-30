@@ -48,7 +48,7 @@ export const gatherFuelRouter = createTRPCRouter({
         pelletRefHash,
         adminToken)
 
-        console.log("tx Ready")
+   
        
 
         return {unsignedTx}
@@ -56,7 +56,7 @@ export const gatherFuelRouter = createTRPCRouter({
 
         } catch(error){
             console.log(error)
-            return {error}
+           
         }
 
     })

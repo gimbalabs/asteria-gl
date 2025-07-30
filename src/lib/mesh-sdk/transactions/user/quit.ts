@@ -1,4 +1,4 @@
-import { 
+/*import { 
     blockchainProvider, 
     myWallet, 
     readScripRefJson 
@@ -107,4 +107,4 @@ const txhash   = await myWallet.submitTx(signedTx);
 return txhash;
 }
 
-export {quit}
+export {quit}*/

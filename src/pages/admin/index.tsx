@@ -42,7 +42,7 @@ export default function AdminPage() {
           <div>
           <Link href="admin/set-parameters">
             <AdminSection
-              title="Decide and Input Parameters"
+              title="Decide & Input Parameters, Deploy Validators"
               icon="🧭"
               borderColor="border-green-500 hover:bg-green-400/20 hover:border-green-400 transition-all duration-300"
             >
@@ -52,14 +52,6 @@ export default function AdminPage() {
           </Link> 
           </div>
 
-
-          <AdminSection
-            title="Deploy Validators"
-            icon="🌌"
-            borderColor="border-indigo-500"
-          >
-            {/* <DeployValidators /> */}
-          </AdminSection>
 
           <AdminSection
             title="Create Asteria UTXO"
@@ -82,14 +74,6 @@ export default function AdminPage() {
               />
             </Link>
           </div>
-
-          <AdminSection
-            title="Finalize & Launch"
-            icon="✅"
-            borderColor="border-red-500"
-          >
-            {/* <FinalizeSetup /> */}
-          </AdminSection>
 
           
         </div>

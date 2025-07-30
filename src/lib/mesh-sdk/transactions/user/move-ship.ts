@@ -1,4 +1,4 @@
-import { 
+/*import { 
     Asset, 
     byteString, 
     conStr0, 
@@ -168,4 +168,4 @@ const  moveshipTxhash = await myWallet.submitTx(signedTx);
 return moveshipTxhash;
 };
 
-export {moveShip};
+export {moveShip};*/

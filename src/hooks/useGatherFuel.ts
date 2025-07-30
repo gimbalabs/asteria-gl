@@ -133,15 +133,9 @@ export function useGatherFuelTx(){
             }
 
 
-            const {unsignedTx, error} = await prepareTx.mutateAsync(payload);
+            const {unsignedTx} = await prepareTx.mutateAsync(payload);
 
-            if(error){
-                console.log(error)
-                alert("Error from router" + error)
-            }
-
-
-            console.log("received unsigned tx")
+        
             if(unsignedTx){
             const signedTx = await wallet.signTx(unsignedTx, true);
             const txHash = await wallet.submitTx(signedTx);

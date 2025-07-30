@@ -86,8 +86,8 @@ export const quitShipRouter = createTRPCRouter({
                 if (shipStateTxHash === undefined || shipStateTxIndex === undefined) {
                     throw new Error("Ship state UTxO not found or missing required transaction information");
                 }
-                console.log("shipStateTxHash: ", shipStateTxHash);
-                console.log("shipStateTxIndex: ", shipStateTxIndex);
+                //console.log("shipStateTxHash: ", shipStateTxHash);
+                //console.log("shipStateTxIndex: ", shipStateTxIndex);
 
                 const fuelName: string = stringToHex("FUEL")
 
@@ -106,21 +106,21 @@ export const quitShipRouter = createTRPCRouter({
                         (asset: { unit: string }) => asset.unit === `${shipyardPolicyId}${stringToHex(pilotTokenName)}`
                     )
                 );
-                console.log("pilotTokenUtxo: ", pilotTokenUtxo);
+                //console.log("pilotTokenUtxo: ", pilotTokenUtxo);
                 const pilotTokenTxHash = pilotTokenUtxo.input.txHash;
                 const pilotTokenTxIndex = pilotTokenUtxo.input.outputIndex;
-                console.log("pilotTokenTxHash: ", pilotTokenTxHash);
-                console.log("pilotTokenTxIndex: ", pilotTokenTxIndex);
+               //console.log("pilotTokenTxHash: ", pilotTokenTxHash);
+                //console.log("pilotTokenTxIndex: ", pilotTokenTxIndex);
 
                 // Build redeemers: Quit and Burn fuel
                 const burnfuelRedeemer = conStr1([]);
-                console.log("burnfuelRedeemer: ", burnfuelRedeemer);
+               // console.log("burnfuelRedeemer: ", burnfuelRedeemer);
 
                 const burnShipRedeemer = conStr1([]);
-                console.log("burnShipRedeemer: ", burnShipRedeemer);
+               // console.log("burnShipRedeemer: ", burnShipRedeemer);
 
                 const quitRedeemer = conStr(3, []);
-                console.log("quitRedeemer:", quitRedeemer);
+                //console.log("quitRedeemer:", quitRedeemer);
 
                 // TxBuilder
                 const txBuilder = new MeshTxBuilder({

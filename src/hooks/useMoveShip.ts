@@ -11,8 +11,8 @@ export function useMoveShip() {
     const [shipStateDatum, setShipStateDatum] = useState<any>(null);
     const [newPosX, setNewPosX] = useState<number>(0);
     const [newPosY, setNewPosY] = useState<number>(0);
-    const [currentX, setCurrentX] = useState(null)
-    const [currentY, setCurrentY] = useState(null)
+    const [currentX, setCurrentX] = useState<number | null>(null)
+    const [currentY, setCurrentY] = useState<number | null>(null)
 
 
     useEffect(() => {

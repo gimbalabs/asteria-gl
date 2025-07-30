@@ -1,5 +1,5 @@
 
-import { integer, Integer, 
+import { assetName, AssetName, integer, Integer, 
        } from "@meshsdk/core";
 
 // Variables to be used throughout App 
@@ -11,6 +11,7 @@ import { integer, Integer,
 export const adminTokenName: string = '415472657374' // nd test tokens
 export const adminTokenPolicy: string = '703e1124055f89d4d72d4b129b578949151adb886fccaf89dd6c8ed4' //nd test tokens
 
+export const fuelTokenName: AssetName = assetName("4655454c")
 
 export const pelletRefHashWOUtil = "e1d25b61b489672b63db36c3b4ce6884ad0aaa77ddaeef69a03948fcb40659a1"// Nd test validator
 

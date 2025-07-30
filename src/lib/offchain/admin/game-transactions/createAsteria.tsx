@@ -1,4 +1,4 @@
-import { Asset, PlutusScript ,MaestroProvider, MeshTxBuilder, integer, policyId, UTxO, conStr0, ByteString} from "@meshsdk/core";
+import { Asset, PlutusScript ,MaestroProvider, MeshTxBuilder, integer, policyId, UTxO, conStr0, ByteString, ConStr0} from "@meshsdk/core";
 import { useState, useEffect } from "react";
 import { useAssets, useWallet } from "@meshsdk/react";
 
@@ -8,7 +8,7 @@ import { CardanoWallet } from "@meshsdk/react";
 import { adminTokenPolicy, adminTokenName, asteriaRefHashWO, spacetimeRefHashWOUtil } from "config";
 import checkAdminToken from "~/hooks/checkAdminToken";
 // scriptAddress = "addr_test1vrqd62jeu7jt67zt3ajl8agyfnsa0ltjksqahcsqlax3kvq8qhe3x" asteria 
-const maestroApiKey = process.env.NEXT_PUBLIC_MAESTRO_PREPROD_KEY
+import { maestroProvider } from "~/server/provider/maestroProvider";
 
 
 export default function CreateAsteria(){
@@ -18,15 +18,11 @@ export default function CreateAsteria(){
   const [success, setSuccess] = useState<string>()
   const [refHashUtxo, setRefHashUtxo] = useState<UTxO[]>()
   const [adminToken, setAdminToken] = useState<Asset | undefined>()
-  const [asteriaDatum, setDatum] = useState<ByteString | undefined>()
-  const [asteriaValidatorAddress, setAsteriaValidatorAddress] = useState<string| undefined>()
+  const [asteriaDatum, setDatum] = useState<ConStr0>()
+  const [asteriaValidatorAddress, setAsteriaValidatorAddress] = useState<string>()
   
 
-    const blockchainProvider = new MaestroProvider({
-          network: "Preprod",
-          apiKey: maestroApiKey, // Get yours by visiting https://docs.gomaestro.org/docs/Getting-started/Sign-up-login.
-          turboSubmit: false, // 
-        });
+ 
 
     const {connectedAdminToken, isLoadingAdminToken } = checkAdminToken()
     
@@ -35,29 +31,31 @@ export default function CreateAsteria(){
     useEffect(() => {
 
             async function findDeployUtxos(){
-            const deployUtxos: UTxO[] = await blockchainProvider.fetchUTxOs(asteriaRefHashWO,0) 
+            const deployUtxos: UTxO[] = await maestroProvider.fetchUTxOs(asteriaRefHashWO,0) 
             setRefHashUtxo(deployUtxos)
 
-            const spaceTimeUtxo: UTxO[] = await blockchainProvider.fetchUTxOs(spacetimeRefHashWOUtil, 0)
+            const spaceTimeUtxo: UTxO[] = await maestroProvider.fetchUTxOs(spacetimeRefHashWOUtil, 0)
     
             console.log(deployUtxos)    
 
-                if(deployUtxos){
-                const asteriaScriptReffromTx: string = deployUtxos[0].output.scriptRef
-                const asteriaScriptRef = fromScriptRef(asteriaScriptReffromTx)
+                if(deployUtxos && spaceTimeUtxo){
+                const asteriaScriptReffromTx = deployUtxos[0]!.output.scriptRef
+                const asteriaScriptRef = fromScriptRef(asteriaScriptReffromTx!)
                 const asteriaPlutusScript = asteriaScriptRef as PlutusScript
                 const asteriaValidatorAddress = resolvePlutusScriptAddress(asteriaPlutusScript) // gets the address of the validator from the script Hash
                 setAsteriaValidatorAddress(asteriaValidatorAddress)
                 
                 console.log(asteriaValidatorAddress)
-                const shipyardPolicyId = await spaceTimeUtxo[0].output.scriptHash
+                const shipyardPolicyId = await spaceTimeUtxo[0]!.output.scriptHash
                 
                 console.log("Shipyard policy:" , shipyardPolicyId)
-                const asteriaDatum = conStr0([
+                const asteriaDatum = await conStr0([
                   integer(0), //ship counter
-                  policyId(shipyardPolicyId) // policyId of spacetime validator
+                  policyId(shipyardPolicyId!) // policyId of spacetime validator
                 ])
                 setDatum(asteriaDatum)
+                } else {
+                  alert("Error, no deployment Utxo found, please check validators have been deployed correctly")
                 }
             
               
@@ -83,7 +81,7 @@ export default function CreateAsteria(){
             )
         
         const txBuilder = new MeshTxBuilder({
-            fetcher: blockchainProvider,
+            fetcher: maestroProvider,
             verbose: true,
           });
         
@@ -101,8 +99,8 @@ export default function CreateAsteria(){
         console.log("asteria datum  ", asteriaDatum)
 
         const unsignedTx = await txBuilder
-        .txOut(asteriaValidatorAddress, totalRewardsAsset)
-        .txOutInlineDatumValue(asteriaDatum, "JSON")
+        .txOut(asteriaValidatorAddress!, totalRewardsAsset)
+        .txOutInlineDatumValue(asteriaDatum!, "JSON")
         .changeAddress(changeAddress)
         .selectUtxosFrom(utxos)
         .setNetwork("preprod")

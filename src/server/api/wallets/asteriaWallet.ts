@@ -1,4 +1,4 @@
-import { MeshWallet } from "@meshsdk/core";
+/*import { MeshWallet } from "@meshsdk/core";
 import { maestroProvider } from "~/server/provider/maestroProvider";
 import { getEnv } from "../routers/admin/createAsteria";
 
@@ -19,4 +19,4 @@ export const asteriaWallet = new MeshWallet({
       type: "cli",
       payment: asteriaSigningKey,
     },
-  });
+  });*/

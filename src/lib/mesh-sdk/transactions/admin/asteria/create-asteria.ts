@@ -1,4 +1,4 @@
-
+/*
 import { 
     Asset,
     conStr0,
@@ -90,4 +90,4 @@ export const createTest = async() => {
     const Txhash = await myWallet.submitTx(signedTx);
     return Txhash;
 
-}
+}*/

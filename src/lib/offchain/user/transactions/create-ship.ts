@@ -3,8 +3,7 @@ import {
     assetName,
     conStr,
     conStr0,
-    conStr1,
-    mConStr0,
+  
     deserializeDatum,
     integer,
     MeshTxBuilder,
@@ -17,12 +16,12 @@ import {
     resolveSlotNo
 } from "@meshsdk/core";
 
-import {adminTokenName, adminTokenPolicy, refHash, asteriaRefHashWO, pelletRefHashWOUtil, spacetimeRefHashWOUtil} from '../../../../../config.js'
+import {adminTokenName, adminTokenPolicy, asteriaRefHashWO, pelletRefHashWOUtil, spacetimeRefHashWOUtil} from 'config'
 //import { admintoken, pelletRefHash, asteriaRefHash, spacetimeRefHash } from "../../config-dont-use.js";
 //import { blockchainProvider, myWallet, slot} from "../../utils.js";
 import { fromScriptRef} from "@meshsdk/core-cst";
-import { maestroProvider, blockfrostProvider } from "../../utils.js";
-import { readFile } from "fs/promises";
+import { maestroProvider } from "~/server/provider/maestroProvider";
+
 
 
 
@@ -80,16 +79,16 @@ const asteriaScriptRef = fromScriptRef(asteriaRefUtxo[0].output.scriptRef!);
 
 const asteriaPlutusScript = asteriaScriptRef as PlutusScript;
 const asteriaScriptAddress  = serializePlutusScript(asteriaPlutusScript).address;
-console.log("Asteria address", asteriaScriptAddress)
+//console.log("Asteria address", asteriaScriptAddress)
 //const spacetimeScriptRefUtxos = await blockchainProvider.fetchUTxOs(spacetimeDeployScript.txHash);
 const shipyardPolicyid =   spacetimeRefUtxo[0].output.scriptHash;
 const spacetimeScriptRef = fromScriptRef(spacetimeRefUtxo[0].output.scriptRef!);
 const spacetimePlutusScript = spacetimeScriptRef as PlutusScript;
 const spacetimeAddress =   serializePlutusScript(spacetimePlutusScript).address;
-console.log("asteriaScriptAddess ",asteriaScriptAddress)
+//console.log("asteriaScriptAddess ",asteriaScriptAddress)
 //const pelletScriptRefUtxos = await blockchainProvider.fetchUTxOs(pelletDeployScript.txHash);
 const fuelPolicyId  = pelletRefUtxo[0].output.scriptHash;
-console.log("Fuel policy Id : ", fuelPolicyId)
+//console.log("Fuel policy Id : ", fuelPolicyId)
 
 //console.log(" spacetimeAddress: ", spacetimeAddress);
 //console.log("fuel policyId : ", fuelPolicyId);
@@ -105,41 +104,39 @@ const asteriaInputAda = asteria.output.amount.find((Asset) =>
     Asset.unit === "lovelace"
 );
 
-console.log("Asteria Output: ", asteria.output.amount[0], asteria.output.amount[1])
+//console.log("Asteria Output: ", asteria.output.amount[0], asteria.output.amount[1])
 const asteriaInputData = asteria.output.plutusData;
 const asteriaInputDatum = deserializeDatum(asteriaInputData!).fields;
 
 
-console.log("asteria Input datum",deserializeDatum(asteriaInputData!));
+//console.log("asteria Input datum",deserializeDatum(asteriaInputData!));
 //datum properties
 const asteriaInputShipcounter = asteriaInputDatum[0].int;
 const asteriaInputShipYardPolicyId = asteriaInputDatum[1].bytes;
-console.log("asteria ship counter ", asteriaInputShipcounter)
+//console.log("asteria ship counter ", asteriaInputShipcounter)
 
 const asteriaOutputDatum =  conStr0([
     integer(Number(Number(asteriaInputShipcounter) + 1)),  //add number of ships(ship Counter)
     policyId(asteriaInputShipYardPolicyId)
 ]);
 
-console.log("asteria output datum", asteriaOutputDatum)
+//console.log("asteria output datum", asteriaOutputDatum)
 
 const fuelTokenName = stringToHex("FUEL");
 const shipTokenName = stringToHex("SHIP" + Number(asteriaInputShipcounter).toString()); //ship counter from Datum
 const pilotTokenName = stringToHex("PILOT" + Number(asteriaInputShipcounter).toString()); //ship counter from Datum
 
-console.log(shipTokenName)
+//console.log(shipTokenName)
 
 
 let nowDateTime = new Date();
 let dateTimeAdd2Min = new Date(nowDateTime.getTime() + 2 *60000);
-let dateTimeAdd10Min = new Date(nowDateTime.getTime() + 10 *60000);
+//let dateTimeAdd10Min = new Date(nowDateTime.getTime() + 10 *60000);
 const slot = resolveSlotNo('preprod', dateTimeAdd2Min.getTime());
-console.log("Mesh Resolved Slot + 5 mins:" , slot)
 
-const slotTen = resolveSlotNo('preprod' , dateTimeAdd10Min.getTime());
 
-const ttl = Date.now() + 3 * 60 * 1000;
-const now = Date.now() * 1000
+const ttl = Date.now() + 4 * 60 * 1000;
+
 //const ttl1 = time + 10 * 60 * 1000;
 const shipDatum = conStr0([
     integer(posX),
@@ -150,7 +147,7 @@ const shipDatum = conStr0([
 ]);
 
 //console.log("ship name" , shipTokenName)
-console.log("Ship Datum: ", shipDatum,'\n');
+//console.log("Ship Datum: ", shipDatum,'\n');
 //console.log("shipyardpolicyId: ", shipyardPolicyid);
 
 //defining assets
@@ -186,8 +183,8 @@ console.log(mintShipRedeemer)
 
 //console.log(asteriaInputAda,"\n");
 //console.log("Asteria input Assets",asteriaInputUtxos[0].output.amount);
-console.log("asteria output datum: ",asteriaOutputDatum);
-console.log("Reward Assets:",  totalRewardsAsset)
+//console.log("asteria output datum: ",asteriaOutputDatum);
+//console.log("Reward Assets:",  totalRewardsAsset)
 //onsole.log(" Ship Datum", shipDatum);
 //console.log("latest slot time", tx_latest_slot)
 //console.log("slot", slot)
@@ -241,7 +238,6 @@ console.log("Reward Assets:",  totalRewardsAsset)
 
 //const signedTx = await myWallet.signTx(unsignedTx, true);
 //const shiptxHash = await myWallet.submitTx(signedTx);
-console.log("create-ship has created the tx")
 //const evalTx = await blockfrostProvider.evaluateTx(unsignedTx)
 //console.log(evalTx)
 

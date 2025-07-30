@@ -1,6 +1,6 @@
 import { useGatherFuelTx } from "~/hooks/useGatherFuel";
-import { deserializeDatum, PlutusData } from "@meshsdk/core";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel } from "../ui/dropdown-menu";
+import { deserializeDatum} from "@meshsdk/core";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { UTxO } from "@meshsdk/core";
 
 
