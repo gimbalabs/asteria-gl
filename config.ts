@@ -8,16 +8,16 @@ import { assetName, AssetName, integer, Integer,
 // Functions start with lowercase letter
 
 
-export const adminTokenName: string = '415472657374' // nd test tokens
-export const adminTokenPolicy: string = '703e1124055f89d4d72d4b129b578949151adb886fccaf89dd6c8ed4' //nd test tokens
+export const adminTokenName: string = '41737465726961746f6b656e' // Asteriatoken
+export const adminTokenPolicy: string = 'fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293' //Asteriatoken
 
 export const fuelTokenName: AssetName = assetName("4655454c")
 
-export const pelletRefHashWOUtil = "e1d25b61b489672b63db36c3b4ce6884ad0aaa77ddaeef69a03948fcb40659a1"// Nd test validator
+export const pelletRefHashWOUtil = "2f1a3220ab25f0f1a4c71ce0b9128d7dd87863625dde367c403d853ee881ba45"// Nd test validator
 
-export const asteriaRefHashWO: string = "af8335a878b9d41222a26b6f465033ca45a367d6a29b05e991ca351f062accb4"// Nd test validator
+export const asteriaRefHashWO: string = "092fd7e67c50ad01f7df346e017dcdfb8e6d8fbefe038978e2c9a39b90a28764"// Nd test validator
 
-export const spacetimeRefHashWOUtil = "41a7e30b7cc9dcb9ac731396d398c852556990ae71af454219d2116297ca5537" //ND Test Validator
+export const spacetimeRefHashWOUtil = "3f4869ecd0e39b5a6320eae2cf8a85e4922b0ef10d9b2c134ab05fb90af7e3a4" //ND Test Validator
 
 
 //Game Parameters
