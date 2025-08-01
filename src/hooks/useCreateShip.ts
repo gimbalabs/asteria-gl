@@ -1,5 +1,6 @@
 import { api } from "~/utils/api";
 import { useWallet } from "@meshsdk/react";
+import { ship_mint_lovelace_fee } from "config";
 
 import { useState } from "react";
 
@@ -9,7 +10,7 @@ export function useCreateShipTx(){
 
     const prepareTx = api.createShip.prepareCreateShipTx.useMutation();
 
-    const [shipFee,  setShipFee]  = useState(3000000); // look at this error, curently only accepting default value
+    const [shipFee,  setShipFee]  = useState(Number(ship_mint_lovelace_fee.int)); 
     const [posX, setPosX] = useState(0);
     const [posY, setPosY] = useState(0);
     const [initialFuel, setInitialFuel] = useState("20");

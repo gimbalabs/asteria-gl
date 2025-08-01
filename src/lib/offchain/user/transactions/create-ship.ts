@@ -50,7 +50,7 @@ async function createShip(
          verbose: true
      });
 
-console.log(collateral.output.amount)   
+console.log("Collateral:", collateral.input.txHash, collateral.output.amount)   
 
 /*const deployScript = JSON.parse(
     await readFile("../../scriptref-hash/refhash.json", "utf-8"));
@@ -240,7 +240,8 @@ console.log(mintShipRedeemer)
 //const shiptxHash = await myWallet.submitTx(signedTx);
 //const evalTx = await blockfrostProvider.evaluateTx(unsignedTx)
 //console.log(evalTx)
-
+    
+console.log("tx hash", unsignedTx)
 
 return {unsignedTx};
 };

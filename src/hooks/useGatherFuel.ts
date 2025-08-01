@@ -14,12 +14,14 @@ import { MaestroProvider } from "@meshsdk/core";
 import { LucideAlignHorizontalDistributeCenter } from "lucide-react";
 
 
-export function useGatherFuelTx(){
-
-    const clientMaestroProvider = new MaestroProvider({
+export const clientMaestroProvider = new MaestroProvider({
         apiKey: process.env.NEXT_PUBLIC_MAESTRO_PREPROD_KEY || "",
         network: "Preprod",
     })
+
+export function useGatherFuelTx(){
+
+
 
     const prepareTx = api.gatherFuel.prepareGatherFuelTx.useMutation()
 

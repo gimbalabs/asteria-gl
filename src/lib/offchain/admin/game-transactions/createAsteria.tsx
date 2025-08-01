@@ -8,7 +8,7 @@ import { CardanoWallet } from "@meshsdk/react";
 import { adminTokenPolicy, adminTokenName, asteriaRefHashWO, spacetimeRefHashWOUtil } from "config";
 import checkAdminToken from "~/hooks/checkAdminToken";
 // scriptAddress = "addr_test1vrqd62jeu7jt67zt3ajl8agyfnsa0ltjksqahcsqlax3kvq8qhe3x" asteria 
-import { maestroProvider } from "~/server/provider/maestroProvider";
+import { clientMaestroProvider } from "~/hooks/useGatherFuel";
 
 
 export default function CreateAsteria(){
@@ -24,17 +24,17 @@ export default function CreateAsteria(){
 
  
 
-    const {connectedAdminToken, isLoadingAdminToken } = checkAdminToken()
+  const {connectedAdminToken, isLoadingAdminToken } = checkAdminToken()
     
     
     
     useEffect(() => {
 
             async function findDeployUtxos(){
-            const deployUtxos: UTxO[] = await maestroProvider.fetchUTxOs(asteriaRefHashWO,0) 
+            const deployUtxos: UTxO[] = await clientMaestroProvider.fetchUTxOs(asteriaRefHashWO,0) 
             setRefHashUtxo(deployUtxos)
 
-            const spaceTimeUtxo: UTxO[] = await maestroProvider.fetchUTxOs(spacetimeRefHashWOUtil, 0)
+            const spaceTimeUtxo: UTxO[] = await clientMaestroProvider.fetchUTxOs(spacetimeRefHashWOUtil, 0)
     
             console.log(deployUtxos)    
 
@@ -81,7 +81,7 @@ export default function CreateAsteria(){
             )
         
         const txBuilder = new MeshTxBuilder({
-            fetcher: maestroProvider,
+            fetcher: clientMaestroProvider,
             verbose: true,
           });
         
