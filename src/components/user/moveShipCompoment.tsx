@@ -24,7 +24,6 @@ export default function MoveShipComponent() {
           Get Ship Details
         </button>
         <div>
-          <p>Create a table with the following data:</p>
           <p>1. Fuel: {shipStateDatum?.fuel}</p>
           <p>2. Coordinate X: {shipStateDatum?.coordinateX}</p>
           <p>3. Coordinate Y: {shipStateDatum?.coordinateY}</p>
@@ -41,7 +40,7 @@ export default function MoveShipComponent() {
               }}
             className="flex flex-col items-center gap-2 text-black"
           >
-            <h2>
+            <h2 className="text-blue-500">
               Choose you coordinates and the Click the button to Move your
               Asteria Ship
             </h2>
@@ -62,7 +61,7 @@ export default function MoveShipComponent() {
             />
             <button
               type="submit"
-              className={`inline-block rounded-lg px-6 py-3 font-semibold text-white shadow-md focus:outline-none focus:ring-2`}
+              className={`inline-block bg-blue-500 rounded-lg px-6 py-3 font-semibold text-white shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2`}
             >
               Move ship
             </button>

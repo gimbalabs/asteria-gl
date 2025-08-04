@@ -20,7 +20,7 @@ export default function createShipComponent(){
         <div>
 
             
-            <form onSubmit={handleSubmit} className="flex flex-col gap-2 items-center text-black">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2 items-center text-blue-500">
                 <h2>Choose you coordinates and the Click the button to Create your Asteria Ship</h2>
                 <input 
                     value={posX}
@@ -34,7 +34,7 @@ export default function createShipComponent(){
                     onChange={(e) => {setPosY(Number(e.target.value))}}
                 />
 
-                <button type="submit" className={`inline-block px-6 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2`}>
+                <button type="submit" className={`inline-block bg-blue-500 px-6 py-3 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2`}>
                     Create ship
                 </button>
 

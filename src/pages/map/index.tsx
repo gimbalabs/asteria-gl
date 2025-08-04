@@ -1,9 +1,6 @@
 import Mapbutton from "~/components/Mapbutton";
 import React, { useState } from "react";
-import CreateShipComponent from "~/components/user/CreateShipComponent";
-import GatherFuel from "~/components/user/GatherFuelComponent";
-import MoveShipComponent from "~/components/user/moveShipCompoment";
-import Quit from "~/components/user/Quit";
+import GameActionsModal from "~/components/user/GameActionsModal";
 const GRID_SIZE = 100;
 
 function generateGrid() {
@@ -48,18 +45,7 @@ export default function MapPage() {
 
     return (
         <>
-            <div>
-                <CreateShipComponent />
-            </div>
-            <div>
-                <GatherFuel />
-            </div>
-            <div>
-                <MoveShipComponent />
-            </div>
-            <div>
-                <Quit />
-            </div>
+            <GameActionsModal />
 
         <div>
         
@@ -81,7 +67,7 @@ export default function MapPage() {
                     position: "relative",
                     top: 0,
                     left: 0,
-                    width: "140%",
+                    width: "100%",
                     height: "280vh",
                     backgroundImage: "url('/visualizer/background.png')",
                     backgroundSize: "cover",
