@@ -1,8 +1,9 @@
 import { api } from "~/utils/api";
 import { useWallet } from "@meshsdk/react";
-import { ship_mint_lovelace_fee } from "config";
+import { ship_mint_lovelace_fee, initial_fuel, min_asteria_distance } from "config";
 
 import { useState } from "react";
+import { number } from "zod";
 
 
 
@@ -11,16 +12,23 @@ export function useCreateShipTx(){
     const prepareTx = api.createShip.prepareCreateShipTx.useMutation();
 
     const [shipFee,  setShipFee]  = useState(Number(ship_mint_lovelace_fee.int)); 
-    const [posX, setPosX] = useState(0);
-    const [posY, setPosY] = useState(0);
-    const [initialFuel, setInitialFuel] = useState("20");
+    /*const [posX, setPosX] = useState(0);
+    const [posY, setPosY] = useState(0);*/
+    const [initialFuel, setInitialFuel] = useState(initial_fuel.int.toString());
 
     const { wallet, connected } = useWallet(); 
 
+    const maxDistance = Number(min_asteria_distance.int)
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-    
+
+      function getRandomUpperNumber(maxDistance) {
+        return Math.floor(Math.random() * (maxDistance- 0) + 0);
+      }
+      const posX = getRandomUpperNumber(maxDistance)
+      const posY = maxDistance - posX
+      
       try {
         if (!connected || !wallet) {
           throw new Error("Wallet not connected");
@@ -37,8 +45,8 @@ export function useCreateShipTx(){
           collateral: collateral[0] ,
           ship_mint_lovelace_fee: Number(shipFee),
           initial_fuel: initialFuel,
-          posX: Number(posX),
-          posY: Number(posY),
+          posX: posX,
+          posY: posY,
           tx_latest_posix_time: Date.now(),
         }
         
@@ -66,10 +74,12 @@ export function useCreateShipTx(){
         }
         
     
-    
-    
+      
+      
     }
 
-    return {shipFee, setShipFee, posX, setPosX, posY, setPosY, initialFuel, setInitialFuel, handleSubmit}
+  
+
+    return {shipFee, setShipFee, initialFuel, setInitialFuel, handleSubmit}
 
 }
