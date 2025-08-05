@@ -1,8 +1,9 @@
 import { useCallback } from "react";
 import { useWallet } from "@meshsdk/react";
 import { api } from "~/utils/api";
+import { AssetExtended } from "@meshsdk/core";
 
-export function useQuitShip() {
+export function useQuitShip(pilot: AssetExtended | null) {
   const { wallet, connected } = useWallet();
   const quitShip = api.quitShip.quitShip.useMutation();
 
@@ -23,6 +24,7 @@ export function useQuitShip() {
         const collateralUtxo = collateral[0];
 
         const unsignedTx = await quitShip.mutateAsync({
+          pilot,
           assets,
           changeAddress,
           utxos,

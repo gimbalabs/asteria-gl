@@ -2,9 +2,10 @@ import { useGatherFuelTx } from "~/hooks/useGatherFuel";
 import { deserializeDatum} from "@meshsdk/core";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { UTxO } from "@meshsdk/core";
+import { AssetExtended } from "@meshsdk/core";
 
 
-export default function GatherFuel(){
+export default function GatherFuel({pilot}: {pilot: AssetExtended | null}){
 
     async function handleUtxo(utxo: UTxO){
         setPelletUtxo(utxo)
@@ -14,7 +15,7 @@ export default function GatherFuel(){
 
     }
 
-    const {handleSubmit, pelletUtxoList, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel, txHash , pelletCoOrds, setPelletCoOrds} = useGatherFuelTx()
+    const {handleSubmit, pelletUtxoList, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel, txHash , pelletCoOrds, setPelletCoOrds} = useGatherFuelTx(pilot)
     
     
     return (
@@ -54,9 +55,22 @@ export default function GatherFuel(){
                 
                 }
 
-                <input className="text-black" value={fuel} placeholder="Choose fuel to take" onChange={(e) => setFuel(Number(e.target.value))}></input>
-                
-                <button className={`inline-block px-6 py-3 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2`} type="submit">Gather Fuel</button>
+                <div>
+                    <input
+                        className="w-full rounded-md border border-gray-600 bg-gray-700 p-2 text-white"
+                        value={fuel}
+                        placeholder="Choose fuel to take"
+                        onChange={(e) => setFuel(Number(e.target.value))}
+                    ></input>
+                </div>
+                <div className="mt-4">
+                    <button
+                        className={`w-full rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2`}
+                        type="submit"
+                    >
+                        Gather Fuel
+                    </button>
+                </div>
             </form>
       
             {txHash && <p>Gather fuel has been submitted, hash...{txHash}  </p>}

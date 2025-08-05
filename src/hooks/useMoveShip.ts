@@ -5,7 +5,7 @@ import { AssetExtended } from "@meshsdk/core";
 
 
 
-export function useMoveShip() {
+export function useMoveShip(pilot: AssetExtended | null) {
     const { wallet, connected } = useWallet();
     const [assets, setAssets] = useState<AssetExtended[]>([]);
     const [shipStateDatum, setShipStateDatum] = useState<any>(null);
@@ -30,7 +30,7 @@ export function useMoveShip() {
 
     const shipState = async(e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const result = await ShipStateDatum.mutateAsync(assets);
+        const result: any = await ShipStateDatum.mutateAsync({assets: assets, pilot: pilot});
         setCurrentX(result.coordinateX)
         setCurrentY(result.coordinateY)
         setShipStateDatum(result);
