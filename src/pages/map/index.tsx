@@ -1,6 +1,8 @@
 import Mapbutton from "~/components/Mapbutton";
 import React, { useState } from "react";
 import GameActionsModal from "~/components/user/GameActionsModal";
+
+
 const GRID_SIZE = 100;
 
 function generateGrid() {
@@ -45,7 +47,7 @@ export default function MapPage() {
 
     return (
         <>
-            <GameActionsModal />
+            <GameActionsModal/>
 
         <div>
         

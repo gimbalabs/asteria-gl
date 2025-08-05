@@ -1,9 +1,10 @@
 import { useMoveShip } from "~/hooks/useMoveShip";
 //import { useElapsedSeconds } from "~/hooks/useElapsedSeconds";
 import MineAsteria from "./MineAsteriaComponent";
+import { AssetExtended } from "@meshsdk/core";
 
 
-export default function MoveShipComponent() {
+export default function MoveShipComponent({pilot}: {pilot: AssetExtended | null}) {
     const { shipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY, currentX, currentY } = useMoveShip();
     //const {secs, possibleSteps} = useElapsedSeconds(shipStateDatum?.posixTime, shipStateDatum?.fuel);
 

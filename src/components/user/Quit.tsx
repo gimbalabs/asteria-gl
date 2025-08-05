@@ -1,6 +1,7 @@
 import { useQuitShip } from "~/hooks/useQuitShip";
+import { AssetExtended } from "@meshsdk/core";
 
-export default function Quit() {
+export default function Quit({pilot}: {pilot: AssetExtended | null}) {
     const { handleQuitShip } = useQuitShip();
     return (
         <button onClick={handleQuitShip} style={{

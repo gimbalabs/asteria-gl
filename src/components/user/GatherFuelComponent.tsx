@@ -2,9 +2,10 @@ import { useGatherFuelTx } from "~/hooks/useGatherFuel";
 import { deserializeDatum} from "@meshsdk/core";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { UTxO } from "@meshsdk/core";
+import { AssetExtended } from "@meshsdk/core";
 
 
-export default function GatherFuel(){
+export default function GatherFuel({pilot}: {pilot: AssetExtended | null}){
 
     async function handleUtxo(utxo: UTxO){
         setPelletUtxo(utxo)
