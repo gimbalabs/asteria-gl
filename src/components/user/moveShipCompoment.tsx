@@ -5,7 +5,7 @@ import { AssetExtended } from "@meshsdk/core";
 
 
 export default function MoveShipComponent({pilot}: {pilot: AssetExtended | null}) {
-    const { shipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY, currentX, currentY } = useMoveShip();
+    const { shipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY, currentX, currentY } = useMoveShip(pilot);
     //const {secs, possibleSteps} = useElapsedSeconds(shipStateDatum?.posixTime, shipStateDatum?.fuel);
 
     return (

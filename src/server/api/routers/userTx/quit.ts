@@ -23,6 +23,13 @@ import {
 export const quitShipRouter = createTRPCRouter({
     quitShip: publicProcedure
         .input(z.object({
+            pilot: z.object({
+                unit: z.string(),
+                policyId: z.string(),
+                assetName: z.string(),
+                fingerprint: z.string(),
+                quantity: z.string(),
+            }),
             assets: z.array(z.object({
                 unit: z.string(),
                 policyId: z.string(),
@@ -62,14 +69,15 @@ export const quitShipRouter = createTRPCRouter({
 
             // TODO: Have a dropdown on frontend for the user to select the pilot token for the ship they want to move
             const pilotAsset = input.assets.filter(
-                (asset) => asset.policyId === shipyardPolicyId
+                (asset) => (asset.policyId === shipyardPolicyId) && (asset.assetName === input.pilot.assetName)
             );
             if (!pilotAsset.length) {
                 throw new Error("Ship not minted yet!");
-            }else if (pilotAsset.length > 1) {
+            }else if(pilotAsset.length > 1) {
                 throw new Error("Multiple ships minted! Try sending the extra PILOT tokens to a different address.");
-            }else {
-                const pilotTokenName: string = hexToString(pilotAsset[0]?.assetName ?? "");
+            }
+            else {
+                const pilotTokenName: string = hexToString(input.pilot.assetName ?? "");
                 console.log(pilotTokenName);
                 /// Extract the number from pilot token: eg. PILOT13 (gets "13")
                 const pilotNumber = pilotTokenName.replace("PILOT", "");
@@ -157,7 +165,7 @@ export const quitShipRouter = createTRPCRouter({
                     .mintTxInReference(pelletRefHashWOUtil, 0)
                     .mintRedeemerValue(burnfuelRedeemer,"JSON")
 
-                    .txOut(input.changeAddress, pilotAsset)
+                    .txOut(input.changeAddress, pilotAsset as Asset[])
                     .txInCollateral(
                         input.collateral.input.txHash,
                         input.collateral.input.outputIndex,

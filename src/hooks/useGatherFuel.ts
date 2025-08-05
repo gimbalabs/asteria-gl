@@ -12,6 +12,7 @@ import { spacetimeRefHashWOUtil, pelletRefHashWOUtil } from "config";
 
 import { MaestroProvider } from "@meshsdk/core";
 import { LucideAlignHorizontalDistributeCenter } from "lucide-react";
+import { AssetExtended } from "@meshsdk/core";
 
 
 export const clientMaestroProvider = new MaestroProvider({
@@ -19,7 +20,7 @@ export const clientMaestroProvider = new MaestroProvider({
         network: "Preprod",
     })
 
-export function useGatherFuelTx(){
+export function useGatherFuelTx(pilot: AssetExtended | null){
 
 
 
@@ -27,7 +28,7 @@ export function useGatherFuelTx(){
 
     const [pilotUtxo, setPilotUtxo] = useState<UTxO>()
     const [shipUtxo, setShipUtxo] = useState<UTxO>()
-    const [pilotToken, setPilotToken] = useState<string>("")
+    // const [pilotToken, setPilotToken] = useState<string>("")
     const [pelletUtxoList, setPelletUtxoList] = useState<UTxO[]>()
     const [pelletUtxo, setPelletUtxo] = useState<UTxO>()
     const [pelletCoOrds, setPelletCoOrds] = useState<number[]>([])
@@ -76,20 +77,25 @@ export function useGatherFuelTx(){
 
             console.log("colateral" , collateral)
 
-            const pilot = await assets.find((asset) => {
-                const pilotToken = asset.unit.includes(stringToHex("PILOT"))
-                return pilotToken
-            })
-            pilot ? setPilotToken(hexToString(pilot.assetName)) : alert("Please mint a ship to play the game")
+            // const pilot = await assets.find((asset) => {
+            //     const pilotToken = asset.unit.includes(stringToHex("PILOT"))
+            //     return pilotToken
+            // })
+            // pilot ? setPilotToken(hexToString(pilot.assetName)) : alert("Please mint a ship to play the game")
    
 
             const pilotNumber: string | undefined = hexToString(pilot!.assetName).slice(5)
             console.log(pilotNumber)
 
-            const findPilotUtxo = await utxos.find((utxo) => utxo.output.amount.find((asset: Asset) => {
-               return asset.unit.includes(stringToHex("PILOT"))
+            // const findPilotUtxo = await utxos.find((utxo) => utxo.output.amount.find((asset: Asset) => {
+            //    return asset.unit.includes(stringToHex("PILOT"))
 
-            }) )
+            // }) )
+
+            const findPilotUtxo = await utxos.find((utxo) => utxo.output.amount.find((asset: Asset) => {
+                return asset.unit.includes(stringToHex(pilot!.assetName))
+ 
+             }) )
 
             setPilotUtxo(findPilotUtxo)
 

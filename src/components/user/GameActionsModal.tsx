@@ -27,8 +27,7 @@ export default function GameActionsModal() {
           </div>
 
           <div className="bg-gray-800 rounded-lg p-4">
-            <h3 className="text-lg font-semibold mb-2">Select Pilot</h3>
-            <SelectPilot setPilot={setPilot} />
+            <SelectPilot pilot={pilot} setPilot={setPilot} />
           </div>
 
           <div className="bg-gray-800 rounded-lg p-4">

@@ -15,7 +15,7 @@ export default function GatherFuel({pilot}: {pilot: AssetExtended | null}){
 
     }
 
-    const {handleSubmit, pelletUtxoList, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel, txHash , pelletCoOrds, setPelletCoOrds} = useGatherFuelTx()
+    const {handleSubmit, pelletUtxoList, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel, txHash , pelletCoOrds, setPelletCoOrds} = useGatherFuelTx(pilot)
     
     
     return (

@@ -30,13 +30,22 @@ import {
 
 export const moveShipRouter = createTRPCRouter({
     queryShipStateDatum: publicProcedure
-        .input(z.array(z.object({
-            unit: z.string(),
-            policyId: z.string(),
-            assetName: z.string(),
-            fingerprint: z.string(),
-            quantity: z.string(),
-        })))
+        .input(z.object({
+            assets: z.array(z.object({
+                unit: z.string(),
+                policyId: z.string(),
+                assetName: z.string(),
+                fingerprint: z.string(),
+                quantity: z.string(),
+            })),
+            pilot: z.object({
+                unit: z.string(),
+                policyId: z.string(),
+                assetName: z.string(),
+                fingerprint: z.string(),
+                quantity: z.string(),
+            }),
+        }))
         .output(z.object({
                 fuel: z.number(),
                 coordinateX: z.number(),
@@ -63,8 +72,8 @@ export const moveShipRouter = createTRPCRouter({
             const pelletAddress = serializePlutusScript(pelletPlutusScript).address
 
             // TODO: Have a dropdown for the user to select the pilot token for the ship they want to move
-            const pilotAsset = input.filter(
-                (asset) => asset.policyId === shipyardPolicyId
+            const pilotAsset = input.assets.filter(
+                (asset) => (asset.policyId === shipyardPolicyId) && (asset.assetName === input.pilot.assetName)
             );
             if (!pilotAsset.length) {
                 throw new Error("Ship not minted yet!");
