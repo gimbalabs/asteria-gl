@@ -4,6 +4,8 @@ import { maestroProvider} from "~/server/provider/maestroProvider";
 import { UTxO, hexToString } from "@meshsdk/core";
 import { deserializeDatum } from "@meshsdk/core";
 
+import { api } from "~/utils/api";
+
 import { useEffect, useState } from "react";
 
 interface ShipDatumData {
@@ -13,10 +15,19 @@ interface ShipDatumData {
    
 }
 
+interface PelletDatumData {
+    posX: number | undefined,
+    posY: number | undefined,
+    fuel: number | undefined, 
+}
 
-export default function getShipPositions(){
+
+export default function getGameState(){
 
     const [shipState, setShipState] = useState<ShipDatumData[]>() 
+    const [pelletState, setPelletState] = useState()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isError, setIsError] = useState("")
 
     const maestroProvider = new MaestroProvider({
         network: "Preprod",
@@ -52,6 +63,38 @@ export default function getShipPositions(){
   
     },[])    
 
+    useEffect( () => {
+        async function runPelletPositions(){
+
+            const {data: pelletData, isLoading, isError, error } = await api.gameState.queryPelletState.useQuery()
+            
+            if(isLoading){
+                setIsLoading(true)
+            }
+
+            if(error){
+                setIsError(error.message)
+            }
+
+            const pelletPositions: PelletDatumData[] = []
+
+            pelletData.pelletUtxos.map((pellet) => {
+                const pelletDatum = deserializeDatum(pellet.output.plutusData)
+                const pelletData = {
+                    posX: pelletDatum.fields[0].int,
+                    posY: pelletDatum.fields[1].int,
+                    fuel: Number(pellet.output.amount[1].quantity)
+                }        
+                pelletPositions.push(pelletData)
+            })
+
+            setPelletState(pelletPositions)
+
+        }
+
+        runPelletPositions()
+    }, [])
+
     
-    return {shipState}
+    return {shipState, setPelletState}
 }
