@@ -12,15 +12,15 @@ export const getGameStateRouter = createTRPCRouter({
 
         try{
             const {address} = await getScriptDetails(pelletRefHashWOUtil)
-
+            console.log("address", address)
             const pelletUtxos = await maestroProvider.fetchAddressUTxOs(address)
-
+            console.log(pelletUtxos)
             return {pelletUtxos: pelletUtxos}
 
-        } catch{
+        } catch(error){
             throw new TRPCError({
                 code: "BAD_REQUEST",
-                message: "Cannot retrieve pellet Utxos"
+                message: "Cannot retrieve pellet Utxos" + error
             })
         }
        

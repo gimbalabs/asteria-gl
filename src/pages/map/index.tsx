@@ -1,7 +1,7 @@
 import Mapbutton from "~/components/Mapbutton";
 import React, { ReactNode, useState } from "react";
 import GameActionsModal from "~/components/user/GameActionsModal";
-import { RocketIcon } from "lucide-react";
+import { FuelIcon, LoaderPinwheel, RocketIcon } from "lucide-react";
 
 
 import getGameState from "~/hooks/useGameState";
@@ -27,8 +27,8 @@ export default function MapPage() {
     const [selectedCell, setSelectedCell] = useState<{ x: number; y: number } | null>(null);
    const [zoom, setZoom] = useState(1); // State to manage zoom level
 
-    const {shipState} = getGameState()
-    console.log(shipState)
+    const { shipState, isLoading, isError, pelletState} = getGameState()
+
 
     const handleCellClick = (x: number, y: number) => {
         setSelectedCell({ x, y });
@@ -50,7 +50,21 @@ export default function MapPage() {
         }
     };
 
+    function addPellets(posX, posY, fuel){
+         setGrid((prevGrid) => {
+                return prevGrid.map((row) =>
+                    row.map((cell) =>
+                        cell.x === posX && cell.y === posY
+                            ? { ...cell, content: <FuelIcon />, alt: fuel}
+                            : cell
+                    )
+                );
+            });
+    }
+
     function addShips(posX, posY, shipName){
+
+
 
         setGrid((prevGrid) => {
                 return prevGrid.map((row) =>
@@ -64,11 +78,22 @@ export default function MapPage() {
 
     }
 
-    function handleAddShips(){
-        shipState?.map(ship => {
+   function handleAddShips(){
+        
+    shipState?.map(ship => {
             addShips(Number(ship.posX), Number(ship.posY), ship.name)
 
         })
+
+          pelletState.map(pellet => {
+            addPellets(Number(pellet.posX), Number(pellet.posY), pellet.fuel)
+        })
+
+    }
+
+    
+    if(isLoading){
+        return <LoaderPinwheel />;
     }
 
 
@@ -87,7 +112,7 @@ export default function MapPage() {
                     placeholder="Enter content"
                 />
               
-                {shipState? <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-200" onClick={handleAddShips}>Populate ships</button>: null}
+                {shipState? <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-200" onClick={handleAddShips}>Update Game State</button>: null}
             </div>
             <div
                 className="grid"

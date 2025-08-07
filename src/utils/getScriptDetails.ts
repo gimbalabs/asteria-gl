@@ -7,14 +7,17 @@ import {
 import { serializePlutusScript, PlutusScript } from "@meshsdk/core";
 
 
-export function getScriptDetails(refHash){
+export async function  getScriptDetails(refHash){
 
-    const refUtxo = maestroProvider.fetchUTxOs(refHash, 0)
-    const scriptRef = fromScriptRef(refHash[0]?.output.scriptRef!)
-    const policyId = refHash[0].output.scriptHash
+    const refUtxo = await maestroProvider.fetchUTxOs(refHash, 0)
+   
+    const scriptRef = fromScriptRef(refUtxo[0].output.scriptRef!)
+
+    const policyId = refUtxo[0].output.scriptHash
+
     const plutusScript = scriptRef as PlutusScript
-    const address = serializePlutusScript(plutusScript).address
-
+    const address =  serializePlutusScript(plutusScript).address
+  
     return {policyId, address, refUtxo}
 
 }

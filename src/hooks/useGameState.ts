@@ -25,8 +25,7 @@ interface PelletDatumData {
 export default function getGameState(){
 
     const [shipState, setShipState] = useState<ShipDatumData[]>() 
-    const [pelletState, setPelletState] = useState()
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [pelletState, setPelletState] = useState<PelletDatumData[]>()
     const [isError, setIsError] = useState("")
 
     const maestroProvider = new MaestroProvider({
@@ -35,7 +34,7 @@ export default function getGameState(){
         turboSubmit: false, // Read about paid turbo transaction submission feature at https://docs.gomaestro.org/docs/Dapp%20Platform/Turbo%20Transaction.
       });
 
-    useEffect( () => {
+   useEffect( () => {
         async function runShipPositions(){
 
             
@@ -61,20 +60,18 @@ export default function getGameState(){
 
         runShipPositions()
   
-    },[])    
+    },[])   
+    
+    const {data: pelletData, isLoading,  error } = api.gameState.queryPelletState.useQuery()
+    
+    if(error){
+            setIsError(error.message)
+        }
 
     useEffect( () => {
-        async function runPelletPositions(){
-
-            const {data: pelletData, isLoading, isError, error } = await api.gameState.queryPelletState.useQuery()
+       
             
-            if(isLoading){
-                setIsLoading(true)
-            }
-
-            if(error){
-                setIsError(error.message)
-            }
+        if(!!pelletData){ 
 
             const pelletPositions: PelletDatumData[] = []
 
@@ -89,12 +86,11 @@ export default function getGameState(){
             })
 
             setPelletState(pelletPositions)
-
+  
         }
-
-        runPelletPositions()
-    }, [])
+ 
+    }, [pelletData])
 
     
-    return {shipState, setPelletState}
+    return {shipState, setPelletState, isLoading, isError, pelletState }
 }
