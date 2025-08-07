@@ -1,12 +1,13 @@
 
 import { assetName, AssetName, integer, Integer, 
        } from "@meshsdk/core";
+import { Flag } from "lucide-react";
 
 // Variables to be used throughout App 
 // use .env for passwords and api keys
 // Types start with capital letter
 // Functions start with lowercase letter
-
+pirate Flag
 
 export const adminTokenName: string = '41737465726961746f6b656e' // Asteriatoken
 export const adminTokenPolicy: string = 'fbeafbfb456a440b174001793c546c93bdf887730c1e12b2f9f0d293' //Asteriatoken
