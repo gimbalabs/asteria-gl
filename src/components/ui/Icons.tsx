@@ -21,7 +21,7 @@ export function ShipIcon1({ size = 20 }: { size?: number }) {
     <svg
       width={size}
       height={size}
-      viewBox="0 0 20 20"
+      viewBox="5 0 10 10"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -36,7 +36,7 @@ export function ShipIcon2({ size = 20 }: { size?: number }) {
     <svg
       width={size}
       height={size}
-      viewBox="0 0 20 20"
+      viewBox="0 0 15 15"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -52,7 +52,7 @@ export function ShipIcon3({ size = 20 }: { size?: number }) {
     <svg
       width={size}
       height={size}
-      viewBox="0 0 20 20"
+      viewBox="0 4 14 14"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -69,7 +69,7 @@ export function ShipIcon4({ size = 20 }: { size?: number }) {
     <svg
       width={size}
       height={size}
-      viewBox="0 0 20 20"
+      viewBox="5 0 10 10"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
     >
