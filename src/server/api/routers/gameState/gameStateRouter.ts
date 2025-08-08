@@ -1,6 +1,6 @@
 import { createTRPCRouter, publicProcedure } from "../../trpc";
 import { maestroProvider } from "~/server/provider/maestroProvider";
-import { pelletRefHashWOUtil } from "config";
+import { pelletRefHashWOUtil, spacetimeRefHashWOUtil } from "config";
 
 import { getScriptDetails } from "~/utils/getScriptDetails";
 import { TRPCError } from "@trpc/server";
@@ -12,9 +12,9 @@ export const getGameStateRouter = createTRPCRouter({
 
         try{
             const {address} = await getScriptDetails(pelletRefHashWOUtil)
-            console.log("address", address)
+           
             const pelletUtxos = await maestroProvider.fetchAddressUTxOs(address)
-            console.log(pelletUtxos)
+          
             return {pelletUtxos: pelletUtxos}
 
         } catch(error){
@@ -26,6 +26,20 @@ export const getGameStateRouter = createTRPCRouter({
        
        
 
+    }),
+
+    queryShipState: publicProcedure.query(async () => {
+
+        try{
+            const{address} = await getScriptDetails(spacetimeRefHashWOUtil)
+            const shipUtxos = await maestroProvider.fetchAddressUTxOs(address)
+            return {shipUtxos: shipUtxos}
+        } catch(error) {
+            throw new TRPCError({
+                code: "BAD_REQUEST",
+                message: "Failed to retrieve Ship Utxos" + error
+            })
+        }
     })
 
     // write logic for ship utxos here (need to remove from frontend)
