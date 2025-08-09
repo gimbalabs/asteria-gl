@@ -84,6 +84,15 @@ export default function StyleGuide() {
       
       AsteriaMoon: <AsteriaMoonIcon size={16} />
     </div>
+                <div className="flex gap-4 text-blue-400">
+      FuelPellet:<FuelPelletIcon size={16} />
+      Ship1:<ShipIcon1 size={16} />
+      Ship2:<ShipIcon2 size={16} />
+      Ship3:<ShipIcon3 size={16} />
+      Ship4:<ShipIcon4 size={16} />
+      
+      AsteriaMoon: <AsteriaMoonIcon size={16} />
+    </div>
       </section>
     </main>
   )

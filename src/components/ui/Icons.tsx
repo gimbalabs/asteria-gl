@@ -5,7 +5,7 @@ export function FuelPelletIcon({ size = 20 }: { size?: number }) {
     <svg
       width={size}
       height={size}
-      viewBox="0 0 20 20"
+      viewBox="5 2 13 13"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
     >
