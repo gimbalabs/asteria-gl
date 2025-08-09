@@ -1,5 +1,6 @@
 import { galaxyColors } from 'tailwind.config';
 import ColorPlayground from '~/components/ColorPlayground';
+import { FuelPelletIcon, ShipIcon1, ShipIcon2, ShipIcon3, ShipIcon4, AsteriaMoonIcon } from "~/components/ui/Icons";
 
 const colors = Object.entries(galaxyColors).map(([key, hex]) => ({
   name: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize nicely
@@ -71,6 +72,33 @@ export default function StyleGuide() {
           </button>
         </div>
       </section>
+
+      <section>
+        <h2 className="text-3xl font-bold mt-12 mb-4">Icons</h2>
+            <div className="flex gap-4 text-green-400">
+      FuelPellet:<FuelPelletIcon size={16} />
+      Ship1:<ShipIcon1 size={16} />
+      Ship2:<ShipIcon2 size={16} />
+      Ship3:<ShipIcon3 size={16} />
+      Ship4:<ShipIcon4 size={16} />
+      
+      AsteriaMoon: <AsteriaMoonIcon size={16} />
+    </div>
+                <div className="flex gap-4 text-blue-400">
+      FuelPellet:<FuelPelletIcon size={16} />
+      Ship1:<ShipIcon1 size={16} />
+      Ship2:<ShipIcon2 size={16} />
+      Ship3:<ShipIcon3 size={16} />
+      Ship4:<ShipIcon4 size={16} />
+      
+      AsteriaMoon: <AsteriaMoonIcon size={16} />
+    </div>
+      </section>
     </main>
   )
 }
+
+
+
+
+
