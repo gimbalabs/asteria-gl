@@ -7,8 +7,8 @@ import SelectPilot from "~/components/user/SelectPilot";
 import { AssetExtended } from "@meshsdk/core";
 import { useState } from "react";
 
-export default function GameActionsModal() {
-  const [pilot, setPilot] = useState<AssetExtended | null>(null);
+export default function GameActionsModal({pilot, setPilot, newPosX, newPosY, handleMoveShip, handleShipState, shipStateDatum}: {pilot: AssetExtended | null, setPilot: any, newPosX: number, newPosY: number, handleMoveShip: any, handleShipState: any, shipStateDatum: any}) {
+
 
   return (
     <div className="fixed right-0 top-16 h-[calc(100vh-4rem)] w-80 bg-gray-900 text-white shadow-2xl flex flex-col z-40">
@@ -32,7 +32,7 @@ export default function GameActionsModal() {
 
           <div className="bg-gray-800 rounded-lg p-4">
             <h3 className="text-lg font-semibold mb-2">Move Ship</h3>
-            <MoveShipComponent pilot={pilot} />
+            <MoveShipComponent pilot={pilot} newPosX={newPosX} newPosY={newPosY} handleMoveShip={handleMoveShip} handleShipState={handleShipState} shipStateDatum={shipStateDatum} />
           </div>
 
           <div className="bg-gray-800 rounded-lg p-4">
