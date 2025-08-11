@@ -4,15 +4,16 @@ import MineAsteria from "./MineAsteriaComponent";
 import { AssetExtended } from "@meshsdk/core";
 
 
-export default function MoveShipComponent({pilot}: {pilot: AssetExtended | null}) {
-    const { shipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY, currentX, currentY } = useMoveShip(pilot);
+export default function MoveShipComponent({pilot, newPosX, newPosY, handleMoveShip, handleShipState, shipStateDatum}: {pilot: AssetExtended | null, newPosX: number, newPosY: number, handleMoveShip: any, handleShipState: any, shipStateDatum: any}) {
+    const {assets, setNewPosX, setNewPosY, currentX, currentY } = useMoveShip(pilot);
     //const {secs, possibleSteps} = useElapsedSeconds(shipStateDatum?.posixTime, shipStateDatum?.fuel);
-
+    console.log("new X: ", newPosX)
+    console.log("Pilot: ", pilot)
     return (
       <div className="flex flex-col">
         <h1>Move Ship</h1>
         <button
-          onClick={shipState}
+          onClick={handleShipState}
           style={{
             padding: "8px 16px",
             backgroundColor: "#4CAF50",
@@ -36,7 +37,7 @@ export default function MoveShipComponent({pilot}: {pilot: AssetExtended | null}
         <div>
           <form
             onSubmit={(e) => {
-                e.preventDefault(); // Prevent default form submission
+             
                 handleMoveShip(e);
               }}
             className="flex flex-col items-center gap-2 text-black"
@@ -52,6 +53,7 @@ export default function MoveShipComponent({pilot}: {pilot: AssetExtended | null}
                 setNewPosX(Number(e.target.value));
               }}
             />
+           
             `{" "}
             <input
               value={newPosY}

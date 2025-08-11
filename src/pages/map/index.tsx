@@ -2,10 +2,13 @@ import Mapbutton from "~/components/Mapbutton";
 import React, { ReactNode, useState } from "react";
 import GameActionsModal from "~/components/user/GameActionsModal";
 import { FuelIcon, LoaderPinwheel, RocketIcon } from "lucide-react";
+import { FuelPelletIcon, ShipIcon3 } from "~/components/ui/Icons";
+import { AssetExtended } from "@meshsdk/core";
 
 
 import getGameState from "~/hooks/useGameState";
 import { add } from "lodash";
+import { useMoveShip } from "~/hooks/useMoveShip";
 
 const GRID_SIZE = 100;
 
@@ -25,15 +28,20 @@ export default function MapPage() {
     const [grid, setGrid] = useState<{ x: number; y: number; content: string | null | ReactNode, alt: string| null }[][]>(generateGrid());
     const [inputValue, setInputValue] = useState("");
     const [selectedCell, setSelectedCell] = useState<{ x: number; y: number } | null>(null);
-   const [zoom, setZoom] = useState(1); // State to manage zoom level
-   const [seeShip, setSeeShip] = useState(false);
-   const [activeShip, setActiveShip] = useState<{shipName: string, posX: number, posY: number, fuel: number}>({shipName: "", posX: 0, posY: 0, fuel: 0});
+    const [zoom, setZoom] = useState(1); // State to manage zoom level
+    const [seeShip, setSeeShip] = useState(false);
+    const [activeShip, setActiveShip] = useState<{shipName: string, posX: number, posY: number, fuel: number}>({shipName: "", posX: 0, posY: 0, fuel: 0});
+    const [pilot, setPilot] = useState<AssetExtended | null>(null);
+
 
     const { shipState, isLoadingPelletState, isError, pelletState, isLoadingShipState} = getGameState()
+    const {setNewPosX, setNewPosY, newPosX, newPosY, handleMoveShip, handleShipState ,shipStateDatum} = useMoveShip(pilot)
 
 
     const handleCellClick = (x: number, y: number) => {
         setSelectedCell({ x, y });
+        setNewPosX(x)
+        setNewPosY(y)
     };
 
     const handleAddContent = () => {
@@ -110,19 +118,12 @@ export default function MapPage() {
 
     return (
         <>
-            <GameActionsModal/>
+            <GameActionsModal pilot={pilot} setPilot={setPilot} newPosX={newPosX} newPosY={newPosY} handleMoveShip={handleMoveShip} handleShipState={handleShipState} shipStateDatum={shipStateDatum}/>
 
         <div>
         
         <Mapbutton/>
             <div className="controls">
-                <input
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Enter content"
-                />
-              
                 {shipState? <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-200" onClick={handleAddShips}>Update Game State</button>: null}
             </div>
             <div

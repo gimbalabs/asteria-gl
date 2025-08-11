@@ -5,12 +5,12 @@ import { AssetExtended } from "@meshsdk/core";
 
 
 
-export function useMoveShip(pilot: AssetExtended | null) {
+export function useMoveShip(pilot?: AssetExtended | null) {
     const { wallet, connected } = useWallet();
     const [assets, setAssets] = useState<AssetExtended[]>([]);
     const [shipStateDatum, setShipStateDatum] = useState<any>(null);
-    const [newPosX, setNewPosX] = useState<number>(0);
-    const [newPosY, setNewPosY] = useState<number>(0);
+    const [newPosX, setNewPosX] = useState<number| null>();
+    const [newPosY, setNewPosY] = useState<number | null>();
     const [currentX, setCurrentX] = useState<number | null>(null)
     const [currentY, setCurrentY] = useState<number | null>(null)
 
@@ -28,7 +28,7 @@ export function useMoveShip(pilot: AssetExtended | null) {
     const ShipStateDatum = api.moveShip.queryShipStateDatum.useMutation();
     const moveShip = api.moveShip.moveShip.useMutation();
 
-    const shipState = async(e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleShipState = async(e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const result: any = await ShipStateDatum.mutateAsync({assets: assets, pilot: pilot});
         setCurrentX(result.coordinateX)
@@ -37,6 +37,7 @@ export function useMoveShip(pilot: AssetExtended | null) {
     }
 
     const handleMoveShip = async(e: React.FormEvent<HTMLFormElement>) => {
+        console.log(newPosX, newPosY)
         e.preventDefault();
         const collateral = (await wallet.getCollateral())[0]!;
         const changeAddress = await wallet.getChangeAddress();
@@ -58,6 +59,6 @@ export function useMoveShip(pilot: AssetExtended | null) {
     }
 
     return {
-        shipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY, setCurrentX, setCurrentY, currentX, currentY
+        handleShipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY, setCurrentX, setCurrentY, currentX, currentY
     }
 }
