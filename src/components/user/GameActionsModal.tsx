@@ -6,8 +6,9 @@ import Quit from "~/components/user/Quit";
 import SelectPilot from "~/components/user/SelectPilot";
 import { AssetExtended } from "@meshsdk/core";
 import { useState } from "react";
+import { MatchingPellet } from '~/pages/map';
 
-export default function GameActionsModal({pilot, setPilot, newPosX, newPosY, handleMoveShip, handleShipState, shipStateDatum}: {pilot: AssetExtended | null, setPilot: any, newPosX: number, newPosY: number, handleMoveShip: any, handleShipState: any, shipStateDatum: any}) {
+export default function GameActionsModal({pilot, setPilot, newPosX, newPosY, handleMoveShip, handleShipState, shipStateDatum, matchingPelletUtxo}: {pilot: AssetExtended | null, setPilot: any, newPosX: number, newPosY: number, handleMoveShip: any, handleShipState: any, shipStateDatum: any, matchingPelletUtxo: MatchingPellet}) {
 
 
   return (
@@ -37,7 +38,7 @@ export default function GameActionsModal({pilot, setPilot, newPosX, newPosY, han
 
           <div className="bg-gray-800 rounded-lg p-4">
             <h3 className="text-lg font-semibold mb-2">Gather Fuel</h3>
-            <GatherFuel pilot={pilot} />
+            {matchingPelletUtxo.txHash && <GatherFuel pilot={pilot} matchingPelletUtxo={matchingPelletUtxo} />}
           </div>
 
           <div className="bg-gray-800 rounded-lg p-4">

@@ -13,6 +13,7 @@ import { spacetimeRefHashWOUtil, pelletRefHashWOUtil } from "config";
 import { MaestroProvider } from "@meshsdk/core";
 import { LucideAlignHorizontalDistributeCenter } from "lucide-react";
 import { AssetExtended } from "@meshsdk/core";
+import { MatchingPellet } from "~/pages/map";
 
 
 export const clientMaestroProvider = new MaestroProvider({
@@ -30,7 +31,7 @@ export function useGatherFuelTx(pilot: AssetExtended | null){
     const [shipUtxo, setShipUtxo] = useState<UTxO>()
     // const [pilotToken, setPilotToken] = useState<string>("")
     const [pelletUtxoList, setPelletUtxoList] = useState<UTxO[]>()
-    const [pelletUtxo, setPelletUtxo] = useState<UTxO>()
+    const [pelletUtxo, setPelletUtxo] = useState<MatchingPellet>()
     const [pelletCoOrds, setPelletCoOrds] = useState<number[]>([])
 
     const [availableFuel, setAvailableFuel] = useState<number|undefined>()

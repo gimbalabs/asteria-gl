@@ -20,6 +20,7 @@ import {  fromScriptRef} from "@meshsdk/core-cst";
 
 import { maestroProvider } from "~/server/provider/maestroProvider";
 import { error } from "console";
+import { MatchingPellet } from "~/pages/map";
 
 
 export interface AdminToken {
@@ -35,11 +36,16 @@ export default async function gatherFuel(
  gatherAmount: number,
  pilotUtxo: UTxO,
  shipUtxo: UTxO,
- pelletUtxo: UTxO,  
+ pelletUtxo: MatchingPellet,  
  spaceTimeRefHash: string,
  pelletRefHash: string,
  adminToken: AdminToken
 ){
+
+
+//query Pellet Utxo
+
+const pelletUtxoData: UTxO[] = await maestroProvider.fetchUTxOs(pelletUtxo.txHash, pelletUtxo.index)
 
 
 const spacetimeRefUtxo = await maestroProvider.fetchUTxOs(spaceTimeRefHash, 0)
@@ -65,7 +71,7 @@ const ship = shipUtxo;
     if(!ship.output.plutusData){
         throw Error("Ship datum is empty");
     };
-const pellet = pelletUtxo;
+const pellet = pelletUtxoData[0];
      if (!pellet.output.plutusData){
         throw Error("Pellet Datum is Empty")
     };

@@ -3,12 +3,20 @@ import React, { ReactNode, useState } from "react";
 import GameActionsModal from "~/components/user/GameActionsModal";
 import { FuelIcon, LoaderPinwheel, RocketIcon } from "lucide-react";
 import { FuelPelletIcon, ShipIcon3 } from "~/components/ui/Icons";
-import { AssetExtended } from "@meshsdk/core";
+import { AssetExtended, hexToString } from "@meshsdk/core";
 
 
 import getGameState from "~/hooks/useGameState";
-import { add } from "lodash";
 import { useMoveShip } from "~/hooks/useMoveShip";
+
+export interface MatchingPellet {
+    txHash: string;
+    index: number;
+    fuel: number;
+    posX: number;
+    posY: number;
+    
+}
 
 const GRID_SIZE = 100;
 
@@ -25,16 +33,19 @@ function generateGrid() {
 }
 
 export default function MapPage() {
-    const [grid, setGrid] = useState<{ x: number; y: number; content: string | null | ReactNode, alt: string| null }[][]>(generateGrid());
+    const [grid, setGrid] = useState<{ x: number; y: number; content: string | null | ReactNode, alt: string| null }[][]>(generateGrid()); // state managed iteration of game grid
     const [inputValue, setInputValue] = useState("");
-    const [selectedCell, setSelectedCell] = useState<{ x: number; y: number } | null>(null);
+    const [selectedCell, setSelectedCell] = useState<{ x: number; y: number } | null>(null); // state to store the selected grid cell which the user has clicked on 
     const [zoom, setZoom] = useState(1); // State to manage zoom level
+    
     const [seeShip, setSeeShip] = useState(false);
     const [activeShip, setActiveShip] = useState<{shipName: string, posX: number, posY: number, fuel: number}>({shipName: "", posX: 0, posY: 0, fuel: 0});
-    const [pilot, setPilot] = useState<AssetExtended | null>(null);
+    const [pilot, setPilot] = useState<AssetExtended | null>(null); // State to store the selected pilot
+
+    const [matchingPelletUtxo, setMatchingPelletUtxo] = useState<MatchingPellet>({txHash: "", index: 0, fuel: 0, posX: 0, posY: 0});
 
 
-    const { shipState, isLoadingPelletState, isError, pelletState, isLoadingShipState} = getGameState()
+    const { shipState, isLoadingPelletState, isError, pelletState, isLoadingShipState} = getGameState()  // obtains the shipState and pelletState from the useGameState hook, this pulls data from the blockchain - querying the validator addresses of ship and pellet
     const {setNewPosX, setNewPosY, newPosX, newPosY, handleMoveShip, handleShipState ,shipStateDatum} = useMoveShip(pilot)
 
 
@@ -74,7 +85,7 @@ export default function MapPage() {
 
     function addShips(posX, posY, shipName, fuel){
 
-
+       
 
         setGrid((prevGrid) => {
                 return prevGrid.map((row) =>
@@ -85,6 +96,22 @@ export default function MapPage() {
                     )
                 );
             });
+        
+        if(!pilot){
+            return
+        }
+        
+        let assetName = hexToString(pilot.assetName)
+       
+        if(shipName.slice(4,6) === assetName.slice(5,7)){
+            pelletState.forEach((pellet) => {
+                if(pellet.posX === posX && pellet.posY === posY){
+                    setMatchingPelletUtxo({txHash: pellet.utxo, index: pellet.index, fuel: pellet.fuel, posX: pellet.posX, posY: pellet.posY})
+                }
+            })
+        
+        }
+
 
     }
 
@@ -118,7 +145,7 @@ export default function MapPage() {
 
     return (
         <>
-            <GameActionsModal pilot={pilot} setPilot={setPilot} newPosX={newPosX} newPosY={newPosY} handleMoveShip={handleMoveShip} handleShipState={handleShipState} shipStateDatum={shipStateDatum}/>
+            <GameActionsModal pilot={pilot} setPilot={setPilot} newPosX={newPosX} newPosY={newPosY} handleMoveShip={handleMoveShip} handleShipState={handleShipState} shipStateDatum={shipStateDatum} matchingPelletUtxo={matchingPelletUtxo}/>
 
         <div>
         

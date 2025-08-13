@@ -20,6 +20,8 @@ interface PelletDatumData {
     posX: number | undefined,
     posY: number | undefined,
     fuel: number | undefined, 
+    utxo: string | undefined,
+    index: number | undefined
 }
 
 
@@ -40,14 +42,14 @@ export default function getGameState(){
 
             shipData.shipUtxos.map((ship) => {
                     const datumData = deserializeDatum(ship.output.plutusData)
-                    const resolvedDatum = {
+                    const resolvedData = {
                         posX: datumData.fields[0].int,
                         posY: datumData.fields[1].int,
                         name: hexToString(datumData.fields[2].bytes),
-                        fuel: Number(ship.output.amount[2].quantity)
+                        fuel: Number(ship.output.amount[2].quantity),
                         }
                     console.log(ship.output.amount)
-                    shipPositions.push(resolvedDatum)
+                    shipPositions.push(resolvedData)
             })
             
             setShipState(shipPositions)
@@ -74,7 +76,9 @@ export default function getGameState(){
                 const pelletData = {
                     posX: pelletDatum.fields[0].int,
                     posY: pelletDatum.fields[1].int,
-                    fuel: Number(pellet.output.amount[1].quantity)
+                    fuel: Number(pellet.output.amount[1].quantity),
+                    utxo: pellet.input.txHash,
+                    index: pellet.input.outputIndex
                 }        
                 pelletPositions.push(pelletData)
             })
