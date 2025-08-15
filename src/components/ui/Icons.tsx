@@ -97,3 +97,21 @@ export function AsteriaMoonIcon({ size = 20 }: { size?: number }) {
     </svg>
   );
 }
+
+
+export function AsteriaMoonIcon2({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* simple circle */}
+      <circle cx="7.5" cy="7.5" r="6" fill="#FFD700" stroke="#333" strokeWidth="1" />
+    </svg>
+  );
+}
+
+

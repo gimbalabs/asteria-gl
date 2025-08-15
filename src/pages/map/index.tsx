@@ -4,6 +4,7 @@ import GameActionsModal from "~/components/user/GameActionsModal";
 import { FuelIcon, LoaderPinwheel, RocketIcon } from "lucide-react";
 import { FuelPelletIcon, ShipIcon3 } from "~/components/ui/Icons";
 import { AssetExtended } from "@meshsdk/core";
+import { AsteriaMoonIcon} from '~/components/ui/Icons';
 
 
 import getGameState from "~/hooks/useGameState";
@@ -17,7 +18,20 @@ function generateGrid() {
     for (let y = -GRID_SIZE / 2; y < GRID_SIZE / 2; y++) {
         const row = [];
         for (let x = -GRID_SIZE / 2; x < GRID_SIZE / 2; x++) {
-            row.push({ x, y, content: null as string | null, alt: null as string | null  });
+            // Give special attributes or SVG at (0,0)
+            if (x === 0 && y === 0) {
+                row.push({
+                    x,
+                    y,
+                    content: (
+                        //Asteria SVG
+<AsteriaMoonIcon size={16} />
+                    ),
+                    alt: "origin"
+                });
+            } else {
+                row.push({ x, y, content: null as string | null, alt: null as string | null });
+            }
         }
         grid.push(row);
     }
@@ -123,8 +137,17 @@ export default function MapPage() {
         <div>
         
         <Mapbutton/>
-            <div className="controls">
-                {shipState? <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-200" onClick={handleAddShips}>Update Game State</button>: null}
+            <div className="controls flex">
+                <div className="flex justify-center items-center w-full">
+                    {shipState ? (
+                        <button
+                            className="bg-purple-600 hover:bg-purple-700 text-white font-semibold m-4 py-2 px-4 rounded-md shadow-md transition duration-200"
+                            onClick={handleAddShips}
+                        >
+                            Update Game State
+                        </button>
+                    ) : null}
+                </div>: null}
             </div>
             <div
                 className="grid"
