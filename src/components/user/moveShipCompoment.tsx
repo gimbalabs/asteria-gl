@@ -5,10 +5,11 @@ import { AssetExtended } from "@meshsdk/core";
 
 
 export default function MoveShipComponent({pilot, newPosX, newPosY, handleMoveShip, handleShipState, shipStateDatum}: {pilot: AssetExtended | null, newPosX: number, newPosY: number, handleMoveShip: any, handleShipState: any, shipStateDatum: any}) {
-    const {assets, setNewPosX, setNewPosY, currentX, currentY } = useMoveShip(pilot);
+    const {assets, setNewPosX, setNewPosY, currentX, currentY} = useMoveShip(pilot);
     //const {secs, possibleSteps} = useElapsedSeconds(shipStateDatum?.posixTime, shipStateDatum?.fuel);
     console.log("new X: ", newPosX)
     console.log("Pilot: ", pilot)
+
     return (
       <div className="flex flex-col">
         <h1>Move Ship</h1>
@@ -31,8 +32,9 @@ export default function MoveShipComponent({pilot, newPosX, newPosY, handleMoveSh
           <p>3. Coordinate Y: {shipStateDatum?.coordinateY}</p>
           <p>4. Ship Name: {shipStateDatum?.shipName}</p>
           <p>5. Pilot Name: {shipStateDatum?.pilotName}</p>
-          {/*<p>6. Time Elapsed: {secs}</p>
-          <p>7. Possible Steps: {possibleSteps}</p>*/}
+          {shipStateDatum?.posixTime && (
+            <p>6. Next Move Time: {new Date(shipStateDatum.posixTime).toString()}</p>
+          )}
         </div>
         <div>
           <form
