@@ -13,6 +13,7 @@ export function useMoveShip(pilot?: AssetExtended | null) {
     const [newPosY, setNewPosY] = useState<number | null>();
     const [currentX, setCurrentX] = useState<number | null>(null)
     const [currentY, setCurrentY] = useState<number | null>(null)
+    const [timeToLive, setTimeToLive] = useState<Date | null>(null)
 
 
     useEffect(() => {
@@ -34,6 +35,9 @@ export function useMoveShip(pilot?: AssetExtended | null) {
         setCurrentX(result.coordinateX)
         setCurrentY(result.coordinateY)
         setShipStateDatum(result);
+        setTimeToLive(new Date(result.posixTime));
+        console.log("Time to Live: ", timeToLive)
+
     }
 
     const handleMoveShip = async(e: React.FormEvent<HTMLFormElement>) => {
@@ -59,6 +63,6 @@ export function useMoveShip(pilot?: AssetExtended | null) {
     }
 
     return {
-        handleShipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY, setCurrentX, setCurrentY, currentX, currentY
+        timeToLive, handleShipState, assets, shipStateDatum, setNewPosX, setNewPosY, handleMoveShip, newPosX, newPosY, setCurrentX, setCurrentY, currentX, currentY
     }
 }
