@@ -85,8 +85,6 @@ export default function MapPage() {
 
     function addShips(posX, posY, shipName, fuel){
 
-       
-
         setGrid((prevGrid) => {
                 return prevGrid.map((row) =>
                     row.map((cell) =>
@@ -105,10 +103,13 @@ export default function MapPage() {
         console.log("Ship",shipName.slice(4,6), "Pilot", assetName.slice(5,7))
         if(shipName.slice(4,6) === assetName.slice(5,7)){
             console.log("Match")
+            
             pelletState.forEach((pellet) => {
-                if(pellet.posX === posX && pellet.posY === posY){
+                console.log(pellet.posX, posX, pellet.posY, posY)
+                if(Number(pellet.posX) === posX && Number(pellet.posY) === posY){
                     console.log(pellet)
                     setMatchingPelletUtxo({txHash: pellet.utxo, index: pellet.index, fuel: pellet.fuel, posX: pellet.posX, posY: pellet.posY})
+                 
                 }
             })
         
@@ -125,23 +126,28 @@ export default function MapPage() {
 
    function handleAddShips(){
         
-    shipState?.map(ship => {
+    
+   
+    pelletState?.map(pellet => {
+            addPellets(Number(pellet.posX), Number(pellet.posY), pellet.fuel)
+        })
+
+    
+
+     shipState?.map(ship => {
             addShips(Number(ship.posX), Number(ship.posY), ship.name, ship.fuel)
 
         })
 
-          pelletState.map(pellet => {
-            addPellets(Number(pellet.posX), Number(pellet.posY), pellet.fuel)
-        })
 
-    }
-
-    if(isError){
-        return <p>Something went wrong, {isError}</p>
-    }
+        if(isError){
+            return <p>Something went wrong, {isError}</p>
+        }
     
-    if(isLoadingPelletState || isLoadingShipState){
-        return <LoaderPinwheel />;
+        if(isLoadingPelletState || isLoadingShipState){
+            return <LoaderPinwheel />;
+        }
+
     }
 
 
@@ -153,7 +159,11 @@ export default function MapPage() {
         
         <Mapbutton/>
             <div className="controls">
-                {shipState? <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-200" onClick={handleAddShips}>Update Game State</button>: null}
+                {!isLoadingPelletState && !isLoadingShipState? 
+                    <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-200" onClick={handleAddShips}>
+                        Update Game State
+                    </button>
+                    : null}
             </div>
             <div
                 className="grid"
