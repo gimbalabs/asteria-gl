@@ -38,7 +38,7 @@ export default function GameActionsModal({pilot, setPilot, newPosX, newPosY, han
 
           <div className="bg-gray-800 rounded-lg p-4">
             <h3 className="text-lg font-semibold mb-2">Gather Fuel</h3>
-            {matchingPelletUtxo.txHash && <GatherFuel pilot={pilot} matchingPelletUtxo={matchingPelletUtxo} />}
+            {matchingPelletUtxo.txHash ? <GatherFuel pilot={pilot} matchingPelletUtxo={matchingPelletUtxo} />: null}
           </div>
 
           <div className="bg-gray-800 rounded-lg p-4">

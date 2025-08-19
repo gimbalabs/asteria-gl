@@ -102,10 +102,12 @@ export default function MapPage() {
         }
         
         let assetName = hexToString(pilot.assetName)
-       
+        console.log("Ship",shipName.slice(4,6), "Pilot", assetName.slice(5,7))
         if(shipName.slice(4,6) === assetName.slice(5,7)){
+            console.log("Match")
             pelletState.forEach((pellet) => {
                 if(pellet.posX === posX && pellet.posY === posY){
+                    console.log(pellet)
                     setMatchingPelletUtxo({txHash: pellet.utxo, index: pellet.index, fuel: pellet.fuel, posX: pellet.posX, posY: pellet.posY})
                 }
             })
@@ -189,7 +191,7 @@ export default function MapPage() {
                                 }}
                                 onClick={() => handleCellClick(cell.x, cell.y)}
                             >
-                               <div className="flex justify-center ">{cell.content}{seeShip && activeShip.posX === cell.x && activeShip.posY === cell.y? <ShipInfo shipName={activeShip.shipName} posX={activeShip.posX} posY={activeShip.posY} fuel={activeShip.fuel}/>: null}</div>
+                               <div className="flex justify-center ">{cell.content}{seeShip && activeShip.posX === cell.x && activeShip.posY === cell.y && <ShipInfo shipName={activeShip.shipName} posX={activeShip.posX} posY={activeShip.posY} fuel={activeShip.fuel}/>}</div>
                             </div>
                         ))}
                     </div>
@@ -202,7 +204,7 @@ export default function MapPage() {
 
 const ShipInfo = ({ shipName, posX, posY, fuel }) => {
   return (
-    <div className="absolute bg-galaxy-base text-white p-4 rounded-md">
+    <div className="absolute bg-galaxy-base text-white p-4 rounded-md z-1">
       <h4>Ship Info</h4>
       <pre>
         {JSON.stringify({ shipName, posX, posY, fuel }, null, 2)}
