@@ -94,12 +94,12 @@ export function useGatherFuelTx(pilot: AssetExtended | null){
             // }) )
 
             const findPilotUtxo = await utxos.find((utxo) => utxo.output.amount.find((asset: Asset) => {
-                return asset.unit.includes(stringToHex(pilot!.assetName))
+                return asset.unit.endsWith(stringToHex(pilotNumber))
  
              }) )
 
             setPilotUtxo(findPilotUtxo)
-
+            console.log("pilot utxo: ", findPilotUtxo)
             const spacetimeRefUtxo = await clientMaestroProvider.fetchUTxOs(spacetimeRefHashWOUtil, 0)
             const spacetimeScriptRef = fromScriptRef(spacetimeRefUtxo[0]?.output.scriptRef!);
             const spacetimePlutusScript = spacetimeScriptRef as PlutusScript;

@@ -5,6 +5,18 @@ import { FuelIcon, LoaderPinwheel, RocketIcon } from "lucide-react";
 import { FuelPelletIcon, ShipIcon3 } from "~/components/ui/Icons";
 import { AssetExtended, hexToString } from "@meshsdk/core";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@radix-ui/react-alert-dialog"
+
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert"
+
 
 import getGameState from "~/hooks/useGameState";
 import { useMoveShip } from "~/hooks/useMoveShip";
@@ -38,6 +50,7 @@ export default function MapPage() {
     const [selectedCell, setSelectedCell] = useState<{ x: number; y: number } | null>(null); // state to store the selected grid cell which the user has clicked on 
     const [zoom, setZoom] = useState(1); // State to manage zoom level
     
+    const [seeActionModal, setSeeActionModal] = useState(false);
     const [seeShip, setSeeShip] = useState(false);
     const [activeShip, setActiveShip] = useState<{shipName: string, posX: number, posY: number, fuel: number}>({shipName: "", posX: 0, posY: 0, fuel: 0});
     const [pilot, setPilot] = useState<AssetExtended | null>(null); // State to store the selected pilot
@@ -98,18 +111,20 @@ export default function MapPage() {
         if(!pilot){
             return
         }
+
+
         
         let assetName = hexToString(pilot.assetName)
         console.log("Ship",shipName.slice(4,6), "Pilot", assetName.slice(5,7))
         if(shipName.slice(4,6) === assetName.slice(5,7)){
-            console.log("Match")
+            
             
             pelletState.forEach((pellet) => {
-                console.log(pellet.posX, posX, pellet.posY, posY)
+      
                 if(Number(pellet.posX) === posX && Number(pellet.posY) === posY){
-                    console.log(pellet)
+                  
                     setMatchingPelletUtxo({txHash: pellet.utxo, index: pellet.index, fuel: pellet.fuel, posX: pellet.posX, posY: pellet.posY})
-                 
+                    setSeeActionModal(true)
                 }
             })
         
@@ -153,7 +168,7 @@ export default function MapPage() {
 
     return (
         <>
-            <GameActionsModal pilot={pilot} setPilot={setPilot} newPosX={newPosX} newPosY={newPosY} handleMoveShip={handleMoveShip} handleShipState={handleShipState} shipStateDatum={shipStateDatum} matchingPelletUtxo={matchingPelletUtxo}/>
+            <GameActionsModal pilot={pilot} setPilot={setPilot} newPosX={newPosX} newPosY={newPosY} handleMoveShip={handleMoveShip} handleShipState={handleShipState} shipStateDatum={shipStateDatum} matchingPelletUtxo={matchingPelletUtxo} actionModal={seeActionModal} setActionModal={setSeeActionModal}/>
 
         <div>
         
@@ -165,6 +180,7 @@ export default function MapPage() {
                     </button>
                     : null}
             </div>
+            
             <div
                 className="grid"
                 style={{
@@ -222,3 +238,4 @@ const ShipInfo = ({ shipName, posX, posY, fuel }) => {
     </div>
   );
 };
+

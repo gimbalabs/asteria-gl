@@ -21,11 +21,12 @@ export default function GatherFuel({pilot, matchingPelletUtxo}: {pilot: AssetExt
     
     return (
         <div className="mb-5">
-            <form onSubmit={handleSubmit} className="flex flex-col">    
+            
+            <form onSubmit={handleSubmit} className="flex flex-col gap-1">    
                 <p>You've landed on a fuel pellet, select the amount of fuel to take</p>
                 
 
-                    <button type="button" onClick={() => {handleUtxo(matchingPelletUtxo); setAvailableFuel(Number(matchingPelletUtxo.fuel))}}>Check available fuelCheck available fuel</button>
+                    <button className="bg-galaxy-info rounded-lg px-6 py-3 font-semibold text-white shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2" onClick={() => {handleUtxo(matchingPelletUtxo); setAvailableFuel(Number(matchingPelletUtxo.fuel))}}>Check available fuel</button>
               
                 
                  {pelletUtxo &&  

@@ -25,6 +25,7 @@
     "@meshsdk/core-csl": "^1.9.0-beta.62",
     "@meshsdk/react": "^1.9.0-beta.62",
     "@prisma/client": "^5.14.0",
+    "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.12",
     "@supabase/supabase-js": "^2.49.4",
     "@t3-oss/env-nextjs": "^0.10.1",

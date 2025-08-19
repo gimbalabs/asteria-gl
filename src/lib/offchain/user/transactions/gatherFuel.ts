@@ -204,7 +204,7 @@ console.log("Ship redeemer", shipRedeemer)
 
 
 let nowDateTime = new Date();
-let dateTime = new Date(nowDateTime.getTime()- 5 *60000);
+let dateTime = new Date(nowDateTime.getTime()- 1 *60000);
 const slot = resolveSlotNo('preprod', dateTime.getTime());
 console.log("Mesh Resolved Slot:" , slot)
 
@@ -252,7 +252,7 @@ const unsignedTx = await txBuilder
    collateralUtxo.input.txHash,
    collateralUtxo.input.outputIndex
 )
-.setFee("3000000")
+
 .invalidBefore(Number(slot))
 .selectUtxosFrom(utxos)
 .changeAddress(changeAddress)
