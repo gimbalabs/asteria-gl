@@ -5,17 +5,7 @@ import { FuelIcon, LoaderPinwheel, RocketIcon } from "lucide-react";
 import { FuelPelletIcon, ShipIcon3 } from "~/components/ui/Icons";
 import { AssetExtended, hexToString } from "@meshsdk/core";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@radix-ui/react-alert-dialog"
 
-import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert"
 
 
 import getGameState from "~/hooks/useGameState";
@@ -120,7 +110,7 @@ export default function MapPage() {
             
             
             pelletState.forEach((pellet) => {
-      
+              
                 if(Number(pellet.posX) === posX && Number(pellet.posY) === posY){
                   
                     setMatchingPelletUtxo({txHash: pellet.utxo, index: pellet.index, fuel: pellet.fuel, posX: pellet.posX, posY: pellet.posY})

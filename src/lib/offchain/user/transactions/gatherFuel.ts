@@ -55,16 +55,12 @@ const spacetimePlutusScript = spacetimeScriptRef as PlutusScript;
 const spacetimeAddress =   serializePlutusScript(spacetimePlutusScript).address;
 
 console.log(spacetimeAddress)
-console.log("pelletref", pelletRefHash)
-console.log("spacetimeRef", spaceTimeRefHash)
+
 const pelletRefUtxo = await maestroProvider.fetchUTxOs(pelletRefHash, 0)
 const fuelPolicyId = pelletRefUtxo[0]?.output.scriptHash!;
 const pelletScriptRef = fromScriptRef(pelletRefUtxo[0]?.output.scriptRef!);
 const pelletPlutusScript = pelletScriptRef as PlutusScript
 const pelletAddress = serializePlutusScript(pelletPlutusScript).address
-console.log("pellet address", pelletAddress)
-
-console.log("spacetimeAddress", spacetimeAddress)
 
 
 const ship = shipUtxo;
@@ -76,9 +72,7 @@ const pellet = pelletUtxoData[0];
         throw Error("Pellet Datum is Empty")
     };
 const des = deserializeAddress(ship.output.address)
-console.log("Ship Policy Id:" , shipyardPolicyId)   
-console.log("fuel policy id:" , fuelPolicyId) 
-console.log("Ship Payment Credential? :", des.scriptHash )
+
 const shipInputAda = ship.output.amount.find((asset =>
     asset.unit === "lovelace"
 ));
@@ -126,7 +120,7 @@ const shipOutDatum = conStr0([
 //get pelletInput Datum
 const pelletInputData = pellet.output.plutusData;
 const pelletInputDatum = deserializeDatum(pelletInputData).fields;
-console.log("Pellet Input", pelletInputDatum)
+
 
 
 //get pelletDatum properties
@@ -142,7 +136,7 @@ const pelletOuputDatum = conStr0([
     policyId(pelletInputShipyardPolicy)
 ]);
 
-console.log("Pellet Datum output", pelletOuputDatum)
+
 
 const pelletFuel = pelletInputFuel?.quantity
 const shipFuel = shipInputFuel?.quantity
@@ -195,18 +189,18 @@ console.log("Pilot Token", pilottokenAsset)
 //const shipRedeemer = conStr1([integer(gatherAmount)]);  //note to change redeemer index if error
 //const pelletRedemer = conStr0([integer(gatherAmount)]);
 
-console.log("gather amount ", gatherAmount)
+
 //const shipRedeemer = mConStr1([gatherAmount]);  //note to change redeemer index if error
 const shipRedeemer = conStr(1, [{int: gatherAmount}])
 const pelletRedemer = conStr(0, [{int: gatherAmount}]);
 
-console.log("Ship redeemer", shipRedeemer)
+
 
 
 let nowDateTime = new Date();
 let dateTime = new Date(nowDateTime.getTime()- 1 *60000);
 const slot = resolveSlotNo('preprod', dateTime.getTime());
-console.log("Mesh Resolved Slot:" , slot)
+
 
 const txBuilder = new MeshTxBuilder({
     fetcher: maestroProvider,

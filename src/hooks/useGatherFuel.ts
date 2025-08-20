@@ -127,7 +127,7 @@ export function useGatherFuelTx(pilot: AssetExtended | null){
                 return alert("You cannot only select less a qty of fuel which is less than the available fuel ")
             }
            
-           
+   
             const payload = {
                 collateralUtxo: collateral[0],
                 utxos: utxos,
