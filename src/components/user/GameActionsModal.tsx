@@ -6,8 +6,11 @@ import Quit from "~/components/user/Quit";
 import SelectPilot from "~/components/user/SelectPilot";
 import { AssetExtended } from "@meshsdk/core";
 import { useState } from "react";
+import { MatchingPellet } from '~/pages/map';
 
-export default function GameActionsModal({pilot, setPilot, newPosX, newPosY, handleMoveShip, handleShipState, shipStateDatum}: {pilot: AssetExtended | null, setPilot: any, newPosX: number, newPosY: number, handleMoveShip: any, handleShipState: any, shipStateDatum: any}) {
+export default function GameActionsModal({pilot, setPilot, newPosX, newPosY, handleMoveShip, handleShipState, shipStateDatum, matchingPelletUtxo, actionModal, setActionModal}
+  : {pilot: AssetExtended | null, setPilot: any, newPosX: number, newPosY: number, handleMoveShip: any, handleShipState: any, shipStateDatum: any, matchingPelletUtxo: MatchingPellet, actionModal: boolean, setActionModal: React.Dispatch<React.SetStateAction<boolean>>}) {
+
 
 
   return (
@@ -37,7 +40,8 @@ export default function GameActionsModal({pilot, setPilot, newPosX, newPosY, han
 
           <div className="bg-gray-800 rounded-lg p-4">
             <h3 className="text-lg font-semibold mb-2">Gather Fuel</h3>
-            <GatherFuel pilot={pilot} />
+            {matchingPelletUtxo.txHash ? <GatherFuel pilot={pilot} matchingPelletUtxo={matchingPelletUtxo} />: null}
+            {actionModal && <ActionModal setActionModal={setActionModal}/>}
           </div>
 
           <div className="bg-gray-800 rounded-lg p-4">
@@ -48,4 +52,23 @@ export default function GameActionsModal({pilot, setPilot, newPosX, newPosY, han
       </div>
     </div>
   );
+} 
+
+
+const ActionModal =({setActionModal}: {setActionModal: React.Dispatch<React.SetStateAction<boolean>>}) => {
+
+  return (
+    <div
+      className="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center"
+      >
+      <div className="flex flex-col items-center bg-white rounded-md shadow-md p-4 w-1/2">
+        <h2 className="text-galaxy-info text-lg font-bold mb-4">Great Job!</h2>
+        <p className="text-galaxy-info text-sm mb-4">You've docked with a fuel station, You can gather fuel if you wish</p>
+        <button onClick={() => setActionModal(false)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Close
+        </button>
+    </div>
+</div>
+  )
+
 }

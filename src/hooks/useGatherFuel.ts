@@ -13,6 +13,7 @@ import { spacetimeRefHashWOUtil, pelletRefHashWOUtil } from "config";
 import { MaestroProvider } from "@meshsdk/core";
 import { LucideAlignHorizontalDistributeCenter } from "lucide-react";
 import { AssetExtended } from "@meshsdk/core";
+import { MatchingPellet } from "~/pages/map";
 
 
 export const clientMaestroProvider = new MaestroProvider({
@@ -30,7 +31,7 @@ export function useGatherFuelTx(pilot: AssetExtended | null){
     const [shipUtxo, setShipUtxo] = useState<UTxO>()
     // const [pilotToken, setPilotToken] = useState<string>("")
     const [pelletUtxoList, setPelletUtxoList] = useState<UTxO[]>()
-    const [pelletUtxo, setPelletUtxo] = useState<UTxO>()
+    const [pelletUtxo, setPelletUtxo] = useState<MatchingPellet>()
     const [pelletCoOrds, setPelletCoOrds] = useState<number[]>([])
 
     const [availableFuel, setAvailableFuel] = useState<number|undefined>()
@@ -93,12 +94,12 @@ export function useGatherFuelTx(pilot: AssetExtended | null){
             // }) )
 
             const findPilotUtxo = await utxos.find((utxo) => utxo.output.amount.find((asset: Asset) => {
-                return asset.unit.includes(stringToHex(pilot!.assetName))
+                return asset.unit.endsWith(stringToHex(pilotNumber))
  
              }) )
 
             setPilotUtxo(findPilotUtxo)
-
+            console.log("pilot utxo: ", findPilotUtxo)
             const spacetimeRefUtxo = await clientMaestroProvider.fetchUTxOs(spacetimeRefHashWOUtil, 0)
             const spacetimeScriptRef = fromScriptRef(spacetimeRefUtxo[0]?.output.scriptRef!);
             const spacetimePlutusScript = spacetimeScriptRef as PlutusScript;
@@ -126,7 +127,7 @@ export function useGatherFuelTx(pilot: AssetExtended | null){
                 return alert("You cannot only select less a qty of fuel which is less than the available fuel ")
             }
            
-           
+   
             const payload = {
                 collateralUtxo: collateral[0],
                 utxos: utxos,

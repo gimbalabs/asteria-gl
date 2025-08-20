@@ -3,12 +3,22 @@ import React, { ReactNode, useState } from "react";
 import GameActionsModal from "~/components/user/GameActionsModal";
 import { FuelIcon, LoaderPinwheel, RocketIcon } from "lucide-react";
 import { FuelPelletIcon, ShipIcon3 } from "~/components/ui/Icons";
-import { AssetExtended } from "@meshsdk/core";
+import { AssetExtended, hexToString } from "@meshsdk/core";
+
+
 
 
 import getGameState from "~/hooks/useGameState";
-import { add } from "lodash";
 import { useMoveShip } from "~/hooks/useMoveShip";
+
+export interface MatchingPellet {
+    txHash: string;
+    index: number;
+    fuel: number;
+    posX: number;
+    posY: number;
+    
+}
 
 const GRID_SIZE = 100;
 
@@ -25,16 +35,20 @@ function generateGrid() {
 }
 
 export default function MapPage() {
-    const [grid, setGrid] = useState<{ x: number; y: number; content: string | null | ReactNode, alt: string| null }[][]>(generateGrid());
+    const [grid, setGrid] = useState<{ x: number; y: number; content: string | null | ReactNode, alt: string| null }[][]>(generateGrid()); // state managed iteration of game grid
     const [inputValue, setInputValue] = useState("");
-    const [selectedCell, setSelectedCell] = useState<{ x: number; y: number } | null>(null);
+    const [selectedCell, setSelectedCell] = useState<{ x: number; y: number } | null>(null); // state to store the selected grid cell which the user has clicked on 
     const [zoom, setZoom] = useState(1); // State to manage zoom level
+    
+    const [seeActionModal, setSeeActionModal] = useState(false);
     const [seeShip, setSeeShip] = useState(false);
     const [activeShip, setActiveShip] = useState<{shipName: string, posX: number, posY: number, fuel: number}>({shipName: "", posX: 0, posY: 0, fuel: 0});
-    const [pilot, setPilot] = useState<AssetExtended | null>(null);
+    const [pilot, setPilot] = useState<AssetExtended | null>(null); // State to store the selected pilot
+
+    const [matchingPelletUtxo, setMatchingPelletUtxo] = useState<MatchingPellet>({txHash: "", index: 0, fuel: 0, posX: 0, posY: 0});
 
 
-    const { shipState, isLoadingPelletState, isError, pelletState, isLoadingShipState} = getGameState()
+    const { shipState, isLoadingPelletState, isError, pelletState, isLoadingShipState} = getGameState()  // obtains the shipState and pelletState from the useGameState hook, this pulls data from the blockchain - querying the validator addresses of ship and pellet
     const {setNewPosX, setNewPosY, newPosX, newPosY, handleMoveShip, handleShipState ,shipStateDatum} = useMoveShip(pilot)
 
 
@@ -74,8 +88,6 @@ export default function MapPage() {
 
     function addShips(posX, posY, shipName, fuel){
 
-
-
         setGrid((prevGrid) => {
                 return prevGrid.map((row) =>
                     row.map((cell) =>
@@ -85,6 +97,29 @@ export default function MapPage() {
                     )
                 );
             });
+        
+        if(!pilot){
+            return
+        }
+
+
+        
+        let assetName = hexToString(pilot.assetName)
+        console.log("Ship",shipName.slice(4,6), "Pilot", assetName.slice(5,7))
+        if(shipName.slice(4,6) === assetName.slice(5,7)){
+            
+            
+            pelletState.forEach((pellet) => {
+              
+                if(Number(pellet.posX) === posX && Number(pellet.posY) === posY){
+                  
+                    setMatchingPelletUtxo({txHash: pellet.utxo, index: pellet.index, fuel: pellet.fuel, posX: pellet.posX, posY: pellet.posY})
+                    setSeeActionModal(true)
+                }
+            })
+        
+        }
+
 
     }
 
@@ -96,36 +131,46 @@ export default function MapPage() {
 
    function handleAddShips(){
         
-    shipState?.map(ship => {
+    
+   
+    pelletState?.map(pellet => {
+            addPellets(Number(pellet.posX), Number(pellet.posY), pellet.fuel)
+        })
+
+    
+
+     shipState?.map(ship => {
             addShips(Number(ship.posX), Number(ship.posY), ship.name, ship.fuel)
 
         })
 
-          pelletState.map(pellet => {
-            addPellets(Number(pellet.posX), Number(pellet.posY), pellet.fuel)
-        })
 
-    }
-
-    if(isError){
-        return <p>Something went wrong, {isError}</p>
-    }
+        if(isError){
+            return <p>Something went wrong, {isError}</p>
+        }
     
-    if(isLoadingPelletState || isLoadingShipState){
-        return <LoaderPinwheel />;
+        if(isLoadingPelletState || isLoadingShipState){
+            return <LoaderPinwheel />;
+        }
+
     }
 
 
     return (
         <>
-            <GameActionsModal pilot={pilot} setPilot={setPilot} newPosX={newPosX} newPosY={newPosY} handleMoveShip={handleMoveShip} handleShipState={handleShipState} shipStateDatum={shipStateDatum}/>
+            <GameActionsModal pilot={pilot} setPilot={setPilot} newPosX={newPosX} newPosY={newPosY} handleMoveShip={handleMoveShip} handleShipState={handleShipState} shipStateDatum={shipStateDatum} matchingPelletUtxo={matchingPelletUtxo} actionModal={seeActionModal} setActionModal={setSeeActionModal}/>
 
         <div>
         
         <Mapbutton/>
             <div className="controls">
-                {shipState? <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-200" onClick={handleAddShips}>Update Game State</button>: null}
+                {!isLoadingPelletState && !isLoadingShipState? 
+                    <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md shadow-md transition duration-200" onClick={handleAddShips}>
+                        Update Game State
+                    </button>
+                    : null}
             </div>
+            
             <div
                 className="grid"
                 style={{
@@ -162,7 +207,7 @@ export default function MapPage() {
                                 }}
                                 onClick={() => handleCellClick(cell.x, cell.y)}
                             >
-                               <div className="flex justify-center ">{cell.content}{seeShip && activeShip.posX === cell.x && activeShip.posY === cell.y? <ShipInfo shipName={activeShip.shipName} posX={activeShip.posX} posY={activeShip.posY} fuel={activeShip.fuel}/>: null}</div>
+                               <div className="flex justify-center ">{cell.content}{seeShip && activeShip.posX === cell.x && activeShip.posY === cell.y && <ShipInfo shipName={activeShip.shipName} posX={activeShip.posX} posY={activeShip.posY} fuel={activeShip.fuel}/>}</div>
                             </div>
                         ))}
                     </div>
@@ -175,7 +220,7 @@ export default function MapPage() {
 
 const ShipInfo = ({ shipName, posX, posY, fuel }) => {
   return (
-    <div className="absolute bg-galaxy-base text-white p-4 rounded-md">
+    <div className="absolute bg-galaxy-base text-white p-4 rounded-md z-1">
       <h4>Ship Info</h4>
       <pre>
         {JSON.stringify({ shipName, posX, posY, fuel }, null, 2)}
@@ -183,3 +228,4 @@ const ShipInfo = ({ shipName, posX, posY, fuel }) => {
     </div>
   );
 };
+

@@ -3,43 +3,35 @@ import { deserializeDatum} from "@meshsdk/core";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { UTxO } from "@meshsdk/core";
 import { AssetExtended } from "@meshsdk/core";
+import { MatchingPellet } from "~/pages/map";
+import PlayButton from "../PlayButton";
 
 
-export default function GatherFuel({pilot}: {pilot: AssetExtended | null}){
+export default function GatherFuel({pilot, matchingPelletUtxo}: {pilot: AssetExtended | null, matchingPelletUtxo: MatchingPellet}) {
 
-    async function handleUtxo(utxo: UTxO){
+    async function handleUtxo(utxo: MatchingPellet){
         setPelletUtxo(utxo)
-        const deserialized = await deserializeDatum(utxo.output.plutusData!)
-        setPelletCoOrds([Number(deserialized.fields[0].int), Number(deserialized.fields[1].int) ])
+        setPelletCoOrds([Number(matchingPelletUtxo.posX), Number(matchingPelletUtxo.posY) ])
         console.log(pelletCoOrds)
 
     }
 
-    const {handleSubmit, pelletUtxoList, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel, txHash , pelletCoOrds, setPelletCoOrds} = useGatherFuelTx(pilot)
+    const {handleSubmit, setPelletUtxo, pelletUtxo, availableFuel, setAvailableFuel, fuel, setFuel, txHash , pelletCoOrds, setPelletCoOrds} = useGatherFuelTx(pilot)
     
     
     return (
         <div className="mb-5">
-            <form onSubmit={handleSubmit} className="flex flex-col">
+            
+            <form onSubmit={handleSubmit} className="flex flex-col gap-1">    
+                <p>You've landed on a fuel pellet, select the amount of fuel to take</p>
                 
-                <DropdownMenu>
-                    <DropdownMenuTrigger className="bg-white text-black">
-                       <p>Select from Pellet Utxos</p>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-white">
-                       
-                        {pelletUtxoList?.map((utxo, index) => (
 
-                            <DropdownMenuItem key={index} onClick={() => {handleUtxo(utxo); setAvailableFuel(Number(utxo.output.amount[2]?.quantity))}}>{utxo.input.txHash}</DropdownMenuItem>
-
-                        ))}
-                    </DropdownMenuContent>
-
-                </DropdownMenu>
+                    <button className="bg-galaxy-info rounded-lg px-6 py-3 font-semibold text-white shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2" onClick={() => {handleUtxo(matchingPelletUtxo); setAvailableFuel(Number(matchingPelletUtxo.fuel))}}>Check available fuel</button>
+              
                 
                  {pelletUtxo &&  
                     <div className="flex flex-col">
-                        <p>Selected utxo : {pelletUtxo.input.txHash}</p> 
+                        <p>Selected utxo : {pelletUtxo.txHash}</p> 
                         <p>Available Fuel: {availableFuel} </p>
                        
                         <div className="flex flex-col">
