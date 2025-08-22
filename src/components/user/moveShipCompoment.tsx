@@ -4,8 +4,8 @@ import MineAsteria from "./MineAsteriaComponent";
 import { AssetExtended } from "@meshsdk/core";
 
 
-export default function MoveShipComponent({pilot, newPosX, newPosY, handleMoveShip, handleShipState, shipStateDatum}: {pilot: AssetExtended | null, newPosX: number, newPosY: number, handleMoveShip: any, handleShipState: any, shipStateDatum: any}) {
-    const {assets, setNewPosX, setNewPosY, currentX, currentY} = useMoveShip(pilot);
+export default function MoveShipComponent({pilot, newPosX, newPosY, currentX, currentY, handleMoveShip, handleShipState, shipStateDatum}: {pilot: AssetExtended | null, newPosX: number, newPosY: number, currentX:number, currentY: number, handleMoveShip: any, handleShipState: any, shipStateDatum: any}) {
+    const {assets, setNewPosX, setNewPosY} = useMoveShip(pilot);
     //const {secs, possibleSteps} = useElapsedSeconds(shipStateDatum?.posixTime, shipStateDatum?.fuel);
     console.log("new X: ", newPosX)
     console.log("Pilot: ", pilot)
@@ -73,7 +73,7 @@ export default function MoveShipComponent({pilot, newPosX, newPosY, handleMoveSh
           </form>
         </div>
         <div>
-          {shipStateDatum&& assets && currentX === 0 && currentY=== 0  && <MineAsteria assets={assets} />}
+          {shipStateDatum && assets && currentX === 0 && currentY=== 0  && <MineAsteria assets={assets} pilot={pilot} />}
         </div>
       </div>
     );

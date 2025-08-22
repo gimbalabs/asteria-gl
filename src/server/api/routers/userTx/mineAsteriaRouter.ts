@@ -11,14 +11,14 @@ import { mineAsteria } from "~/lib/offchain/user/transactions/mineAsteria"
 export const mineAsteriaRouter = createTRPCRouter({
     prepareMineAsteriaTx: publicProcedure
     .input(z.object({
-        collateralUtxo: z.any(),
+        colateralUtxo: z.any(),
         pilotUtxo: z.any(),
         pilotNumber: z.string(),
         utxos: z.array(z.any()),
         changeAddress: z.string()
     }))
     .mutation( async ({input}) => {
-        console.log("colateral:", input.collateralUtxo)
+        console.log("colateral:", input.colateralUtxo)
         console.log("pilot infor", input.pilotUtxo)
         const {scriptAddress: spacetimeAddress, policyId: shipyardPolicy} = await deserializeRefHash(spacetimeRefHashWOUtil)
         
@@ -35,7 +35,7 @@ export const mineAsteriaRouter = createTRPCRouter({
         );
         console.log("shipState utxo:" , shipStateUtxo)
 
-        const {unsignedTx, asteriaMined} = await mineAsteria(shipStateUtxo[0]!, input.collateralUtxo, input.pilotUtxo, input.changeAddress, input.utxos)
+        const {unsignedTx, asteriaMined} = await mineAsteria(shipStateUtxo[0]!, input.colateralUtxo, input.pilotUtxo, input.changeAddress, input.utxos)
 
      
         return {unsignedTx, asteriaMined}
