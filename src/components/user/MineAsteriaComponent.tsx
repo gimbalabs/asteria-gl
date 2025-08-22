@@ -3,9 +3,9 @@ import useMineAsteria from "~/hooks/useMineAsteria";
 
 
 
-export default function MineAsteria({assets}: {assets: AssetExtended[]}){
+export default function MineAsteria({assets, pilot}: {assets: AssetExtended[], pilot: AssetExtended}) {
 
-    const {txHash, handleSubmitMineAsteria, asteriaMined} = useMineAsteria(assets)
+    const {txHash, handleSubmitMineAsteria, asteriaMined} = useMineAsteria(assets, pilot)
 
 
     return (

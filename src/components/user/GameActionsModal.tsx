@@ -8,8 +8,8 @@ import { AssetExtended } from "@meshsdk/core";
 import { useState } from "react";
 import { MatchingPellet } from '~/pages/map';
 
-export default function GameActionsModal({pilot, setPilot, newPosX, newPosY, handleMoveShip, handleShipState, shipStateDatum, matchingPelletUtxo, actionModal, setActionModal}
-  : {pilot: AssetExtended | null, setPilot: any, newPosX: number, newPosY: number, handleMoveShip: any, handleShipState: any, shipStateDatum: any, matchingPelletUtxo: MatchingPellet, actionModal: boolean, setActionModal: React.Dispatch<React.SetStateAction<boolean>>}) {
+export default function GameActionsModal({pilot, setPilot, newPosX, newPosY, currentX, currentY, handleMoveShip, handleShipState, shipStateDatum, matchingPelletUtxo, actionModal, setActionModal}
+  : {pilot: AssetExtended | null, setPilot: any, newPosX: number, newPosY: number, currentX: number, currentY: number, handleMoveShip: any, handleShipState: any, shipStateDatum: any, matchingPelletUtxo: MatchingPellet, actionModal: boolean, setActionModal: React.Dispatch<React.SetStateAction<boolean>>}) {
 
 
 
@@ -35,7 +35,7 @@ export default function GameActionsModal({pilot, setPilot, newPosX, newPosY, han
 
           <div className="bg-gray-800 rounded-lg p-4">
             <h3 className="text-lg font-semibold mb-2">Move Ship</h3>
-            <MoveShipComponent pilot={pilot} newPosX={newPosX} newPosY={newPosY} handleMoveShip={handleMoveShip} handleShipState={handleShipState} shipStateDatum={shipStateDatum} />
+            <MoveShipComponent pilot={pilot} newPosX={newPosX} newPosY={newPosY} currentX={currentX} currentY={currentY} handleMoveShip={handleMoveShip} handleShipState={handleShipState} shipStateDatum={shipStateDatum} />
           </div>
 
           <div className="bg-gray-800 rounded-lg p-4">

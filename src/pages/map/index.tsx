@@ -49,7 +49,7 @@ export default function MapPage() {
 
 
     const { shipState, isLoadingPelletState, isError, pelletState, isLoadingShipState} = getGameState()  // obtains the shipState and pelletState from the useGameState hook, this pulls data from the blockchain - querying the validator addresses of ship and pellet
-    const {setNewPosX, setNewPosY, newPosX, newPosY, handleMoveShip, handleShipState ,shipStateDatum} = useMoveShip(pilot)
+    const {setNewPosX, setNewPosY, newPosX, newPosY, currentX, currentY , handleMoveShip, handleShipState ,shipStateDatum} = useMoveShip(pilot)
 
 
     const handleCellClick = (x: number, y: number) => {
@@ -158,7 +158,7 @@ export default function MapPage() {
 
     return (
         <>
-            <GameActionsModal pilot={pilot} setPilot={setPilot} newPosX={newPosX} newPosY={newPosY} handleMoveShip={handleMoveShip} handleShipState={handleShipState} shipStateDatum={shipStateDatum} matchingPelletUtxo={matchingPelletUtxo} actionModal={seeActionModal} setActionModal={setSeeActionModal}/>
+            <GameActionsModal pilot={pilot} setPilot={setPilot} currentX={currentX} currentY={currentY} newPosX={newPosX} newPosY={newPosY} handleMoveShip={handleMoveShip} handleShipState={handleShipState} shipStateDatum={shipStateDatum} matchingPelletUtxo={matchingPelletUtxo} actionModal={seeActionModal} setActionModal={setSeeActionModal}/>
 
         <div>
         
