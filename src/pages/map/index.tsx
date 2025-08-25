@@ -84,17 +84,28 @@ export default function MapPage() {
                     )
                 );
             });
+
     }
 
     function addShips(posX, posY, shipName, fuel){
 
         setGrid((prevGrid) => {
-                return prevGrid.map((row) =>
-                    row.map((cell) =>
-                        cell.x === posX && cell.y === posY
+                return prevGrid.map((row, rowIndex) =>
+                    row.map((cell, cellIndex) =>{
+                        
+                        if(cell.alt !== null && cell.alt !== undefined && cell.alt === shipName){
+                           return {...cell, content: null, alt: null}
+                        } else if(cell) {
+                            const adjustedY = rowIndex - Math.floor(GRID_SIZE / 2);
+                            const adjustedX = cellIndex - Math.floor(GRID_SIZE / 2);
+                           return adjustedX === posX && adjustedY === posY 
                             ? { ...cell, content: <div className="z-1 bg-galaxy-base" onMouseOut={() => setSeeShip(false)} onMouseOver={() => handleRocketHover(posX, posY, shipName, fuel)}><RocketIcon   className="text-galaxy-accent font-xl z-1"/></div>, alt: shipName}
                             : cell
-                    )
+                        } else {
+                            return cell
+                        }    
+                    })    
+                    
                 );
             });
         
